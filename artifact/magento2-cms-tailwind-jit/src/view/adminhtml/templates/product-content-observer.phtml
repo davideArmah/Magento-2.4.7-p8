@@ -1,0 +1,225 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+
+?>
+<script>
+    (() => {
+        const previewStylesId = '<?= /** @noEscape */ uniqid('tailwindcss') ?>';
+        const uiComponentDataSourceSelector = 'product_form.product_form_data_source';
+        const uiComponentContentSelectors = [
+            'index=description,formElement=wysiwyg',
+            'index=short_description,formElement=wysiwyg'
+        ];
+        const uiComponentEnableJitSelector = 'index=is_tailwindcss_jit_enabled';
+
+        function getSelectedWebsites() {
+            const dataSource = require('uiRegistry') && require('uiRegistry').get(uiComponentDataSourceSelector);
+            const product = dataSource && dataSource.data && dataSource.data.product;
+            const websites = product && product.website_ids;
+            return websites ? Object.values(product.website_ids) : ['0']; // single store mode
+        }
+
+        function getThemesForSelectedWebsites() {
+            const selectedWebsites = getSelectedWebsites();
+
+            const storeIds = selectedWebsites.includes('0')
+                ? tailwindCSS.storeIdsForWebsites()
+                : tailwindCSS.storeIdsForWebsites(selectedWebsites);
+
+            return tailwindCSS.tailwindThemes(storeIds);
+        }
+
+        // A null object returns an empty string. To be used until the actual content component is available.
+        const nullComponent = {
+            value() {
+                return '';
+            }
+        };
+
+        let isRegistryLoaded = false;
+        function getCmsComponents() {
+            if (!isRegistryLoaded) {
+                require(['uiRegistry'], () => isRegistryLoaded = true);
+                return [nullComponent];
+            }
+            return uiComponentContentSelectors.map(selector => require('uiRegistry').get(selector) || nullComponent);
+        }
+
+        function setStylesForTheme(theme, css) {
+            require(['uiRegistry'], (uiRegistry) => {
+                // Patch new tailwindcss field into form data source component
+                const dataSource = uiRegistry.get(uiComponentDataSourceSelector);
+                dataSource.data.product.tailwindcss = dataSource.data.product.tailwindcss || {};
+                dataSource.data.product.tailwindcss[theme] = css;
+            });
+        }
+
+        function onJitEnabledStateChange(isEnabled) {
+            if (0 === parseInt(isEnabled)) {
+                require('uiRegistry').get(uiComponentDataSourceSelector).data.product.tailwindcss = {};
+                getCmsComponents().map(component => setStylesForAdminhtmlPreview(component.wysiwygId, ''))
+                return;
+            }
+            dispatchEvent(new CustomEvent('cms-tailwind-jit-update-admin-preview'));
+            dispatchEvent(new CustomEvent('cms-tailwind-jit-update-frontend-styles'));
+
+        }
+
+        function isWysisygEditorActive(wysiwygId) {
+            return window['tinymce'] && tinymce.get(wysiwygId) && tinymce.get(wysiwygId).getDoc()
+        }
+
+        function setStylesForAdminhtmlPreview(wysiwygId, css) {
+            if (!isWysisygEditorActive(wysiwygId)) {
+                return;
+            }
+
+            const doc = tinymce.get(wysiwygId).getDoc();
+            let style = doc.getElementById(previewStylesId);
+
+            if (style === null) {
+                style = doc.createElement('style');
+                style.id = previewStylesId;
+            }
+            doc.head.append(style);
+            style.textContent = css;
+        }
+
+        function isJitDisabled() {
+            return ! window.tailwindCSS.isTailwindJitEnabled();
+        }
+
+        let lastPreviewStyles = '';
+        function updateTinyMCEPreview(components) {
+            const htmlContent = window.tailwindCSS.getHtmlForJitCompilation();
+            if ('' === htmlContent || isJitDisabled()) {
+                return;
+            }
+
+            // Set styles for adminhtml preview (with default tailwind config)
+            const adminConfig = window.tailwindCSS.configForAdminPreview();
+            const customCss = window.tailwindCSS.customCssForAdminPreview();
+            window.tailwindCSS.process(htmlContent, adminConfig, customCss).then((css) => {
+                lastPreviewStyles = css;
+                (components || getCmsComponents()).map(component => {
+                    setStylesForAdminhtmlPreview(component.wysiwygId, css)
+                })
+            });
+        }
+
+        function processContent(htmlContent, themes) {
+            if (isJitDisabled()) {
+                return Promise.resolve();
+            }
+
+            // Set styles for frontend hyvä themes
+            return Promise.all(themes.map((theme) => {
+                const config = tailwindCSS.configForTheme(theme);
+                const customConfig = tailwindCSS.customCssForAdminPreview();
+                return window.tailwindCSS.process(htmlContent, config, customConfig).then((css) => setStylesForTheme(theme, css))
+            }));
+        }
+
+        function updateFrontendStyles() {
+            return processContent(window.tailwindCSS.getHtmlForJitCompilation(), getThemesForSelectedWebsites());
+        }
+
+        window.tailwindCSS = Object.assign(window.tailwindCSS || {}, {
+            getHtmlForJitCompilation() {
+                return getCmsComponents().map(component => component.value()).join("\n\n").trim();
+            },
+            updateFrontendStyles
+        });
+
+        (function attachEventListenersToInputsWhenAvailable() {
+
+            const registerSubscriptions = () => {
+
+                window.addEventListener('cms-tailwind-jit-update-admin-preview', () => updateTinyMCEPreview());
+                window.addEventListener('cms-tailwind-jit-update-frontend-styles', updateFrontendStyles);
+
+                getCmsComponents().map(component => {
+                    component.value.subscribe(() => {
+                        updateTinyMCEPreview([component]);
+                        dispatchEvent(new CustomEvent('cms-tailwind-jit-update-frontend-styles'));
+                    })
+                });
+
+                // Toggling the editor without any changes looses the preview styles since the change observer is not
+                // triggered. This applies the last compiled preview styles again.
+                varienGlobalEvents.attachEventHandler('tinymceBeforeSetContent', () => {
+                    getCmsComponents().map(component => {
+                        setStylesForAdminhtmlPreview(component.wysiwygId, lastPreviewStyles)
+                    })
+                });
+
+                const websitesComponent = require('uiRegistry').get('index=websites');
+                websitesComponent && websitesComponent.elems().map(child => {
+                    child.formElement === 'checkbox' && child.value.subscribe(() => {
+                        dispatchEvent(new CustomEvent('cms-tailwind-jit-update-frontend-styles'));
+                    });
+                });
+
+                // The is_tailwindcss_jit_enabled component is an eav attribute. Check it exists before using the value.
+                const enableTailwindJitCheckbox = require('uiRegistry').get(uiComponentEnableJitSelector);
+                enableTailwindJitCheckbox && enableTailwindJitCheckbox.value.subscribe(onJitEnabledStateChange);
+
+                console.log('Attached TailwindCSS JIT to product CMS content.');
+            };
+
+            const inputTargets = [
+                'textarea[id="product_form_short_description"]',
+                'textarea[id="product_form_description"]',
+                'input[name^="product[website_ids]"]'
+            ];
+
+            let isAttached = false;
+            const inputAttacher = new MutationObserver(() => {
+                const content = window.tailwindCSS.getHtmlForJitCompilation();
+                inputTargets.forEach((selector) => {
+                    if (!isAttached && (document.querySelector(selector) && content !== '')) {
+                        inputAttacher.disconnect();
+                        registerSubscriptions();
+                        isAttached = true;
+                    }
+                });
+
+            });
+
+            inputAttacher.observe(document.documentElement, {childList: true, subtree: true});
+
+            // Initial TailwindCSS JIT compilation of product content for wysiwyg preview when iframe becomes available
+            const initialCompile = new MutationObserver(() => {
+                const content = window.tailwindCSS.getHtmlForJitCompilation();
+
+                if (content !== '') {
+                    initialCompile.disconnect();
+                    console.log('Initial TailwindCSS JIT compilation of product CMS content.');
+
+                    isAttached
+                        ? dispatchEvent(new CustomEvent('cms-tailwind-jit-update-frontend-styles'))
+                        : updateFrontendStyles();
+                    updateTinyMCEPreview();
+                }
+
+            });
+
+            initialCompile.observe(document.documentElement, {childList: true, subtree: true});
+        })()
+
+    })()
+</script>

@@ -1,0 +1,19 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+
+/** @var $block \MageWorx\StoreLocator\Block\GoogleMap */
+
+/** @var $escaper \Magento\Framework\Escaper */
+?>
+<?php if ($block->isShowMap()) : ?>
+    <script>
+        (function() {
+            const mwGetScriptUrlWithParams = "<?= $escaper->escapeUrl($block->getScriptUrlWithParams())?>";
+        })();
+    </script>
+<?php endif; ?>

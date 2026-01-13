@@ -1,0 +1,21 @@
+{
+    "name": "hyva-themes/i18n-it-it",
+    "description": "Hyvä Theme locale it_IT",
+    "type": "magento2-module",
+    "require": {
+        "hyva-themes/magento2-default-theme": "*",
+        "hyva-themes/magento2-theme-module": "*"
+    },
+    "authors": [
+        {
+            "name": "Hyvä Themes B.V.",
+            "email": "info@hyva.io"
+        }
+    ],
+    "license": "proprietary",
+    "autoload": {
+        "files": [
+            "src/registration.php"
+        ]
+    }
+}

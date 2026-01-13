@@ -1,0 +1,24 @@
+{
+  "name": "hyva-themes/magento2-mageworx-storelocator",
+  "description": "Hyvä Themes Compatibility module for MageWorx_StoreLocator",
+  "type": "magento2-module",
+  "require": {
+    "magento/framework": "*",
+    "hyva-themes/magento2-compat-module-fallback": "*",
+    "mageworx/module-storelocator": ">=1.7.4 <2",
+    "mageworx/module-locationpages": "<2",
+    "hyva-themes/magento2-default-theme": ">=1.2.0"
+  },
+  "authors": [{
+    "name": "MageWorx",
+    "homepage": "https://www.mageworx.com/"
+  }],
+  "autoload": {
+    "files": [
+      "src/registration.php"
+    ],
+    "psr-4": {
+      "Hyva\\MageWorxStoreLocator\\": "src/"
+    }
+  }
+}

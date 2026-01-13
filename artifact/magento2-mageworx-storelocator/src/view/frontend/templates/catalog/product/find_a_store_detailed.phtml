@@ -1,0 +1,74 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+
+/** @var $block \MageWorx\StoreLocator\Block\Catalog\Product\FindAStore */
+$locations = $block->getLocations();
+
+/** @var $escaper \Magento\Framework\Escaper */
+
+/** @var HeroIconsOutline $heroIcons */
+$heroIcons = $viewModels->require(\Hyva\Theme\ViewModel\HeroiconsOutline::class); ?>
+<div class="p-4 border-b">
+    <span class="text-xl font-medium text-gray-900 title-font">
+            <?php if (count($locations)) : ?>
+                <?= $escaper->escapeHtml($block->getLocationOnProductText()); ?>
+            <?php else : ?>
+                <?= $escaper->escapeHtml($block->getLocationOnProductNotAvailableText()); ?>
+            <?php endif; ?>
+        </span>
+</div>
+<?php /** @var \MageWorx\Locations\Api\Data\LocationInterface $location */
+if (count($locations) && $block->isLocationsNamesEnabled()) : ?>
+    <div>
+        <ul>
+            <?php foreach ($block->getLocations() as $location) : ?>
+                <li class="flex justify-between p-4 border-b">
+                    <div class="flex gap-x-4">
+                        <?= $heroIcons->locationMarkerHtml('w-5 h-5'); ?>
+                        <div>
+                            <?= /* @noEscape */ $block->getLocationPageLink($location, $location->getName()) ?>
+                            <div><?= $escaper->escapeHtml(
+                                    $location->getCity() . ', ' . $location->getAddress()
+                                ) ?>
+                                <a href="<?= $escaper->escapeUrl($block->getRouteUrl($location)); ?>"
+                                   target="_blank"><?= $escaper->escapeHtml(__('Route')) ?></a></div>
+                        </div>
+                    </div>
+                    <?php if ($block->getDisplayStockStatus() === 1) : ?>
+                        <?php if ($block->isProductInStock($location)) : ?>
+                            <span class="text-green-500 flex gap-x-2">
+                                <span><?= $escaper->escapeHtml(__('In Stock')) ?></span>
+                                <?= $heroIcons->checkCircleHtml('w-5 h-5'); ?>
+                            </span>
+                        <?php else : ?>
+                            <span class="text-red-500 flex gap-x-2">
+                                <span><?= $escaper->escapeHtml(__('Out Of Stock')) ?></span>
+                                <?= $heroIcons->xCircleHtml('w-5 h-5'); ?>
+                            </span>
+                        <?php endif; ?>
+                    <?php elseif ($block->getDisplayStockStatus() === 2) : ?>
+                        <?php if ($block->isProductInStock($location) && $block->getProductQty($location)) : ?>
+                            <span class="text-green-500 flex gap-x-2">
+                                <span><?= $escaper->escapeHtml($block->getQtyMessage($location)) ?></span>
+                                <?= $heroIcons->checkCircleHtml('w-5 h-5'); ?>
+                            </span>
+                        <?php else : ?>
+                            <span class="text-red-500 flex gap-x-2">
+                                <span><?= $escaper->escapeHtml(__('Out Of Stock')) ?></span>
+                                <?= $heroIcons->xCircleHtml('w-5 h-5'); ?>
+                            </span>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+            <div id="showLocationButtonPlace"></div>
+        </ul>
+    </div>
+<?php endif; ?>
+
+

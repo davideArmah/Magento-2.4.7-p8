@@ -1,0 +1,54 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\CmsTailwindJit\ViewModel\TailwindThemes;
+use Hyva\CmsTailwindJit\ViewModel\ThemeCustomCss;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Hyva\Theme\ViewModel\HyvaCsp;
+
+// phpcs:disable Generic.WhiteSpace.ScopeIndent.Incorrect
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var TailwindThemes $tailwindThemes */
+/** @var ThemeCustomCss $customCss */
+/** @var HyvaCsp $hyvaCsp */
+
+$tailwindThemes = $block->getData('tailwind_themes');
+$customCss      = $block->getData('custom_css');
+
+?>
+<script>
+    'use strict';
+
+    (() => {
+        window.tailwindCSS = Object.assign(window.tailwindCSS || {}, {
+            customCssForTheme(theme) {
+                const styles = document.querySelector(`script[type="text/tailwind-css"][data-theme="${theme}"]`);
+                return styles ? styles.innerText.trim() : '';
+            },
+            customCssForAdminPreview() {
+                return this.adminPreviewTheme
+                    ? this.customCssForTheme(this.adminPreviewTheme())
+                    : '';
+            }
+        })
+    })()
+</script>
+<?php isset($hyvaCsp) && $hyvaCsp->registerInlineScript() ?>
+<?php foreach ($tailwindThemes->getTailwindThemes() as $theme): ?>
+<?php if ($styles = $customCss->getCustomCssForTheme($theme)): ?>
+<script type="text/tailwind-css" data-theme="<?= $escaper->escapeHtmlAttr($theme) ?>">
+    <?= /** @noEscape */ $styles ?>
+</script>
+<?php isset($hyvaCsp) && $hyvaCsp->registerInlineScript() ?>
+<?php endif; ?>
+<?php endforeach; ?>

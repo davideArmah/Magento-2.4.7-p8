@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="before.body.end">
+            <block name="tailwindcss-configs" template="Hyva_CmsTailwindJit::tailwindcss-configs.phtml">
+                <arguments>
+                    <argument name="tailwind_themes" xsi:type="object">\Hyva\CmsTailwindJit\ViewModel\TailwindThemes</argument>
+                    <argument name="tailwind_config" xsi:type="object">\Hyva\CmsTailwindJit\ViewModel\TailwindConfigs</argument>
+                </arguments>
+            </block>
+            <block name="tailwindcss-custom-css" template="Hyva_CmsTailwindJit::tailwindcss-jit-custom-css.phtml">
+                <arguments>
+                    <argument name="tailwind_themes" xsi:type="object">\Hyva\CmsTailwindJit\ViewModel\TailwindThemes</argument>
+                    <argument name="custom_css" xsi:type="object">\Hyva\CmsTailwindJit\ViewModel\ThemeCustomCss</argument>
+                </arguments>
+            </block>
+            <block name="tailwindcss-jit-iframe" template="Hyva_CmsTailwindJit::tailwindcss-jit-iframe.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

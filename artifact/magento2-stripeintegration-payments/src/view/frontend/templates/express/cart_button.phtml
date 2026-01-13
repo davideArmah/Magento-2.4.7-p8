@@ -1,0 +1,141 @@
+<?php
+/** @var Escaper $escaper */
+/** @var HyvaCsp $hyvaCsp */
+
+use Hyva\StripeIntegrationPayments\ViewModel\Checkout;
+use Hyva\StripeIntegrationPayments\ViewModel\ProductButton;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Magento\Framework\Escaper;
+
+/** @var \Hyva\Theme\Model\ViewModelRegistry $viewModels */
+/** @var \Hyva\StripeIntegrationPayments\ViewModel\ProductButton $viewModel */
+$viewModel = $viewModels->require(Hyva\StripeIntegrationPayments\ViewModel\ProductButton::class);
+
+/** @var \StripeIntegration\Payments\Block\Minicart\Shortcut $block */
+$uniqueSciptId = md5($block->getNameInLayout() . 'cartpage');
+
+/** @var Checkout $checkout */
+$checkout = $viewModels->require(Checkout::class);
+?>
+<?php if ($block->isEnabled("shopping_cart_page") && !$checkout->hasHyvaCheckoutInstalled()) : ?>
+
+    <?php
+    // In load order.
+    $scripts = [
+        'https://js.stripe.com/v3/',
+        'Hyva_StripeIntegrationPayments::js/stripe_payments_express_hyva.js'
+    ];
+    ?>
+    <script defer>
+        function stripeExpressPaymentsCartButtonBridgeComponent_<?= $uniqueSciptId ?>() {
+
+            function loadScript(url) {
+                return new Promise((resolve) => {
+                    // Check if the script is already loaded and in the document
+                    const existingScript = document.querySelector(`script[src="${url}"]`);
+
+                    if (existingScript) {
+                        // Check if the script is already loaded
+                        if (existingScript.readyState === 'complete' || existingScript.readyState === 'loaded') {
+                            resolve();
+                        } else {
+                            // If not loaded yet, listen for the load event
+                            existingScript.addEventListener('load', resolve);
+                        }
+                        return;
+                    }
+
+                    let script = document.createElement('script');
+                    script.setAttribute('type', 'text/javascript');
+                    script.setAttribute('src', url);
+                    document.head.append(script);
+
+                    script.addEventListener('load', resolve);
+                });
+            }
+
+            return {
+                isInitialized: false,
+                loading: false,
+                loadScripts: function () {
+                    if (this.isInitialized) { return; }
+
+                    if( typeof window.stripePaymentsExpressHyvaBridgeScriptsInstalled !== 'undefined' && window.stripePaymentsExpressHyvaBridgeScriptsInstalled == true ) {
+
+                        this.postInit();
+                        return;
+
+                    }
+
+                    var promises = [
+                        <?php foreach($scripts as $scriptUrl): ?>
+                        <?php
+                        $parsedScriptUrl = $viewModel->getAssetUrl($scriptUrl);
+                        if( substr( $scriptUrl, 0, 4 ) === "http" ) {
+                            $parsedScriptUrl = $scriptUrl;
+                        }
+                        ?>
+                        loadScript('<?= $escaper->escapeJs($parsedScriptUrl) ?>'),
+                        <?php endforeach; ?>
+                    ];
+
+                    // All files loaded, migrate to postInit phase.
+                    Promise.all(promises).then(() => {
+                        this.postInit();
+                    });
+
+                },
+
+                isLoading() {
+                    return this.loading;
+                },
+
+                preInit: function() {
+                    this.loadScripts();
+                },
+                postInit: function() {
+                    window.stripePaymentsExpressHyvaBridgeScriptsInstalled = true;
+                    this.isInitialized = true;
+                    var initPRAPI = function()
+                    {
+                        var locationDetails = {
+                            location: 'cart',
+                            activeLocations: 'shopping_cart_page'
+                        };
+                        stripePaymentsExpressHyvaBridge.initStripeExpress(
+                            '#payment-request-button-cart_<?= $uniqueSciptId ?>',
+                            <?= $block->initParams->getWalletParams(); // phpcs:ignore ?>,
+                            locationDetails,
+                            <?= $block->getButtonConfig(); // phpcs:ignore ?>,
+                            stripePaymentsExpressHyvaBridge.initCartWidget.bind(stripePaymentsExpressHyvaBridge),
+                            this
+                        );
+                    };
+                    initPRAPI();
+
+                    window.addEventListener("private-content-loaded", function() {
+                        setTimeout(initPRAPI, 500);
+                    });
+                }
+            };
+        }
+
+        window.addEventListener(
+            'alpine:init',
+            () => Alpine.data(
+                'stripeExpressPaymentsCartButtonBridgeComponent_<?= $uniqueSciptId ?>',
+                stripeExpressPaymentsCartButtonBridgeComponent_<?= $uniqueSciptId ?>
+            ),
+            {once: true}
+        )
+    </script>
+    <?php $hyvaCsp->registerInlineScript() ?>
+
+    <div class="w-full"></div>
+
+    <div id="stripeExpressPaymentsCartButtonBridgeComponent_<?= $uniqueSciptId ?>" x-data="stripeExpressPaymentsCartButtonBridgeComponent_<?= $uniqueSciptId ?>" class="w-full" x-init="preInit">
+        <div id="payment-request-button-cart_<?= $uniqueSciptId ?>" class="payment-request-button cart">&nbsp;</div>
+        <?= $block->getChildHtml('product.info.addtocart.stripe_loading') ?>
+    </div>
+
+<?php endif; ?>

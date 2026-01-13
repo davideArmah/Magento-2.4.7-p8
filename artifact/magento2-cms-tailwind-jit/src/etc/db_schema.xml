@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="cms_block">
+        <column name="is_tailwindcss_jit_enabled" xsi:type="boolean" nullable="false" default="true"/>
+        <!-- This declaration is missing in the commerce staging module. Without it setup complains block_id has no index -->
+        <index referenceId="CMS_BLOCK_PAGE_ID" indexType="btree">
+            <column name="block_id"/>
+        </index>
+    </table>
+    <table name="cms_page">
+        <column name="is_tailwindcss_jit_enabled" xsi:type="boolean" nullable="false" default="true"/>
+    </table>
+    <table name="hyva_cms_block_tailwindcss">
+        <column name="id" xsi:type="int" unsigned="true" nullable="false" identity="true"/>
+        <column name="entity_id" xsi:type="smallint" unsigned="false" nullable="false" onCreate="migrateDataFrom(block_id)" comment="CMS block id"/>
+        <column name="theme" xsi:type="varchar" length="255" nullable="false" />
+        <column name="css" xsi:type="text" nullable="true"/>
+        <column name="updated:at" xsi:type="timestamp" on_update="true" nullable="false" default="CURRENT_TIMESTAMP"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="HYVA_CMS_BLOCK_TAILWINDCSS_ENTITY_ID_CMS_BLOCK_BLOCK_ID"
+                    column="entity_id" referenceTable="cms_block" referenceColumn="block_id"/>
+        <index referenceId="HYVA_CMS_BLOCK_TAILWINDCSS_THEME" indexType="btree">
+            <column name="theme"/>
+        </index>
+    </table>
+    <table name="hyva_cms_page_tailwindcss">
+        <column name="id" xsi:type="int" unsigned="true" nullable="false" identity="true"/>
+        <column name="entity_id" xsi:type="smallint" unsigned="false" nullable="false" onCreate="migrateDataFrom(page_id)" comment="CMS page id"/>
+        <column name="theme" xsi:type="varchar" length="255" nullable="false" />
+        <column name="css" xsi:type="text" nullable="true"/>
+        <column name="updated:at" xsi:type="timestamp" on_update="true" nullable="false" default="CURRENT_TIMESTAMP"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="HYVA_CMS_PAGE_TAILWINDCSS_ENTITY_ID_CMS_PAGE_PAGE_ID"
+                    column="entity_id" referenceTable="cms_page" referenceColumn="page_id"/>
+        <index referenceId="HYVA_CMS_PAGE_TAILWINDCSS_THEME" indexType="btree">
+            <column name="theme"/>
+        </index>
+    </table>
+    <table name="hyva_catalog_product_tailwindcss">
+        <column name="id" xsi:type="int" unsigned="true" nullable="false" identity="true"/>
+        <column name="entity_id" xsi:type="int" unsigned="true" nullable="false" comment="catalog product entity id"/>
+        <column name="theme" xsi:type="varchar" length="255" nullable="false" />
+        <column name="css" xsi:type="text" nullable="true"/>
+        <column name="updated:at" xsi:type="timestamp" on_update="true" nullable="false" default="CURRENT_TIMESTAMP"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="HYVA_CATALOG_PRODUCT_TAILWINDCSS_ENTITY_ID_CMS_PAGE_PAGE_ID"
+                    column="entity_id" referenceTable="catalog_product_entity" referenceColumn="entity_id"/>
+        <index referenceId="HYVA_CATALOG_PRODUCT_TAILWINDCSS_THEME" indexType="btree">
+            <column name="theme"/>
+        </index>
+    </table>
+    <table name="hyva_catalog_category_tailwindcss">
+        <column name="id" xsi:type="int" unsigned="true" nullable="false" identity="true"/>
+        <column name="entity_id" xsi:type="int" unsigned="true" nullable="false" comment="catalog category entity id"/>
+        <column name="theme" xsi:type="varchar" length="255" nullable="false" />
+        <column name="css" xsi:type="text" nullable="true"/>
+        <column name="updated:at" xsi:type="timestamp" on_update="true" nullable="false" default="CURRENT_TIMESTAMP"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="HYVA_CAT_CTGR_TAILWINDCSS_ENTT_ID_CAT_CTGR_ENTT_ENTT_ID"
+                    column="entity_id" referenceTable="catalog_category_entity" referenceColumn="entity_id"/>
+        <index referenceId="HYVA_CATALOG_CATEGORY_TAILWINDCSS_THEME" indexType="btree">
+            <column name="theme"/>
+        </index>
+    </table>
+</schema>

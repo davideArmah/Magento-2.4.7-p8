@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="header-wrapper">
+            <block class="MageWorx\StoreLocator\Block\Header\Link"
+                   name="add-store-locator-link"
+                   ifconfig="mageworx_locations/link_settings/show_link"
+                   template="Hyva_MageWorxStoreLocator::header_link.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

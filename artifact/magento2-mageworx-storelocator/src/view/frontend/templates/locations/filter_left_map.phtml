@@ -1,0 +1,42 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+
+/** @var $block \MageWorx\StoreLocator\Block\Locations */
+
+/** @var $escaper \Magento\Framework\Escaper */
+?>
+<div id="mw-filter-left-map"
+     class="flex">
+        <div id="mw-filter-block" style="width: 20rem;">
+            <?= /* @noEscape */  $block->getLocationsWrapperHtml('filter'); ?>
+        </div>
+        <?= /* @noEscape */  $block->getLocationsMapHtml(); ?>
+</div>
+<script>
+    mwLocatorData.mwLocations = JSON.parse('<?= $escaper->escapeJs(json_encode($block->getLocationsIds()))?>');
+    mwLocatorData.availableLocations = JSON.parse('<?= $escaper->escapeJs(json_encode($block->getAvailableLocationsIds()))?>');
+    mwLocatorData.isWorkingHoursEnabled = <?= (int)$block->isWorkingHoursEnabled() === 1 ? 'true' : 'false' ?>;
+</script>
+
+<?= /* @noEscape */ $block->getGoogleMapScript(); ?>
+
+<script>
+    document.addEventListener("mw-on-map-mount", () => {
+        const $map = document.getElementById("mw-sl-map");
+        if ($map) {
+            $map.classList.add("w-full", "md:h-full");
+
+            document.getElementById("mw-map-block-init")?.classList.add("grow");
+            document.getElementById("mw-map-block-init")?.classList.add("w-full");
+            document.getElementById("mw-map-block")?.classList.add("h-full");
+        }
+
+        document.getElementById("mw-filter-block")?.classList.add("grow-0");
+        document.getElementById("mw-filter-left-map").classList.add("md:flex-row", "flex-col")
+    })
+</script>

@@ -1,0 +1,243 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+
+/** @var HeroIconsOutline $heroIcons */
+$heroicons = $viewModels->require(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
+
+/** @var $escaper \Magento\Framework\Escaper */
+
+/** @var $block \MageWorx\StoreLocator\Block\Catalog\Product\FindAStore */
+$locations = $block->getLocations();
+if ($block->isLocationOnProductEnabled()) :?>
+    <script>
+        const mwLocatorData = {}; // general global data for locator on product page
+
+        function initMwFindAStoreUpdate() {
+            const config = {
+                target: "#find_a_store",
+                product: "<?= $escaper->escapeJs($block->getProductId()) ?>",
+                dataUrl: "<?= /* @noEscape */ $block->getBaseUrl(); ?>",
+                isShowMap: +"<?= (int)$block->isShowMap(); ?>",
+                googleMapsApiUrl: "<?= /* @noEscape */ $block->getGoogleMapsApiLibraryUrl(); ?>",
+            }
+
+            const $form = document.querySelector("#product_addtocart_form");
+            const $findStoreDiv = document.getElementById("find_a_store");
+
+            const replaceElement = (targetSelector, content) => {
+                document.querySelector(targetSelector).innerHTML = "";
+
+                let parser = new DOMParser();
+                const doc = parser.parseFromString(content, 'text/html');
+                const maincontent = doc.querySelector("#mwLocatorPopupContent");
+                if (!maincontent) {
+                    return;
+                }
+                var tmpScripts = maincontent.getElementsByTagName('script');
+                if (tmpScripts.length > 0) {
+                    // push all of the document's script tags in an array
+                    // (to prevent dom manipulation while iterating over dom nodes)
+                    let scripts = [];
+                    for (let i = 0; i < tmpScripts.length; i++) {
+                        scripts.push(tmpScripts[i]);
+                    }
+                    // iterate over all script tags and create a duplicate tags for each
+                    for (let i = 0; i < scripts.length; i++) {
+                        let script = document.createElement('script');
+                        script.innerHTML = scripts[i].innerHTML;
+                        document.querySelector(targetSelector).appendChild(script);
+                        // remove the original (non-executing) node from the page
+                        scripts[i].parentNode.removeChild(scripts[i]);
+                    }
+                }
+
+                document.querySelector(targetSelector).appendChild(maincontent);
+            }
+
+            return {
+                init() {
+                    this.listenProductFormChanges();
+                    this.updateFindAStore();
+
+                    closeModal = (e) => {
+                        if (e.key === "Escape") {
+                            if (this.isShowModal) {
+                                this.closeModal();
+                            }
+                        }
+                    }
+
+                    document.addEventListener('keydown', closeModal);
+                },
+                updateFindAStore() {
+                    const url = config.dataUrl + 'store_locator/location/updatefindastore';
+
+                    const body = new URLSearchParams({
+                        form_key: hyva.getFormKey()
+                    });
+
+                    this.addFormParams(body);
+
+                    fetch(url, {
+                        method: 'post',
+                        body,
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                            "X-Requested-With": "XMLHttpRequest"
+                        }})
+                        .then(response => {
+                            if (! response.ok) console.warn('request failed');
+                            return response.text();
+                        })
+                        .then(data => {
+                            if (document.getElementById('find_a_store')) {
+                                document.getElementById('find_a_store').innerHTML = data;
+                            }
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                },
+                listenProductFormChanges() {
+                    const onChange = () => this.updateFindAStore();
+
+                    const formElems = document.querySelectorAll(
+                        "input[form='product_addtocart_form']",
+                        "select[form='product_addtocart_form']"
+                    );
+
+                    $form.addEventListener("change", onChange);
+                    formElems.forEach($root => $root.addEventListener("change", onChange))
+                },
+                checkProductFormValid() {
+                    return $form.reportValidity();
+                },
+                loadModal() {
+                    this.isLoading = true;
+
+                    const url = config.dataUrl + 'store_locator/location/updatepopupcontent';
+
+                    const body = new URLSearchParams({
+                        form_key: hyva.getFormKey()
+                    });
+
+                    this.addFormParams(body);
+
+                    fetch(url, {
+                        method: 'post',
+                        body,
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                            "X-Requested-With": "XMLHttpRequest"
+                        }})
+                        .then(response => {
+                            if (! response.ok) console.warn('request failed');
+                            return response.text();
+                        })
+                        .then(data => {
+                            const loadModal = () => {
+                                replaceElement("#mwLocationPopup", data);
+                                this.showModal();
+                            }
+
+                            if (config.isShowMap) {
+                                if (typeof google == 'undefined' || typeof google.maps == 'undefined') {
+                                    const script = document.createElement('script');
+                                    script.setAttribute("async", "");
+                                    script.setAttribute("defer", "");
+                                    script.src = config.googleMapsApiUrl;
+                                    document.head.append(script);
+                                    script.addEventListener("load", loadModal);
+                                }
+                                else {
+                                    loadModal();
+                                }
+                            }
+                            else {
+                                loadModal();
+                            }
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                        .finally(() => {
+                            this.isLoading = false
+                        })
+                },
+                addFormParams(params) {
+                    const formParams = new FormData($form);
+                    let n = 0;
+                    for (const prop of formParams) {
+                        params.append(prop[0], prop[1]);
+                        n++;
+                    }
+                },
+                setLoadingInner(isLoading) {
+                    this.isLoadingInner = isLoading;
+                },
+                isLoading: false,
+                isLoadingInner: false,
+                showModal() {
+                    document.querySelector('body').classList.add("overflow-hidden");
+                    this.isShowModal = true;
+                },
+                closeModal() {
+                    document.querySelector('body').classList.remove("overflow-hidden");
+                    this.isShowModal = false;
+                },
+                isShowModal: false,
+            }
+        }
+    </script>
+
+    <div x-cloak x-data="initMwFindAStoreUpdate()">
+        <!--Loading indicator-->
+        <?= $block->getChildHtml('mageworx.store_locator.loading') ?>
+
+        <?php if ($block->isDetailedStoresDisplayMode()) : ?>
+            <div class="mt-6 border p-4">
+                <div id="find_a_store" x-ref="find_a_store" class="text-left">
+                    <?= $escaper->escapeHtml(__('Available stores are loading ...')); ?>
+                </div>
+                <button class="p-4 w-full text-left hover:bg-gray-100 cursor-pointer" @click="loadModal()">
+                    <?= $escaper->escapeHtml(__('View all stores')) ?>
+                </button>
+            </div>
+        <?php else : ?>
+            <div class="mt-6 border hover:bg-gray-100">
+                <button type="button" id="showLocationButton" class="block w-full" @click="loadModal()">
+                    <div x-ref="find_a_store" id="find_a_store" class="text-left p-4">
+                        <?= $escaper->escapeHtml(__('Available stores are loading ...')); ?>
+                    </div>
+                </button>
+            </div>
+        <?php endif; ?>
+
+        <!--Modal window-->
+        <div id="modal" class="fixed z-50 inset-0 bg-white overflow-y-auto w-full"
+            :class="{'hidden': !isShowModal}">
+            <div class="relative bg-white w-full h-full">
+                <!-- Modal header -->
+                <div class="flex pt-8 sm:pt-4" style="flex-direction: row-reverse;">
+                    <button @click="closeModal" type="button" class="btn btn-primary mb-4"><?= $heroicons->xHtml('w-4 h-4', 24, 24) ?></button>
+                </div>
+
+                <!-- Modal body -->
+                <div id="mwLocationPopup" :class="isLoadingInner ? 'hidden' : ''">
+                    <?= $block->getChildHtml('mageworx.store_locator.locations.popup'); ?>
+                </div>
+                <div class="h-full" :class="isLoadingInner ? '' : 'hidden'">
+                    <div class="h-full flex gap-x-4 items-center justify-center">
+                        <div style="border-top-color:transparent"
+                            class="w-12 h-12 border-4 border-primary border-solid rounded-full animate-spin"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>

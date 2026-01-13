@@ -1,0 +1,93 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+
+use MageWorx\Locations\Api\Data\LocationInterface;
+
+/** @var $block \MageWorx\StoreLocator\Block\LocationInfo */
+/** @var $location LocationInterface $location */
+/** @var \Magento\Framework\Escaper $escaper */
+/** @var \Hyva\Theme\ViewModel\HeroiconsOutline $heroicons */
+
+$heroicons = $viewModels->require(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
+$location = $block->getLocation();
+
+$checkedLoc = $escaper->escapeHtml($block->getCodeByScale($location, $block->getParentScale()));
+?>
+
+<script>
+    const mw_attributes_<?= $escaper->escapeHtml($location->getId()) ?> = [];
+</script>
+
+<?php foreach ($block->getExtraAttributes() as $attribute) : ?>
+    <?php if ($location->getData($attribute['attribute_code'])) : ?>
+        <script>
+            mw_attributes_<?= $escaper->escapeHtml($location->getId()) ?>.push("<?= $escaper->escapeHtml($attribute['attribute_code']); ?>");
+        </script>
+    <?php endif; ?>
+<?php endforeach; ?>
+
+<li x-show="(!filter.checkedLocation || filter.checkedLocation === 'all' || filter.checkedLocation === '<?= $checkedLoc; ?>') && (filter.checkedAttrSubmitted.length === 0 || filter.checkAttr(mw_attributes_<?= $escaper->escapeHtml($location->getId()) ?>))"
+    class="location-info_<?= $escaper->escapeHtml($block->getCodeByScale($location, $block->getScale())) ?>
+    location-info_<?= $checkedLoc ?>
+    location-info-block_<?= $escaper->escapeHtml($location->getId()) ?>"
+    :class="{'order-first': '<?= $escaper->escapeHtml($location->getId()) ?>' === list.firstElemCode}">
+    <div class="flex items-start flex-col lg:items-center lg:flex-row flex-wrap gap-x-2 gap-y-2">
+        <div class="rounded-full border w-28 h-28 bg-cover"
+             style="background-image: url(<?= $escaper->escapeUrl($block->getLocationImageUrl($location->getImagePath())); ?>);">
+        </div>
+        <address class="flex flex-col w-64">
+            <span class="font-bold">
+                <?= $escaper->escapeHtml($block->getLocationName($location)); ?>
+            </span>
+            <span>
+                <?= $escaper->escapeHtml($location->getAddress()); ?>, <?= $escaper->escapeHtml($location->getCity()); ?>
+            </span>
+            <span>
+                <?= $escaper->escapeHtml($location->getCountry()); ?>, <?= $escaper->escapeHtml(
+                    $location->getPostcode()
+                ); ?>,
+                <?= $location->getRegion(
+                ) == __(\MageWorx\Locations\Model\Source\Region::NO_REGIONS) ? '' : $escaper->escapeHtml(
+                    __($location->getRegion())
+                ); ?>
+            </span>
+
+            <?= /** @noEscape */ $block->getWorkingHoursHtml($location) ?>
+
+            <?php if (!$location->getIsPickupAvailable()) : ?>
+                <div>
+                    <span class="p-4">
+                        <?= $escaper->escapeHtml(__('In-store pickup is not available')) ?>
+                    </span>
+                </div>
+            <?php endif; ?>
+        </address>
+        <div class="flex flex-wrap gap-x-2 items-center">
+            <a href="<?= $escaper->escapeUrl($block->getRouteUrl($location)); ?>" target="_blank"
+               class="flex flex-col items-center hover:bg-gray-100 block p-2">
+                <?= $heroicons->mapHtml('w-8 h-8') ?>
+                <span><?= $escaper->escapeHtml(__('Route')) ?></span>
+            </a>
+
+            <div x-show="(list.locationDetailsLoading.includes(+'<?= $escaper->escapeHtml($location->getId()) ?>'))">
+                <div style="border-top-color:transparent"
+                     class="w-8 h-8 p-2 border-4 border-primary border-solid rounded-full animate-spin"></div>
+            </div>
+            <button x-show="!(list.locationDetailsLoading.includes(+'<?= $escaper->escapeHtml($location->getId()) ?>'))"
+                    class="flex flex-col items-center hover:bg-gray-100 block p-2 cursor-pointer"
+                    :class="{'bg-gray-200': list.locationDetailsShow.includes(+'<?= $escaper->escapeHtml($location->getId()) ?>')}"
+                    @click="list.onLocationDetailClick(+'<?= $escaper->escapeHtml($location->getId()) ?>')">
+                <?= $heroicons->annotationHtml('w-8 h-8') ?>
+                <span>
+                    <?= $escaper->escapeHtml(__('Details')) ?>
+                </span>
+            </button>
+        </div>
+    </div>
+    <div x-ref="mw-location_details_<?= $escaper->escapeHtml($location->getId()) ?>" id="mw-location_details_<?= $escaper->escapeHtml($location->getId()) ?>"></div>
+</li>

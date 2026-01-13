@@ -1,0 +1,23 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+
+/** @var $block \MageWorx\StoreLocator\Block\Locations */
+
+/** @var $escaper \Magento\Framework\Escaper */
+?>
+<div class="flex flex-col">
+    <?= /* @noEscape */ $block->getLocationsWrapperHtml('list'); ?>
+    <?= /* @noEscape */ $block->getLocationsMapHtml(); ?>
+</div>
+<script>
+    mwLocatorData.mwLocations = JSON.parse('<?= $escaper->escapeJs(json_encode($block->getLocationsIds()))?>');
+    mwLocatorData.availableLocations = JSON.parse('<?= $escaper->escapeJs(json_encode($block->getAvailableLocationsIds()))?>');
+    mwLocatorData.isWorkingHoursEnabled = <?= (int)$block->isWorkingHoursEnabled() === 1 ? 'true' : 'false' ?>;
+</script>
+
+<?= /* @noEscape */ $block->getGoogleMapScript(); ?>

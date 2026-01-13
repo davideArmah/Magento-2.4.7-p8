@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Hyva\CompatModuleFallback\Model\CompatModuleRegistry">
+        <arguments>
+            <argument name="compatModules" xsi:type="array">
+                <item name="hyva-magento2-stripeintegration-payments" xsi:type="array">
+                    <item name="original_module" xsi:type="string">StripeIntegration_Payments</item>
+                    <item name="compat_module" xsi:type="string">Hyva_StripeIntegrationPayments</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Catalog\Block\ShortcutButtons">
+        <plugin name="Hyva_StripeIntegrationPayments_Plugin_Magento_Catalog_Block_ShortcutButtons" type="Hyva\StripeIntegrationPayments\Plugin\Magento\Catalog\Block\ShortcutButtons" sortOrder="10" disabled="false"/>
+    </type>
+</config>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Hyva\CompatModuleFallback\Model\CompatModuleRegistry">
+        <arguments>
+            <argument name="compatModules" xsi:type="array">
+                <item name="hyva-magento2-mageworx-storelocator" xsi:type="array">
+                    <item name="original_module" xsi:type="string">MageWorx_StoreLocator</item>
+                    <item name="compat_module" xsi:type="string">Hyva_MageWorxStoreLocator</item>
+                </item>
+                <item name="hyva-magento2-mageworx-locationpages" xsi:type="array">
+                    <item name="original_module" xsi:type="string">MageWorx_LocationPages</item>
+                    <item name="compat_module" xsi:type="string">Hyva_MageWorxStoreLocator</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Hyva\ThemeFallback\Config\ThemeFallback">
+      <plugin name="CheckoutFallback" type="Hyva\MageWorxStoreLocator\Plugin\CheckoutFallback" sortOrder="1" disabled="false" />
+    </type>
+</config>

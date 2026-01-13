@@ -1,0 +1,28 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+
+/** @var $block \MageWorx\StoreLocator\Block\LocationsList */
+$locations = $block->getLocations();
+
+/** @var $escaper \Magento\Framework\Escaper */
+?>
+<div x-ref="mw-stores-list-block" id="mw-stores-list-block">
+    <ul class="flex flex-wrap gap-x-8 gap-y-8">
+        <?php /** @var $location \MageWorx\Locations\Api\Data\LocationInterface $location */
+        if (count($locations)) :
+            foreach ($locations as $location) : ?>
+                <?= $block->getLocationInfoForListHtml($location); ?>
+            <?php endforeach; ?>
+        <?php else : ?>
+            <div class="p-4">
+                <?= $escaper->escapeHtml(__('No stores found.')); ?>
+            </div>
+        <?php endif; ?>
+    </ul>
+</div>
+

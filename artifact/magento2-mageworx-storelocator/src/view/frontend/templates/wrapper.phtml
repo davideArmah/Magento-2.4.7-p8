@@ -1,0 +1,52 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+
+/** @var $block \MageWorx\StoreLocator\Block\Locations */
+/** @var \Magento\Framework\Escaper $escaper */
+/** @var \Hyva\Theme\ViewModel\HeroiconsOutline $heroicons */
+
+$heroicons = $viewModels->require(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
+?>
+<script>
+    mwLocatorData.mwCurrentPageType = '<?= $escaper->escapeHtmlAttr($block->getCurrentPageType()) ?>';
+    mwLocatorData.mwCurrentProduct = '<?= $escaper->escapeHtmlAttr(is_array($block->getCurrentProductId())
+        ? $block->getCurrentProductId()[0]
+        : $block->getCurrentProductId()) ?>';
+</script>
+
+<div class="mw-left-block flex flex-col" style="height: 36rem;">
+    <?php if ($block->getFilterType() == 'filter') : ?>
+        <div class="grow-0">
+            <?= $block->getSearchBoxHtml() ?>
+        </div>
+        <div id="mw-all-stores" x-ref="mw-all-stores"
+             class="overflow-y-scroll" class="grow">
+            <?= $block->getLocationsFilterHtml() ?>
+        </div>
+    <?php else : ?>
+        <div class="flex sm:flex-nowrap flex-wrap">
+            <div class="w-full md:w-2/5 border">
+                <?php if ($block->getFilterType() !== 'list_without_map') : ?>
+                    <div>
+                        <?= $block->getSearchBoxHtml() ?>
+                    </div>
+                <?php endif; ?>
+                <span id="mw-all-stores-filters" x-ref="mw-all-stores-filters">
+                    <?= $block->getLocationsFilterForListHtml(); ?>
+                </span>
+            </div>
+            <div id="mw-all-stores" x-ref="mw-all-stores"
+                 class="md:w-3/5 border p-4 overflow-y-scroll" style="height: 34rem;">
+                <?= $block->getLocationsListHtml() ?>
+                <div id="mw-stores-not-found" class="mx-4 hidden">
+                    <?= $escaper->escapeHtml(__('No stores found.')); ?>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>

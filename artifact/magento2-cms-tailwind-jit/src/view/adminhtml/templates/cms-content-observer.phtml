@@ -1,0 +1,166 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+$uiComponentFormDataSourceName = $block->getData('data-source-component-name');
+if (empty($uiComponentFormDataSourceName)) {
+    throw new LocalizedException(__(
+        'The form UI component data source name has to be set on the block "%1" with the argument name "%2".',
+        $block->getNameInLayout(),
+        'data-source-component-name'
+    ));
+}
+
+?>
+<script>
+    require(['uiRegistry'], (uiRegistry) =>  {
+        const uiComponentContentSelector = 'index=content,formElement=wysiwyg';
+        const cmsContentHandler = (cmsContentElement) => {
+            const previewStylesId = '<?= /** @noEscape */ uniqid('tailwindcss') ?>';
+            const uiComponentDataSourceSelector = '<?= $escaper->escapeJs($uiComponentFormDataSourceName)?>';
+            const uiComponentEnableJitSelector = 'index=is_tailwindcss_jit_enabled';
+            function getSelectedStoreIds() {
+                const storeViews =  uiRegistry.get('index=storeviews');
+                return storeViews ? storeViews.value() : ['0']; // single store mode
+            }
+
+            function getThemesForSelectedStores() {
+                const selectedStoreIds = getSelectedStoreIds();
+
+                return selectedStoreIds.includes('0') // All Store Views
+                    ? tailwindCSS.tailwindThemes()
+                    : tailwindCSS.tailwindThemes(selectedStoreIds);
+            }
+
+            function setStylesForTheme(theme, css) {
+                // Patch new tailwindcss field into form data source component
+                const dataSource = uiRegistry.get(uiComponentDataSourceSelector);
+                dataSource.data.tailwindcss = dataSource.data.tailwindcss || {};
+                dataSource.data.tailwindcss[theme] = css;
+            }
+
+            function onJitEnabledStateChange(isEnabled) {
+                if (!isEnabled) {
+                    uiRegistry.get(uiComponentDataSourceSelector).data.tailwindcss = {};
+                    setStylesForAdminhtmlPreview('');
+                    return;
+                }
+                dispatchEvent(new CustomEvent('cms-tailwind-jit-update-admin-preview'));
+                dispatchEvent(new CustomEvent('cms-tailwind-jit-update-frontend-styles'));
+            }
+
+            function isTinyMCEActive() {
+                return window.tinymce &&
+                    tinymce.activeEditor &&
+                    tinymce.activeEditor.getDoc() &&
+                    tinymce.activeEditor.getDoc() !== window.document;
+            }
+
+            function isJitDisabled() {
+                return ! window.tailwindCSS.isTailwindJitEnabled();
+            }
+
+            function setStylesForAdminhtmlPreview(css) {
+                if (!isTinyMCEActive()) {
+                    return;
+                }
+
+                const doc = tinymce.activeEditor.getDoc();
+                let style = doc.getElementById(previewStylesId);
+
+                if (style === null) {
+                    style = doc.createElement('style');
+                    style.id = previewStylesId;
+                    doc.head.append(style);
+                }
+                style.textContent = css;
+            }
+
+            let lastPreviewStyles = '';
+            function updateTinyMCEPreview() {
+                const htmlContent = window.tailwindCSS.getHtmlForJitCompilation()
+                if ('' === htmlContent || isJitDisabled()) {
+                    return;
+                }
+
+                // Set styles for adminhtml preview (with default tailwind config)
+                const adminConfig = window.tailwindCSS.configForAdminPreview();
+                const customCss = window.tailwindCSS.customCssForAdminPreview();
+                window.tailwindCSS.process(htmlContent, adminConfig, customCss).then((css) => {
+                    lastPreviewStyles = css;
+                    setStylesForAdminhtmlPreview(css);
+                });
+            }
+
+            function processContent(htmlContent, themes) {
+                if ('' === htmlContent || isJitDisabled()) {
+                    return Promise.resolve();
+                }
+                // Set styles for frontend hyvä themes
+                return Promise.all(themes.map((theme) => {
+                    const config = tailwindCSS.configForTheme(theme);
+                    const customCss = window.tailwindCSS.customCssForTheme(theme);
+                    return window.tailwindCSS.process(htmlContent, config, customCss).then((css) => setStylesForTheme(theme, css));
+                }));
+            }
+
+            function updateFrontendStyles() {
+                return processContent(window.tailwindCSS.getHtmlForJitCompilation(), getThemesForSelectedStores());
+            }
+
+            window.tailwindCSS = Object.assign(window.tailwindCSS || {}, {
+                getHtmlForJitCompilation() {
+                    return cmsContentElement.value();
+                },
+                updateFrontendStyles
+            });
+
+            (function attachEventListenersToInputsWhenAvailable() {
+                const registerSubscriptions = () => {
+                    window.addEventListener('cms-tailwind-jit-update-admin-preview', updateTinyMCEPreview);
+                    window.addEventListener('cms-tailwind-jit-update-frontend-styles', updateFrontendStyles);
+
+                    cmsContentElement.value.subscribe(() => {
+                        updateTinyMCEPreview();
+                        dispatchEvent(new CustomEvent('cms-tailwind-jit-update-frontend-styles'));
+                    });
+
+                    // Toggling the editor without any changes looses the preview styles since the change observer is not
+                    // triggered. This applies the last compiled preview styles again.
+                    varienGlobalEvents.attachEventHandler('tinymceBeforeSetContent', () => {
+                        setStylesForAdminhtmlPreview(lastPreviewStyles);
+                    });
+                    console.log('Attached TailwindCSS JIT to CMS content.');
+
+                    const storeViewsComponent = uiRegistry.get('index=storeviews');
+                    storeViewsComponent && storeViewsComponent.value.subscribe(() => {
+                        dispatchEvent(new CustomEvent('cms-tailwind-jit-update-frontend-styles'));
+                    });
+
+                    const enableTailwindJitCheckbox = uiRegistry.get(uiComponentEnableJitSelector);
+                    enableTailwindJitCheckbox && enableTailwindJitCheckbox.checked.subscribe(onJitEnabledStateChange);
+                };
+
+                registerSubscriptions();
+                console.log('Initial TailwindCSS JIT compilation of CMS content.');
+                updateTinyMCEPreview();
+                dispatchEvent(new CustomEvent('cms-tailwind-jit-update-frontend-styles'));
+            })()
+        }
+
+        uiRegistry.get(uiComponentContentSelector, cmsContentHandler)
+    });
+</script>

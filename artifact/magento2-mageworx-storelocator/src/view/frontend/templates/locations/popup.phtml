@@ -1,0 +1,416 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+
+/** @var $block \MageWorx\StoreLocator\Block\Popup */
+
+$uniqueId = uniqid();
+?>
+<div id="mwLocatorPopupContent" @mw-set-loading-inner="setLoadingInner($event.detail.isLoading)">
+    <script>
+        function initMwStoreLocator_<?= $uniqueId; ?>(){
+            return {
+                init() {
+                    mwLocatorData.components = {
+                        locality: 'long_name',
+                        administrative_area_level_1: 'long_name',
+                        sublocality_level_1: 'long_name',
+                        country: 'short_name',
+                        postal_code: 'long_name',
+                    }
+
+                    this.list.parent = this;
+                    this.filter.parent = this;
+                    this.search.parent = this;
+                    this.map.parent = this;
+
+                    this.search.init();
+                },
+                list: {
+                    firstElemCode: null,
+                    locationDetailsLoading: [],
+                    locationDetailsShow: [],
+                    onLocationDetailClick(code, isOnlyOpen){
+                        const $detail = document.getElementById(`mw-location_details_${code}`);
+
+                        const findCode = el => el === +code;
+
+                        const indexShowedDetail = this.locationDetailsShow.findIndex(findCode);
+                        if (indexShowedDetail >= 0) {
+                            if (isOnlyOpen) return;
+                            this.locationDetailsShow.splice(indexShowedDetail, 1);
+                            $detail.innerHTML = "";
+                        }
+                        else {
+                            this.locationDetailsLoading.push(+code);
+
+                            this.parent.$root.dispatchEvent(
+                                new CustomEvent('mw-set-map-center-on-location', {
+                                    bubbles: true,
+                                    detail: {code}
+                                })
+                            );
+
+                            const url = BASE_URL
+                                + 'store_locator/location/locationdetail'
+                                + '?_=' + new Date().getTime()
+                                + '&id=' + code
+                                + '&current_page=' + mwLocatorData.mwCurrentPageType;
+
+                            const body = new URLSearchParams({
+                                form_key: hyva.getFormKey()
+                            });
+
+                            mwLocatorData.mwLocations?.location_ids?.forEach(el => {
+                                body.append("location_ids[]", el);
+                            })
+
+                            fetch(url, {
+                                method: 'post',
+                                body,
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                                    "X-Requested-With": "XMLHttpRequest"
+                                }})
+                                .then(response => {
+                                    if (! response.ok) console.warn('request failed');
+                                    return response.text();
+                                })
+                                .then(data => {
+                                    this.locationDetailsShow.push(+code);
+                                    $detail.innerHTML = data
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                })
+                                .finally(() => {
+                                    this.locationDetailsLoading.splice(
+                                        this.locationDetailsLoading.findIndex(findCode),
+                                        1
+                                    );
+                                })
+                        }
+                    },
+                    resetShowDetails() {
+                        this.locationDetailsShow = [];
+                    }
+                },
+                filter: {
+                    checkedLocation: null,
+                    onFilterListItemClick() {
+                        let name = null;
+                        let code = "all";
+
+                        if (this.currentFilterListItem) {
+                            [name, code] = this.currentFilterListItem.split("_");
+                        }
+
+                        this.checkedLocation = code;
+
+                        this.parent.$root.dispatchEvent(
+                            new CustomEvent('mw-set-map-center-on-filter-item', {
+                                bubbles: true,
+                                detail: {name, code}
+                            })
+                        );
+
+                        this.checkedAttrSubmitted = this.checkedAttr;
+
+                        // only for filter.phtml
+                        this.toggleMode();
+
+                        // toggle visibility of "not found"
+                        this.parent.$nextTick(() => {
+                            let $list = document.getElementById('mw-stores-list-block');
+                            if (!$list) {
+                                $list = document.getElementById("mw-sl__stores__list_block");
+                            }
+                            const elems = $list.querySelectorAll('li');
+
+                            let hasElems = false;
+                            for (let i = 0; i < elems.length; ++i) {
+                                if (elems[i].style.display !== "none") {
+                                    hasElems = true;
+                                }
+                            }
+
+                            if (!hasElems) document.getElementById("mw-stores-not-found").style.display = "block";
+                            else document.getElementById("mw-stores-not-found").style.display = "none";
+                        });
+                    },
+
+                    // only for filter.phtml stores/locations
+                    showMode: "stores",
+                    toggleMode() {
+                        if (this.showMode === "stores") {
+                            this.showMode = "locations";
+                        } else if (this.showMode === "locations") {
+                            this.showMode = "stores";
+                        }
+                    },
+                    onClickLocationButton() {
+                        this.toggleMode();
+                    },
+                    resetFilterList() {
+                        this.currentFilterListItem = null;
+                        this.checkedAttr = [];
+                        this.onFilterListItemClick();
+                    },
+                    checkAttr(attributes) {
+                        return this.checkedAttrSubmitted.every(function(item) {
+                            return attributes.indexOf(item) !== -1;
+                        });
+                    },
+                    currentFilterListItem: null,
+                    checkedAttr: [],
+                    checkedAttrSubmitted: [],
+                },
+                search: {
+                    init() {
+                        mwLocatorData.defaultAllStoresBlockHtml = document.getElementById('mw-all-stores')?.innerHTML;
+                        mwLocatorData.defaultLocationListBlockHtml = document.getElementById('mw-stores-list-block')?.innerHTML;
+
+                        this.radiusValue = document.getElementById('radius-select')?.value;
+                    },
+                    searchLocation() {
+                        this.parent.setContentLoading(true);
+                        const data = this.getData();
+
+                        const currentPage = mwLocatorData.mwCurrentPageType;
+                        const currentProduct = mwLocatorData.mwCurrentProduct;
+
+                        const url = BASE_URL
+                            + 'store_locator/location/searchLocations'
+                            + '?_=' + new Date().getTime()
+                            + '&current_page=' + currentPage
+                            + '&current_products=' + currentProduct
+
+                        const body = new URLSearchParams({
+                            form_key: hyva.getFormKey()
+                        });
+
+                        data?.forEach(el => {
+                            body.append(el.name, el.value);
+                        })
+
+                        fetch(url, {
+                            method: 'post',
+                            body,
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                                "X-Requested-With": "XMLHttpRequest"
+                            }})
+                            .then(response => {
+                                if (! response.ok) console.warn('request failed');
+                                return response.text();
+                            })
+                            .then(data => {
+                                this.parent.filter.checkedLocation = null;
+
+                                const result = data.split("|||");
+
+                                this.radiusValue = document.getElementById('radius-select')?.value;
+
+                                document.getElementById('mw-all-stores').innerHTML = result[0];
+                                if (result[1]) {
+                                    document.getElementById('mw-all-stores-filters').innerHTML = result[1];
+                                }
+
+                                this.parseLocDataFromDataset();
+
+                                this.parent.$root.dispatchEvent(
+                                    new CustomEvent('mw-on-location-found',
+                                        { bubbles: true }
+                                    )
+                                );
+
+                                this.hideSearchForm();
+                            })
+                            .catch(error => {
+                                console.log('There was an error loading stores\' data.');
+                                console.log(error);
+                            })
+                            .finally(() => {
+                                this.parent.setContentLoading(false);
+                                this.parent.list.resetShowDetails();
+                            })
+                    },
+                    parseLocDataFromDataset() {
+                        const datasetItem = document.getElementById('data-locations');
+                                
+                        const jsonLocData = datasetItem.dataset.storesLocations;
+                        const locData = jsonLocData ? JSON.parse(jsonLocData) : [];
+                                
+                        const jsonPlacesData = datasetItem.dataset.places;
+                        const placesData = jsonPlacesData ? JSON.parse(jsonPlacesData) : [];
+
+                        const pushToObj = (prop, obj) => {
+                            const [id, data] = prop;
+
+                            const latValue = data.replace(/.+(lat: )(.+?)\,.+/, '$2');
+                            const lngValue = data.replace(/.+(lng: )(.+?)\}.*/, '$2');
+
+                            obj[id] = {
+                                lat: +latValue,
+                                lng: +lngValue,
+                            }
+                        }
+
+                        if (locations) {
+                            locations = {};
+                                    
+                            locData.forEach(loc => pushToObj(loc, locations));
+                        }
+
+                        if (placesCoordinates) {
+                            placesCoordinates = {};
+
+                            placesData.forEach(place => pushToObj(place, placesCoordinates));
+                        }
+                    },
+                    onEditFormClick() {
+                        this.isShowSearchForm = true;
+                    },
+                    onResetFormClick() {
+                        this.isShowSearchForm = true;
+                        this.parent.filter.checkedLocation = null;
+                        this.radiusValue = mwLocatorData.defaultRadius;
+                        this.isShowRadius = true;
+
+                        this.parent.$refs['mw-location-current-location-info'].innerText = mwLocatorData.defaultPlace;
+                        document.getElementById('mw-sl_search_text').value = mwLocatorData.defaultPlace;
+                        document.getElementById('mw-stores-current-place').innerText = mwLocatorData.defaultPlace;
+
+                        document.querySelector('input[name="autocomplete[lat]"]').value = '';
+                        document.querySelector('input[name="autocomplete[lng]"]').value = '';
+                        document.querySelector('input[name="autocomplete[small_city]"]').value = '';
+                        document.querySelector('input[name="autocomplete[city]"]').value = '';
+                        document.querySelector('input[name="autocomplete[region]"]').value = '';
+                        document.querySelector('input[name="autocomplete[postcode]"]').value = '';
+                        document.querySelector('input[name="autocomplete[country_id]"]').value = '';
+
+                        const $allStores = document.getElementById('mw-all-stores');
+                        if ($allStores) {
+                            $allStores.innerHTML = mwLocatorData.defaultAllStoresBlockHtml;
+                        }
+
+                        const $listBlock = document.getElementById('mw-stores-list-block');
+                        if ($listBlock) {
+                            $listBlock.innerHTML = mwLocatorData.defaultLocationListBlockHtml;
+                        }
+
+                        locations = locationsDefault;
+                        placesCoordinates = placesCoordinatesDefault;
+
+                        this.parent.$root.dispatchEvent(
+                            new CustomEvent('mw-on-reset-search',
+                                { bubbles: true }
+                            )
+                        );
+                        this.parent.list.resetShowDetails();
+                    },
+                    changeSearchText(text) {
+                        document.getElementById("mw-sl_search_text").value = text;
+                    },
+                    hideSearchForm() {
+                        this.isShowSearchForm = false;
+                    },
+                    showSearchForm() {
+                        this.isShowSearchForm = true;
+                    },
+                    getData() {
+                        function FormValue(name, value) {
+                            this.name = name;
+                            this.value = value;
+                        };
+
+                        const $search = document.getElementById('mw-sl__search');
+                        const $inputs = [...$search.querySelectorAll("input")];
+                        const inputValues = $inputs.map($root => {
+                            const { type, checked, value, name } = $root;
+
+                            if ((type === "checkbox" || type === "radio") && checked) {
+                                return new FormValue(name, value);
+                            }
+                            else if (type !== "button" || type !== "submit") {
+                                return new FormValue(name, value);
+                            }
+                        })
+
+                        const radius = document.getElementById('radius-select')?.value;
+                        if (radius !== "0") {
+                            this.isShowRadius = true;
+                            this.radiusValue = radius;
+                            inputValues.push(new FormValue("radius", radius));
+                        }
+                        else {
+                            this.isShowRadius = false;
+                            this.radiusValue = "";
+                        }
+
+                        return inputValues;
+                    },
+                    getLocation() {
+                        for (let component in mwLocatorData.components) {
+                            document.getElementById('mw_' + component).value = '';
+                        }
+
+                        this.parent.$root.dispatchEvent(
+                            new CustomEvent('mw-on-get-location',
+                                { bubbles: true }
+                            )
+                        );
+                    },
+                    setError(error) {
+                        this.errors.push(error);
+
+                        const findError = el => el === error;
+
+                        setTimeout(() => {
+                            this.errors.splice(
+                                this.errors.findIndex(findError),
+                                1
+                            );
+                        }, 5000);
+                    },
+                    searchText: "",
+                    isShowRadius: true,
+                    radiusValue: "",
+                    isShowSearchForm: true,
+                    errors: [],
+                },
+                map: {
+                    onMarkerClick($event) {
+                        const code = $event.detail.code;
+
+                        this.parent.filter.checkedLocation = null;
+                        this.parent.list.onLocationDetailClick(
+                            code,
+                            true
+                        );
+
+                        this.parent.list.firstElemCode = code;
+                    },
+                },
+                setContentLoading(isLoading) {
+                    this.$root.dispatchEvent(
+                        new CustomEvent('mw-set-loading-inner', {
+                            bubbles: true,
+                            detail: {isLoading}
+                        })
+                    );
+                },
+            }
+        }
+    </script>
+
+    <div x-data="initMwStoreLocator_<?= $uniqueId; ?>()">
+        <?php if ($block->getIsPopupUpdate() || $block->getIsCheckoutPage()) : ?>
+            <?= /* @noEscape */ $block->getLocationsHtml(); ?>
+        <?php endif; ?>
+    </div>
+</div>

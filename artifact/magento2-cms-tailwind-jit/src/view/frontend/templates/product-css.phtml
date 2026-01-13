@@ -1,0 +1,30 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\CmsTailwindJit\ViewModel\ProductTailwindCss;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\CurrentProduct;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var CurrentProduct $productViewModel */
+/** @var ProductTailwindCss $productCss */
+
+$productViewModel = $viewModels->require(CurrentProduct::class);
+$productCss       = $viewModels->require(ProductTailwindCss::class);
+$product          = $productViewModel->get();
+$styles           = $productCss->getStyles($product);
+
+if ($styles): ?>
+<style><?= /** @noEscape */ $styles ?></style>
+<?php endif; ?>

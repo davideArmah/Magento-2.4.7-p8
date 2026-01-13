@@ -1,0 +1,23 @@
+{
+  "name": "hyva-themes/magento2-klaviyo-reclaim",
+  "description": "Hyvä Themes Compatibility module for Klaviyo_Reclaim",
+  "type": "magento2-module",
+  "require": {
+    "magento/framework": "*",
+    "hyva-themes/magento2-compat-module-fallback": "*",
+    "klaviyo/magento2-extension": "*"
+  },
+  "authors": [{
+      "name": "Hyvä Themes B.V.",
+      "email": "info@hyva.io"
+  }],
+  "license": "see LICENSE.md",
+  "autoload": {
+    "files": [
+      "src/registration.php"
+    ],
+    "psr-4": {
+      "Hyva\\KlaviyoReclaim\\": "src/"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+<!--
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+-->
+<script src="../../../../../js/pagebuilder/content-type/html/preview.js"></script>
+<div class="pagebuilder-content-type pagebuilder-block" event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false" css="{'pagebuilder-block-overlay': displayingBlockPreview()}">
+
+    <!-- ko if: isJitPreviewEnabled() -->
+    <div style="display: none" html="data.main.html" afterRender="initializeWidgets"></div>
+    <iframe sandbox="allow-same-origin" if="displayingBlockPreview" data-bind="afterRender: initPreviewHtml" style="width: 100%; border: 0;"></iframe>
+    <!-- /ko -->
+
+    <!-- ko ifnot: isJitPreviewEnabled() -->
+    <div attr="data.main.attributes" ko-style="data.main.style" css="data.main.css">
+        <div class="rendered-content" if="displayingBlockPreview" html="data.main.html" afterRender="initializeWidgets"></div>
+    </div>
+    <!-- /ko -->
+
+    <div ifnot="displayingBlockPreview" attr="data.main.attributes" ko-style="data.main.style" css="data.main.css">
+        <div class="pagebuilder-block-placeholder">
+            <span class="placeholder-text" text="placeholderText"></span>
+        </div>
+    </div>
+    <div data-role="spinner"
+         class="admin__data-grid-loading-mask"
+         if="loading">
+        <div class="spinner">
+            <span repeat="8"></span>
+        </div>
+    </div>
+    <render args="getOptions().template"></render>
+</div>

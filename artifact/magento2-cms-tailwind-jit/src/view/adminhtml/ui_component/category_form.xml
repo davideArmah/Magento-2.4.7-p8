@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+-->
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <fieldset name="content">
+        <field name="is_tailwindcss_jit_enabled" formElement="checkbox" sortOrder="47">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="number">1</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Generate Hyvä Styles</label>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+        <field name="preview_jit_config_theme"
+               formElement="select"
+               component="Hyva_CmsTailwindJit/js/form/preview-jit-config-theme-select"
+               class="Hyva\CmsTailwindJit\Ui\Component\Form\Field\PreviewJitConfigTheme" sortOrder="48">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Preview for Theme</label>
+                <notice translate="true">The tailwind.browser-jit-config.js of the selected theme is used for the preview.</notice>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Hyva\CmsTailwindJit\ViewModel\TailwindThemes"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+    </fieldset>
+</form>

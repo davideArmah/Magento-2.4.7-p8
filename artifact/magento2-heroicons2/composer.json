@@ -1,0 +1,26 @@
+{
+  "name": "hyva-themes/magento2-heroicons2",
+  "description": "This module enables the usage of Heroicons version 2 SVG icons.",
+  "type": "magento2-module",
+  "require": {
+    "magento/framework": "*",
+    "hyva-themes/magento2-theme-module": "^1.1.11"
+  },
+  "authors": [
+    {
+      "name": "Thijs de Witt",
+      "email": "thijs@trinos.nl"
+    }
+  ],
+  "license": [
+    "MIT"
+  ],
+  "autoload": {
+    "files": [
+      "src/registration.php"
+    ],
+    "psr-4": {
+      "Hyva\\Heroicons2\\": "src/"
+    }
+  }
+}

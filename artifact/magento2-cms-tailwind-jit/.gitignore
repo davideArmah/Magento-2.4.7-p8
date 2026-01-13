@@ -1,0 +1,5 @@
+src/view/*/tailwind-jit-cdn/node_modules
+src/view/*/web/js/demo.html
+src/view/*/web/js/jit/demo.html
+src/view/*/web/js/tailwindcss-jit-cdn.common.js
+src/view/*/web/js/jit/tailwindcss-jit-cdn.common.js

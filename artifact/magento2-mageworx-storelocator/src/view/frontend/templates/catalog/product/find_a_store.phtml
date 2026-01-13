@@ -1,0 +1,41 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+
+/** @var $block \MageWorx\StoreLocator\Block\Catalog\Product\FindAStore */
+$locations = $block->getLocations();
+
+/** @var \MageWorx\Locations\Api\Data\LocationInterface $location */
+
+/** @var $escaper \Magento\Framework\Escaper */
+
+/** @var HeroIconsOutline $heroIcons */
+$heroIcons = $viewModels->require(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
+?>
+
+<div>
+    <div class="flex flex-wrap gap-x-2 items-start mb-4">
+        <?= /** @noEscape */ $heroIcons->locationMarkerHtml('w-5 h-5'); ?>
+        <span class="text-xl font-medium text-gray-900 title-font">
+            <?php if (count($locations)) : ?>
+                <?= $escaper->escapeHtml($block->getLocationOnProductText()); ?>
+            <?php else : ?>
+                <?= $escaper->escapeHtml($block->getLocationOnProductNotAvailableText()); ?>
+            <?php endif; ?>
+        </span>
+    </div>
+
+    <div class="text-left">
+        <?php if (count($locations) && $block->isLocationsNamesEnabled()) : ?>
+            <span class="ml-8">
+                <?= $escaper->escapeHtml($block->getLocationsPlaces()); ?>
+            </span>
+        <?php endif; ?>
+    </div>
+</div>
+
+

@@ -1,0 +1,52 @@
+{
+  "name": "tailwindcss-jit-cdn",
+  "scripts": {
+    "serve": "vue-cli-service serve --target lib --name tailwindcss-jit-cdn --dest ../web/js/jit src/main.js",
+    "build": "vue-cli-service build --target lib --name tailwindcss-jit-cdn --dest ../web/js/jit src/main.js && rm ../web/js/jit/demo.html && rm ../web/js/jit/tailwindcss-jit-cdn.common.js",
+    "watch": "vue-cli-service build --target lib --name tailwindcss-jit-cdn --dest ../web/js/jit --watch src/main.js",
+    "lint": "vue-cli-service lint"
+  },
+  "main": "web/js/jit/tailwindcss-jit-cdn.umd.min.js",
+  "dependencies": {
+    "@tailwindcss/aspect-ratio": "0.4.2",
+    "@tailwindcss/forms": "^0.5.9",
+    "@tailwindcss/line-clamp": "0.3.1",
+    "@tailwindcss/typography": "^0.5.15",
+    "core-js": "3.29.1",
+    "modern-normalize": "1.1.0",
+    "nanoid": "3.1.30",
+    "normalize.css": "8.0.1",
+    "postcss": "8.4.6",
+    "tailwindcss": "^3.4.13"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "4.4.0",
+    "@vue/cli-plugin-eslint": "4.4.0",
+    "@vue/cli-service": "4.4.0",
+    "babel-eslint": "10.1.0",
+    "eslint": "6.7.2",
+    "eslint-plugin-vue": "6.2.2",
+    "path-browserify": "^1.0.1",
+    "simple-functional-loader": "1.2.1",
+    "vue-template-compiler": "^2.7.16"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

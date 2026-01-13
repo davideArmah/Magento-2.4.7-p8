@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="product.info.addtocart.stripe_payments_express.additional" template="Hyva_StripeIntegrationPayments::express/product_button.phtml" />
+        <block name="product.info.addtocart.stripe_loading" template="Hyva_Theme::ui/loading.phtml"/>
+        <move element="product.info.addtocart.stripe_loading" destination="product.info.addtocart.stripe_payments_express.additional" before="-" />
+    </body>
+</page>

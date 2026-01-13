@@ -1,0 +1,61 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Hyva\Theme\ViewModel\HyvaCsp;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var HyvaCsp $hyvaCsp */
+?>
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <title><?= $escaper->escapeHtml(__('HyväCMS Tailwind JIT')) ?></title>
+    <script>
+        (() => {
+            if (window.parent === window) {
+                // loaded in top level
+                return;
+            }
+
+            // if in an iframe, patch the console.log and error methods so they delegate to the parent window
+            const parentConsole = {
+                log() {
+                    this.send('log', arguments)
+                },
+                error() {
+                    this.send('error', arguments)
+                },
+                send(level, args) {
+                    window.parent.postMessage({
+                        id: 'tailwindcss-jit-log',
+                        level,
+                        args: ['[TailwindCSS JIT iframe]:', ...Array.from(args)],
+                    }, window.location.protocol + '//' + window.location.host)
+                }
+            };
+
+            window.console.log = function () {
+                parentConsole.log(...arguments);
+            }
+
+            window.console.error = function () {
+                parentConsole.error(...arguments);
+            }
+
+        })()
+    </script>
+    <script src="<?= /** @noEscape */ $block->getViewFileUrl('Hyva_CmsTailwindJit::js/jit/tailwindcss-jit-cdn.umd.min.js') ?>" defer></script>
+</head>
+<body>
+</body>
+</html>

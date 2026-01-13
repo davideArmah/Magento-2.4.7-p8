@@ -1,0 +1,106 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\CmsTailwindJit\ViewModel\TailwindConfigs;
+use Hyva\CmsTailwindJit\ViewModel\TailwindThemes;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Hyva\Theme\ViewModel\HyvaCsp;
+
+// phpcs:disable Generic.WhiteSpace.ScopeIndent.Incorrect
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var TailwindConfigs $tailwindConfigs */
+/** @var TailwindThemes $tailwindThemes */
+/** @var HyvaCsp $hyvaCsp */
+
+$tailwindConfigs = $block->getData('tailwind_config');
+$tailwindThemes  = $block->getData('tailwind_themes');
+
+$storeToThemeMapJson = json_encode($tailwindThemes->getStoreIdToTailwindThemeMap(), JSON_FORCE_OBJECT);
+$websiteToStoreIdsMapJson = json_encode($tailwindThemes->getWebsiteToStoreIdsMap(), JSON_FORCE_OBJECT);
+
+?>
+<script>
+    (() => {
+        // The map only contains mappings for stores with themes containg a tailwind config file
+        const storeToThemeMap = <?= /** @noEscape */ $storeToThemeMapJson ?>;
+        const websiteToStoreIdsMap = <?= /** @noEscape */ $websiteToStoreIdsMapJson ?>;
+
+        function getSelectedPreviewTheme() {
+            try {
+                const themeSelectComponent = require('uiRegistry').get('index=preview_jit_config_theme');
+                return themeSelectComponent && themeSelectComponent.value() || '';
+            } catch (exception) {
+                return '';
+            }
+        }
+
+        window.tailwindCSS = Object.assign(window.tailwindCSS || {}, {
+            tailwindThemes(storeIds) {
+                const themes = storeIds
+                    ? storeIds.map((storeId) => storeToThemeMap[storeId]).filter(theme => theme)
+                    : Object.values(storeToThemeMap);
+
+                return [...new Set(themes)];
+            },
+            configForStore(storeId) {
+                const theme = storeToThemeMap[storeId] || false;
+                return theme
+                    ? this.configForTheme(theme)
+                    : '';
+            },
+            configForTheme(theme) {
+                const config = document.querySelector(`script[type="text/tailwind-config"][data-theme="${theme}"]`);
+                return config ? config.innerText.trim() : '';
+            },
+            adminPreviewTheme() {
+                return Object.values(storeToThemeMap).length === 1
+                    ? Object.values(storeToThemeMap)[0]
+                    : getSelectedPreviewTheme();
+            },
+            configForAdminPreview() {
+                let config = this.configForTheme(this.adminPreviewTheme()) || '{}';
+
+                if (config.indexOf('corePlugins') === -1) {
+                    config = '{corePlugins: {preflight: true}, ' + config.substr(1);
+                }
+
+                return config;
+            },
+            storeIdsForWebsites(websiteIds) {
+                return websiteIds
+                    ? websiteIds.flatMap((websiteId) => Object.values(websiteToStoreIdsMap[websiteId]))
+                    : Object.values(websiteToStoreIdsMap).flatMap(storeIds => Object.values(storeIds));
+            },
+            isTailwindJitEnabled() {
+                try {
+                    // The is_tailwindcss_jit_enabled component may be an eav attribute.
+                    // Check it exists before accessing the value.
+                    const enableJitComponent = require('uiRegistry').get('index=is_tailwindcss_jit_enabled');
+                    return enableJitComponent && enableJitComponent.checked();
+                } catch (exception) {
+                    return false;
+                }
+            }
+        })
+
+    })();
+</script>
+<?php isset($hyvaCsp) && $hyvaCsp->registerInlineScript() ?>
+<?php foreach ($tailwindThemes->getTailwindThemes() as $theme): ?>
+<?php if ($browserJitConfig = $tailwindConfigs->getEmbeddableTailwindConfigForTheme($theme)): ?>
+    <script type="text/tailwind-config" data-theme="<?= $escaper->escapeHtmlAttr($theme) ?>">
+    <?= /** @noEscape */ $browserJitConfig ?>
+    </script>
+    <?php isset($hyvaCsp) && $hyvaCsp->registerInlineScript() ?>
+<?php endif; ?>
+<?php endforeach ?>

@@ -1,0 +1,51 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+
+/**
+ * Location Page view template
+ *
+ * @var $block MageWorx\LocationPages\Block\Location
+ */
+/** @var \MageWorx\Locations\Api\Data\LocationInterface $location */
+$location = $block->getLocation();
+
+$workingHours = $location->getFormattedWorkingHours();
+if ($workingHours) : ?>
+    <div>
+        <h2 class="text-lg font-bold text-center">
+            <?= $escaper->escapeHtml(__('Hours')) ?>
+        </h2>
+        <div class="bg-gray-100 p-8">
+            <table>
+                <?php foreach ($workingHours as $day => $time) : ?>
+                    <tr class="w-full">
+                        <td class="w-1/2 text-center">
+                            <?= $escaper->escapeHtml(__($day)) ?>
+                        </td>
+                        <?php if ($time['off']) : ?>
+                            <td class="w-1/2 text-center">
+                                <?= $escaper->escapeHtml(__('Closed')) ?>
+                            </td>
+                        <?php else : ?>
+                            <td class="w-1/2 text-center">
+                                <span>
+                                    <?= $escaper->escapeHtml($time['from'] . ' - ' . $time['to']) ?>
+                                </span>
+                                <?php if ($time['has_lunch_time']) : ?>
+                                    <span>
+                                        <?= $escaper->escapeHtml('(' . __('Lunch time') . ' ' . $time['lunch_from'] . ' - ' . $time['lunch_to'] . ')') ?>
+                                    </span>
+                                <?php endif ?>
+                            </td>
+                        <?php endif ?>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+        </div>
+    </div>
+<?php endif ?>

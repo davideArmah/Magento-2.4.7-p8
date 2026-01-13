@@ -1,0 +1,114 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+
+/** @var $block \MageWorx\StoreLocator\Block\Search */
+/** @var \Hyva\Theme\ViewModel\HeroiconsOutline $heroicons */
+
+$heroicons = $viewModels->require(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
+?>
+<script>
+    mwLocatorData.defaultRadius = '<?= $escaper->escapeHtml($block->getDefaultRadiusValue()) ?>';
+    mwLocatorData.defaultPlace = '<?= $escaper->escapeHtml($block->getDefaultPlace()) ?>';
+</script>
+
+<div class="p-4 border w-full sm:max-w-sm" id="mw-sl__search" x-ref="mw-search-block">
+    <div class="flex justify-between" x-show="!search.isShowSearchForm">
+        <div>
+            <div class="flex items-end gap-x-4 items-center">
+                <?= $heroicons->locationMarkerHtml('w-6 h-6') ?>
+                <div>
+                    <span x-ref="mw-location-current-location-info" id="mw_location_current_location_info"
+                              class="leading-4">
+                        <?= $escaper->escapeHtml($block->getCurrentPlaceName()) ?>
+                    </span>
+                    <div class="mw-sl__search-select-location">
+                        <div x-show="search.isShowRadius">
+                            (<span x-text="search.radiusValue">
+                                    <?= $escaper->escapeHtml($block->getDefaultRadiusValue()) ?>
+                                </span>
+                            <?= $escaper->escapeHtml($block->getRadiusUnit() . ' ' . __('radius')) ?>)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col">
+            <button class="hover:bg-gray-200 px-2 m-0" type="button"
+                    @click="search.onEditFormClick()">
+                <?= $escaper->escapeHtml(__('Edit')) ?>
+            </button>
+            <button class="hover:bg-gray-200 px-2 m-0" type="button"
+                    @click="search.onResetFormClick()">
+                <?= $escaper->escapeHtml(__('Reset')) ?>
+            </button>
+        </div>
+    </div>
+    <div class="mw-sl__search-form-content" x-show="search.isShowSearchForm">
+        <div class="pb-4">
+            <div class="flex items-center border rounded-md">
+                <input name="search_text" class="form-input block w-full border-0" id="mw-sl_search_text"
+                       type="text" value="<?= $escaper->escapeHtml($block->getCurrentPlaceName()) ?>"/>
+                <button type="button" class="px-2" @click="search.searchLocation()">
+                    <?= $heroicons->searchHtml('w-5 h-5') ?>
+                </button>
+            </div>
+        </div>
+        <?php if ($block->isSetToUseCurrentLocation()) : ?>
+            <div class="text-center border-t pt-2"><?= $escaper->escapeHtml(__('OR')) ?></div>
+        <?php endif; ?>
+        <div>
+            <?php if ($block->isSetToUseCurrentLocation()) : ?>
+                <div @click="search.getLocation()">
+                    <button id="use_location" class="btn btn-secondary w-full my-4 flex flex-wrap gap-x-2 items-start justify-center">
+                        <?= $heroicons->locationMarkerHtml('w-5 h-5') ?>
+                        <?= $escaper->escapeHtml(__('Use my current location')) ?>
+                    </button>
+                </div>
+            <?php endif; ?>
+            <div class="mw-sl__search__radius">
+                <p class="mw-sl__search__text"><?= $escaper->escapeHtml(__('Radius to search')) ?></p>
+                <select id="radius-select" x-ref="mw-radius-select" name="radius"
+                        class="mr-2 form-select">
+                    <?php if (!empty($block->getPredefinedRadiusValues())) : ?>
+                        <?php foreach ($block->getPredefinedRadiusValues() as $value) : ?>
+                            <option value="<?= $escaper->escapeHtml($value) ?>"
+                                <?= $value == $block->getCurrentRadiusValue() ? 'selected' : '' ?>
+                            >
+                                <?= $escaper->escapeHtml($value) . ' ' . $escaper->escapeHtml(
+                                    $block->getRadiusUnit()) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                    <option value="0" <?= '0' == $block->getCurrentRadiusValue() ? 'selected' : '' ?>>
+                        <?= $block->escapeHtml(__('All Stores')) ?>
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="mw-sl__search__footer">
+            <button class="btn btn-primary w-full text-color-white my-4 justify-center" @click="search.searchLocation('by_radius')">
+                <?= $escaper->escapeHtml(__('Search')) ?>
+            </button>
+        </div>
+        <template x-if="search.errors.length > 0">
+            <div x-ref="mw-search-store-error" class="text-red-500 py-4">
+                <template x-for="(error, index) in search.errors" :key="index">
+                    <span x-text="error"></span>
+                </template>
+            </div>
+        </template>
+
+        <input id="mw-sl__lat" name="autocomplete[lat]" type="hidden" value="<?=$block->escapeHtml($block->getCurrentLat()) ?>"/>
+        <input id="mw-sl__lng" name="autocomplete[lng]" type="hidden" value="<?=$block->escapeHtml($block->getCurrentLng()) ?>"/>
+        <input class="field" name="autocomplete[small_city]" id="mw_sublocality_level_1" type="hidden" value="<?=$block->escapeHtml($block->getCurrentSmallCity()) ?>"/>
+        <input class="field" name="autocomplete[city]" id="mw_locality" type="hidden" value="<?=$block->escapeHtml($block->getCurrentCity()) ?>"/>
+        <input class="field" name="autocomplete[region]" id="mw_administrative_area_level_1" type="hidden" value="<?=$block->escapeHtml($block->getCurrentRegion()) ?>"/>
+        <input class="field" name="autocomplete[postcode]" id="mw_postal_code" type="hidden" value="<?=$block->escapeHtml($block->getCurrentPostCode()) ?>"/>
+        <input class="field" name="autocomplete[country_id]" id="mw_country" type="hidden" value="<?=$block->escapeHtml($block->getCurrentCountryId()) ?>"/>
+    </div>
+</div>

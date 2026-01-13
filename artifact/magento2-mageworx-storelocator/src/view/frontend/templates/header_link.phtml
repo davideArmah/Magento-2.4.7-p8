@@ -1,0 +1,34 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+
+/** @var $block \MageWorx\ShippingRules\Block\Zone\Selector */
+/** @var $escaper \Magento\Framework\Escaper */
+
+/** @var \Hyva\Theme\ViewModel\HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
+?>
+<script>
+    'use strict';
+
+    document.addEventListener('DOMContentLoaded', function(event) {
+        const $cartIcon = document.getElementById('menu-cart-icon');
+        const $iconsArea = $cartIcon?.parentNode;
+        const $locationIcon = document.getElementById('mw-storelocator-icon');
+        if ($locationIcon && $cartIcon) $iconsArea?.insertBefore($locationIcon, $cartIcon);
+    });
+</script>
+
+<a id="mw-storelocator-icon" href="<?= $escaper->escapeHtml(
+    $escaper->escapeHtmlAttr($escaper->escapeUrl($block->getHref()))
+)?>" class="inline-block ml-1 no-underline sm:ml-3 hover:text-black">
+    <?= $heroicons->mapHtml('w-8 h-8 md:h-6 md:w-6 hover:text-black') ?>
+</a>
+
+
+
+

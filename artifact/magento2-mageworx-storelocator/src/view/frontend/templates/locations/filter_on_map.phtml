@@ -1,0 +1,48 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+
+/** @var $block \MageWorx\StoreLocator\Block\Locations */
+
+/** @var $escaper \Magento\Framework\Escaper */
+?>
+
+<div id="mw-filter-on-map">
+    <div>
+        <?= /* @noEscape */  $block->getLocationsMapHtml(); ?>
+    </div>
+    <div id="mw-locator-filter-wrapper" class="absolute bg-white"
+         style="width: 20rem; left: 2rem; top: 6rem; z-index: 101;">
+        <?= /* @noEscape */  $block->getLocationsWrapperHtml('filter'); ?>
+    </div>
+</div>
+<script>
+    mwLocatorData.mwLocations = JSON.parse('<?= $escaper->escapeJs(json_encode($block->getLocationsIds()))?>');
+    mwLocatorData.availableLocations = JSON.parse('<?= $escaper->escapeJs(json_encode($block->getAvailableLocationsIds()))?>');
+    mwLocatorData.isWorkingHoursEnabled = <?= (int)$block->isWorkingHoursEnabled() === 1 ? 'true' : 'false' ?>;
+</script>
+
+<?= /* @noEscape */ $block->getGoogleMapScript(); ?>
+
+<script>
+    document.addEventListener("mw-on-map-mount", () => {
+        $map = document.getElementById("mw-sl-map");
+        if ($map) {
+            $map.classList.add("h-72", "relative", "md:absolute", "md:h-full");
+            $map.style.top = "4rem";
+            $map.style.right = "0";
+            $map.style.bottom = "0";
+            $map.style.left = "0";
+            $map.style.zIndex = "100";
+        }
+        document.getElementById("mw-locator-filter-wrapper").classList.add("relative", "md:absolute");
+
+        const event = new Event('mw-on-map-styles-changed');
+        document.dispatchEvent(event);
+    })
+</script>
+

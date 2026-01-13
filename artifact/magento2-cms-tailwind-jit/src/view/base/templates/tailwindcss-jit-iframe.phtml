@@ -1,0 +1,90 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Hyva\Theme\ViewModel\HyvaCsp;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var HyvaCsp $hyvaCsp */
+
+?>
+<script>
+    (() => {
+        'use strict';
+
+        let seq = 0;
+        function sendToJIT(htmlContent, customConfig, customCss) {
+            const requestNum = ++seq;
+            const message = {
+                id: 'tailwindcss-jit-process',
+                requestNum: requestNum,
+                details: {
+                    htmlContent: htmlContent,
+                    customConfig: customConfig || '',
+                    customCss: customCss || '',
+                }
+            };
+            document.getElementById('tailwindcss-jit').contentWindow.postMessage(message, '*');
+
+            return requestNum;
+        }
+
+        // expose API function to trigger compilation
+        const pendingRequests = [];
+        window.tailwindCSS = Object.assign(window.tailwindCSS || {}, {
+            process(htmlContent, customConfig, customCss) {
+                return new Promise((resolve, reject) => {
+                    const requestNum = sendToJIT(htmlContent, customConfig, customCss);
+                    pendingRequests[requestNum] = {resolve, reject};
+                });
+            },
+            resolveRequest(requestNum, css) {
+                if (! pendingRequests[requestNum]) {
+                    return console.error('Received result for unknown request number ' + requestNum, css);
+                }
+                pendingRequests[requestNum].resolve(css);
+                delete pendingRequests[requestNum];
+            },
+        });
+
+        // subscribe to messages from the tailwindCSS JIT iframe
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.id === 'tailwindcss-jit-result') {
+                window.tailwindCSS.resolveRequest(event.data.requestNum, event.data.css);
+            }
+            else if (event.data && event.data.id === 'tailwindcss-jit-log') {
+                // utility method to allow printing to this windows console from the iframe
+                console[event.data.level](...event.data.args.filter(x => x !== undefined))
+            }
+        });
+
+    })()
+
+</script>
+<?php isset($hyvaCsp) && $hyvaCsp->registerInlineScript() ?>
+<?php if ($block->getArea() === \Magento\Framework\App\Area::AREA_FRONTEND): ?>
+    <iframe id="tailwindcss-jit"
+        referrerpolicy="origin"
+        sandbox="allow-scripts"
+        width="0"
+        height="0"
+        src="<?= $escaper->escapeUrl($block->getUrl('tailwind-jit/iframe')) ?>"
+        style="display: none"></iframe>
+<?php else: ?>
+    <iframe id="tailwindcss-jit"
+        referrerpolicy="origin"
+        sandbox="allow-scripts"
+        width="0"
+        height="0"
+        src="<?= /** @noEscape */ $block->getViewFileUrl('Hyva_CmsTailwindJit::tailwindcss-jit-iframe-content.html') ?>"
+        style="display: none"></iframe>
+<?php endif; ?>

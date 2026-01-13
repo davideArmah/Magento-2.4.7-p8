@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <remove src="StripeIntegration_Payments::js/stripe_payments.js"/>
+    </head>
+    <body>
+        <referenceBlock name="product.info.stripe_payments_express" template="Hyva_StripeIntegrationPayments::express/product_button.phtml" />
+        <referenceBlock name="product.info.addtocart.stripe_payments_express.additional" template="Hyva_StripeIntegrationPayments::express/product_button.phtml" />
+        <move element="product.info.stripe_payments_express" destination="addtocart.shortcut.buttons" before="-" />
+        <block name="product.info.stripe_loading" template="Hyva_Theme::ui/loading.phtml"/>
+        <move element="product.info.stripe_loading" destination="product.info.stripe_payments_express" before="-" />
+    </body>
+</page>

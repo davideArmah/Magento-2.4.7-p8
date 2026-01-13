@@ -1,0 +1,19 @@
+<!--
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+-->
+<div class="pagebuilder-content-type pagebuilder-html" event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false">
+    <div class="placeholder-html-empty" ifnot="data.main.html" attr="data.main.attributes" ko-style="data.main.style" translate="'Enter HTML, CSS or JavaScript code'" css="data.main.css" >
+    </div>
+    <!-- ko if: isJitPreviewEnabled() -->
+    <iframe sandbox="allow-same-origin" if="data.main.html" data-bind="afterRender: initPreviewHtml" style="width: 100%; border: 0;"></iframe>
+    <!-- /ko -->
+    <!-- ko ifnot: isJitPreviewEnabled() -->
+    <div class="placeholder-html-code" if="data.main.html" attr="data.main.attributes" css="data.main.css" ko-style="data.main.style" text="data.main.html"></div>
+    <!-- /ko -->
+    <render args="getOptions().template"></render>
+</div>

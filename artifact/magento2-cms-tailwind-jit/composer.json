@@ -1,0 +1,24 @@
+{
+    "name": "hyva-themes/magento2-cms-tailwind-jit",
+    "description": "Automatic TailwindCSS classes for CMS content in Hyvä Themes.",
+    "require": {
+        "php": "^7.4.0||>=8.0",
+        "ext-json": "*"
+    },
+    "type": "magento2-module",
+    "license": [
+        "proprietary"
+    ],
+    "authors": [{
+        "name": "Hyvä Themes B.V.",
+        "email": "info@hyva.io"
+    }],
+    "autoload": {
+        "files": [
+            "src/registration.php"
+        ],
+        "psr-4": {
+            "Hyva\\CmsTailwindJit\\": "src/"
+        }
+    }
+}

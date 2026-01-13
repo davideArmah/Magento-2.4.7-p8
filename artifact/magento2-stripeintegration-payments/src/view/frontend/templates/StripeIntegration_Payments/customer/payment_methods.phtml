@@ -1,0 +1,327 @@
+<?php
+/** @var \Magento\Framework\Escaper $escaper */
+/** @var \StripeIntegration\Payments\Block\Customer\PaymentMethods $block */
+/** @var \Hyva\Theme\ViewModel\HyvaCsp $hyvaCsp */
+
+$t = function (string $text) use ($escaper) {
+    return $escaper->escapeHtml(__($text));
+}
+?>
+<div wire:init="callListPaymentMethodsEndpoint"
+     x-data="stripeCustomerPaymentMethods"
+>
+    <?= $block->getChildHtml('loading') ?>
+
+    <template x-if="hasNoSavedPaymentMethods">
+        <div class="message info empty">
+            <span>
+                <?= $t('You do not have any saved payment methods.'); ?>
+            </span>
+        </div>
+    </template>
+
+    <template x-if="hasSavedPaymentMethods">
+        <div class="card grid grid-cols-2 mb-4">
+            <div class="text-sm text-secondary p-2"><?= $escaper->escapeHtml(__('Payment Method')); ?></div>
+            <div class="text-sm text-secondary p-2 text-center"><?= $escaper->escapeHtml(__('Actions')); ?></div>
+
+            <template x-for="paymentMethod in savedPaymentMethods" :key="paymentMethod.id">
+                <div class="col-span-2 grid grid-cols-2">
+                    <div class="p-2 flex items-center bg-container-darker">
+                        <img :src="paymentMethod.icon" height="32" class="saved-payment-method-icon">
+                        <label x-text="paymentMethod.label"></label>
+                    </div>
+                    <div class="p-2 flex items-center justify-evenly bg-container-darker">
+                        <a href="javascript:void(0);"
+                           @click.prevent="deletePaymentMethod(paymentMethod.id)"
+                           class="stripe-payments delete-method"
+                        >
+                            <?= $t('Delete'); ?>
+                        </a>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </template>
+
+    <div class="add-new-payment-method">
+        <div class="text-2xl mb-6"><?= $t('Add a new payment method'); ?></div>
+
+        <div class="payment-method stripe-payments">
+
+            <template x-if="hasPaymentErrors">
+                <div class="payment-method-content">
+                    <template x-for="error in paymentsErrors" :key="error">
+                        <p class="message message-error error" x-text="error"></p>
+                    </template>
+                </div>
+            </template>
+
+            <div class="payment-method-content stripe-payments-card-form">
+
+                <div class="stripe-payments-elements no-wrap">
+                    <div id="stripe-setup-element" data-bind="afterRender: onContainerRendered">
+                        <!-- a Stripe Payment Element will be inserted here. -->
+                    </div>
+                </div>
+
+                <template x-if="hasPermanentErrors">
+                    <div data-bind="if: permanentError, visible: permanentError" class="stripe-permanent-error">
+                        <template x-for="error in permanentErrors" :key="error">
+                            <span x-text="error"></span>
+                        </template>
+                    </div>
+                </template>
+
+                <template x-if="hasNoPermanentErrors">
+                    <div class="actions-toolbar" id="actions-toolbar">
+                        <div class="primary">
+                            <button class="action primary"
+                                    type="submit"
+                                    title="<?= $t('Add'); ?>"
+                                    @click="savePaymentMethod"
+                            >
+                                <span><?= $t('Add'); ?></span>
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        window.initParams = <?= $block->getInitParams(); //phpcs:ignore ?>;
+
+        function stripeCustomerPaymentMethods() {
+            let StripeJs;
+
+            return {
+                loading: true,
+                elements: null,
+                paymentElement: null,
+                isFormComplete: false,
+                savedPaymentMethods: [],
+                paymentsErrors: [],
+                permanentErrors: [],
+
+                init() {
+                    this.callListPaymentMethodsEndpoint();
+                    this.renderMethodForm();
+
+                    window.addEventListener(
+                        'stripe-authenticate-customer',
+                        event => this.authenticateCustomer(event)
+                    );
+                },
+
+                isLoading() {
+                    return this.loading;
+                },
+
+                hasSavedPaymentMethods() {
+                    return this.savedPaymentMethods.length > 0;
+                },
+
+                hasNoSavedPaymentMethods() {
+                    return !this.hasSavedPaymentMethods();
+                },
+
+                hasPaymentErrors() {
+                    return this.paymentsErrors.length > 0
+                },
+
+                hasPermanentErrors() {
+                    return this.permanentErrors.length > 0;
+                },
+
+                hasNoPermanentErrors() {
+                    return this.hasPermanentErrors();
+                },
+
+                async callListPaymentMethodsEndpoint() {
+                    return new Promise((resolve, reject) => {
+                        this.loading = true;
+
+                        fetch(
+                            '/rest/V1/stripe/payments/list_payment_methods',
+                            {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
+                            }
+                        )
+                            .then(result => result.text())
+                            .then(result => JSON.parse(result))
+                            .then(result => JSON.parse(result))
+                            .then(data => {
+                                this.savedPaymentMethods = Object.values(data);
+                                this.loading = false;
+
+                                resolve();
+                            });
+                    });
+                },
+
+                async callSavePaymentMethodEndpoint(paymentMethodId) {
+                    this.loading = true;
+
+                    let formData = new FormData();
+                    formData.append('paymentMethodId', paymentMethodId);
+                    formData = new FormData();
+                    formData.append('form_key', hyva.getFormKey());
+
+                    return fetch(
+                        '/rest/V1/stripe/payments/add_payment_method',
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ paymentMethodId })
+                        }
+                    )
+                        .then(() => this.callListPaymentMethodsEndpoint());
+                },
+
+                async callDeletePaymentMethodEndpoint(paymentMethodId) {
+                    this.loading = true;
+
+                    return fetch(
+                        '/rest/V1/stripe/payments/delete_payment_method',
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ paymentMethodId })
+                        }
+                    )
+                        .then(result => result.json())
+                        .then(() => this.callListPaymentMethodsEndpoint());
+                },
+
+                renderMethodForm() {
+                    StripeJs = Stripe(window.initParams.apiKey, window.initParams.options);
+
+                    this.elements = StripeJs.elements({
+                        mode: "setup",
+                        setup_future_usage: "on_session",
+                        locale: window.initParams.locale,
+                        currency: window.initParams.currency,
+                        appearance: {
+                            theme: 'stripe',
+                            variables: {
+                                colorText: '#32325d',
+                                fontFamily: '"Open Sans","Helvetica Neue", Helvetica, Arial, sans-serif',
+                            },
+                        },
+                        paymentMethodCreation: "manual"
+                    });
+
+                    this.paymentElement = this.elements.create('payment');
+                    this.paymentElement.mount('#stripe-setup-element');
+                    this.paymentElement.on('ready', event => {
+                        this.loading = false
+                    });
+                    this.paymentElement.on('change', event => {
+                        this.isFormComplete = event.complete;
+                    });
+                },
+
+                savePaymentMethod() {
+                    this.loading = true;
+                    this.elements.submit().then(() => {
+                        StripeJs.createPaymentMethod({
+                            elements: this.elements,
+                            params: {}
+                        }).then(event => {
+                            if (event.error) {
+                                this.loading = false;
+                                this.paymentsErrors = [event.error.message];
+                                return;
+                            }
+
+                            this.callSavePaymentMethodEndpoint(event.paymentMethod.id)
+                                .then(() => this.loading = false);
+                        }, error => {
+                            console.error('Error creating payment method', error);
+                        });
+                    }, error => {
+                        console.error('Error submitting payment element', error);
+                    });
+                },
+
+                authenticateCustomer(event) {
+                    const intentId = event.detail.clientSecret;
+                    const handleIntent = result => {
+                        const intent = result.paymentIntent || result.setupIntent;
+                        const requiresActionStatuses = ['requires_action', 'requires_source_action'];
+
+                        if (!requiresActionStatuses.includes(intent.status)) {
+                            this.loading = true;
+                            this.callListPaymentMethodsEndpoint().then(() => this.loading = false);
+                            return;
+                        }
+
+                        if (intent.next_action && intent.next_action.type === 'verify_with_microdeposits') {
+                            window.location = intent.next_action.verify_with_microdeposits.hosted_verification_url;
+                            return;
+                        }
+
+                        StripeJs.handleNextAction({
+                            clientSecret: intent.client_secret
+                        }).then(result => {
+                            if (result.error) {
+                                this.loading = false;
+
+                                window.dispatchMessages && window.dispatchMessages([{
+                                    type: 'error',
+                                    text: result.error.message
+                                }], 5000);
+
+                                return;
+                            }
+
+                            this.loading = true;
+                            this.callListPaymentMethodsEndpoint().then(() => this.loading = false);
+                        });
+                    };
+
+                    if (intentId.startsWith('pi_')) {
+                        StripeJs.retrievePaymentIntent(intentId).then(handleIntent);
+                        return;
+                    }
+
+                    if (intentId.startsWith('seti_')) {
+                        StripeJs.retrieveSetupIntent(intentId).then(handleIntent);
+                        return;
+                    }
+
+                    throw new Error("Invalid intent ID");
+                },
+
+                deletePaymentMethod(paymentMethodId) {
+                    if (!confirm('<?= $escaper->escapeJs(__('Are you sure you want to delete this payment method?')) ?>')) {
+                        return;
+                    }
+
+                    this.loading = true;
+                    this.callDeletePaymentMethodEndpoint(paymentMethodId).then(() => this.loading = false);
+                }
+            }
+        }
+
+        window.addEventListener(
+            'alpine:init',
+            () => Alpine.data(
+                'stripeCustomerPaymentMethods',
+                stripeCustomerPaymentMethods
+            ),
+            {once: true}
+        )
+    </script>
+    <?php $hyvaCsp->registerInlineScript() ?>
+</div>

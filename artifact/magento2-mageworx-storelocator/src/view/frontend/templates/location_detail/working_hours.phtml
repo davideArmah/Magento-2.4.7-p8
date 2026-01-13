@@ -1,0 +1,60 @@
+<?php
+use MageWorx\Locations\Api\Data\LocationInterface;
+
+/** @var $block \MageWorx\StoreLocator\Block\LocationInfo */
+/** @var $location LocationInterface $location */
+$location = $block->getLocation();
+
+/** @var HeroIconsOutline $heroIcons */
+$heroicons = $viewModels->require(\Hyva\Theme\ViewModel\HeroiconsOutline::class);
+
+/** @var $escaper \Magento\Framework\Escaper */
+?>
+
+<?php if (($workingHours = $location->getFormattedWorkingHours())
+    || $location->getWorkingHoursType() == LocationInterface::WORKING_24_HOURS_A_DAY) : ?>
+    <li class="flex gap-x-4">
+        <?= $heroicons->clockHtml('w-6 h-6') ?>
+        <table>
+            <tr @click="isShowWorkTable=!isShowWorkTable" class="cursor-pointer">
+                <th class="<?= $location->isOpenNow() ? 'text-green-500' : 'text-red-500' ?> pr-2">
+                    <?= $escaper->escapeHtml(__('Working hours')) ?>
+                </th>
+                <td class="<?= $location->isOpenNow() ? 'text-green-500' : 'text-red-500' ?> pl-2">
+                    <?= /* @noEscape */ $location->getWorkingHoursInfo() ?>
+                </td>
+                <template x-if="isShowWorkTable">
+                    <?= $heroicons->chevronUpHtml('w-6 h-6') ?>
+                </template>
+                <template x-if="!isShowWorkTable">
+                    <?= $heroicons->chevronDownHtml('w-6 h-6') ?>
+                </template>
+            </tr>
+            <div x-show="isShowWorkTable">
+                <?php foreach ($workingHours as $day => $time) : ?>
+                    <tr>
+                        <th class="pr-2">
+                            <?= $escaper->escapeHtml(__($day)) ?>
+                        </th>
+                        <?php if ($time['off']) : ?>
+                            <td class="pl-2">
+                                <?= $escaper->escapeHtml(__('Closed')) ?>
+                            </td>
+                        <?php else : ?>
+                            <td class="pl-2">
+                                <span>
+                                    <?= $escaper->escapeHtml($time['from'] . ' - ' . $time['to']) ?>
+                                </span>
+                                <?php if ($time['has_lunch_time']) : ?>
+                                    <span>
+                                        <?= $escaper->escapeHtml('(' . __('Lunch time') . ' ' . $time['lunch_from'] . ' - ' . $time['lunch_to'] . ')') ?>
+                                    </span>
+                                <?php endif ?>
+                            </td>
+                        <?php endif ?>
+                    </tr>
+                <?php endforeach; ?>
+            </div>
+        </table>
+    </li>
+<?php endif; ?>

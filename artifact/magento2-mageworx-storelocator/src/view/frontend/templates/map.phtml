@@ -1,0 +1,419 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+
+/** @var \Magento\Framework\Escaper $escaper */
+/** @var $block \MageWorx\StoreLocator\Block\Map */
+$locations = $block->getLocations();
+if ($block->isShowMap()) : ?>
+    <script>
+        function initMwMapLocator() {
+            var markerCluster;
+            var map;
+            var zoom = <?= $escaper->escapeJs($block->getMapZoom())?>;
+            var placeSearch;
+            var autocomplete;
+            var place;
+            var center = {'lat' : 0, 'lng' : 0};
+            var geocoder;
+            
+            let componentForm = mwLocatorData.components;
+
+            const loadMarkerClusterer = () => {
+                return new Promise(resolve => {
+                    const script = document.createElement('script');
+                    script.type = 'text/javascript';
+                    script.src = '<?= $escaper->escapeJs($block->getViewFileUrl('MageWorx_StoreLocator::js/markerClusterer.js')) ?>';
+                    script.async = true;
+                    script.onload = resolve;
+                    document.head.appendChild(script);
+                })
+            }
+
+            return {
+                init() {
+                    loadMarkerClusterer().then(() => {
+                        const event = new Event('mw-on-map-mount');
+                        document.dispatchEvent(event);
+
+                        let restriction = undefined;
+                        <?php $countries = $block->getCountriesForAutocomplete();
+                        if ($countries) : ?>
+                            let countries = JSON.parse('<?= $escaper->escapeJs(json_encode($block->getCountriesForAutocomplete()))?>');
+                            restriction = {country: countries};
+                        <?php endif; ?>
+
+                        this.initAutocomplete(restriction);
+                        geocoder = new google.maps.Geocoder();
+
+                        <?php if ($block->getMapCenter()) :?>
+                            center = new google.maps.LatLng(<?= $escaper->escapeHtml($block->getMapCenter())?>);
+                        <?php elseif ($block->getDefaultPlace()) : ?>
+                            geocoder.geocode(
+                                {'address': '<?= $escaper->escapeHtml($block->getDefaultPlace()) ?>'},
+                                (results, status) => {
+                                    if (status === 'OK') {
+                                        center = results[0].geometry.location;
+                                        map.setCenter(center);
+                                    } else {
+                                        console.log('Geocode was not successful for the following reason: ' + status);
+                                    }
+                                }
+                            );
+                        <?php endif; ?>
+
+                        const mapOptions = {
+                            center,
+                            zoom,
+                            mapTypeId: google.maps.MapTypeId.roadmap,
+                            disableDefaultUI: true
+                        };
+
+                        //Create map
+                        map = new google.maps.Map(document.getElementById('mw-sl-map'), mapOptions);
+
+                        markers = [];
+                        //Add markers on map
+                        <?php /** @var \MageWorx\Locations\Api\Data\LocationInterface $location */
+                        foreach ($locations as $location) :
+                            if (!$block->isLocationCoordinateCorrect($location)) continue; ?>
+                            locations['<?= $escaper->escapeJs($location->getId())?>'] = <?= $escaper->escapeHtml($block->getLocationCoordinate($location))?>;
+                            let marker_<?= $escaper->escapeJs($location->getId())?> = this.createMarker(locations['<?= $escaper->escapeJs($location->getId())?>']);
+
+                            //Add click action for marker
+                            marker_<?= $escaper->escapeJs($location->getId())?>.addListener('click', () => {
+                                map.setCenter(locations['<?= $escaper->escapeJs($location->getId())?>']);
+                                map.setZoom(zoom + 5);
+                                this.showLocationDetails('<?= $escaper->escapeJs($location->getId())?>');
+                            });
+                            markers.push(marker_<?= $escaper->escapeJs($location->getId())?>);
+                        <?php endforeach; ?>
+
+                        //Group markers in clusters
+                        //It's possible to change gridSize for better clusters size depending on stores count
+                        markerCluster = new MarkerClusterer(
+                            map,
+                            markers,
+                            {
+                                imagePath: '<?= $escaper->escapeJs($block->getClusterIcon())?>',
+                                gridSize: 30
+                            }
+                        );
+                    })
+                },
+
+                initAutocomplete(restriction) {
+                    let options;
+                    if (restriction === undefined) {
+                        options = {
+                            types: ['(regions)']
+                        };
+                    } else {
+                        options = {
+                            types: ['(regions)'],
+                            componentRestrictions: restriction
+                        };
+                    }
+
+                    autocomplete = new google.maps.places.Autocomplete(
+                        document.getElementById('mw-sl_search_text'),
+                        options
+                    );
+
+                    autocomplete.setFields(['address_component', 'geometry']);
+                    autocomplete.addListener('place_changed', this.fillInAddress.bind(this));
+                },
+                showPosition(position) {
+                    this.setModalLoading(true);
+                    let coordinates = {lat: position.coords.latitude, lng: position.coords.longitude};
+                    let currentPositionName = '';
+                    place = undefined;
+
+                    const callback = (results, status) => {
+                        if (status === 'OK' && results[0]['formatted_address'] !== undefined) {
+                            currentPositionName = results[0]['formatted_address'];
+                        } else {
+                            currentPositionName = '<?= $escaper->escapeHtml(
+                                __("My location")
+                            )?>';
+                        }
+
+                        document.getElementById('mw-stores-current-place').innerText = currentPositionName;
+                        document.getElementById('mw_location_current_location_info').innerText = currentPositionName;
+
+                        let address = currentPositionName.split(', ');
+                        let preparedName = address[address.length - 1];
+                        if (address[address.length - 2] !== undefined) {
+                            preparedName = address[address.length - 2] + ', ' + preparedName;
+                        }
+                        this.$root.dispatchEvent(
+                            new CustomEvent('mw-change-search-text', {
+                                bubbles: true,
+                                detail: {text: preparedName}
+                            })
+                        );
+
+                        this.setModalLoading(false);
+                    }
+                    geocoder.geocode({'location': coordinates}, callback.bind(this));
+
+                    this.showCurrentPosition(coordinates);
+                    document.getElementById('mw-sl__lat').value = position.coords.latitude;
+                    document.getElementById('mw-sl__lng').value = position.coords.longitude;
+                },
+                showCurrentPosition(coordinates) {
+                    var currentPosition = new google.maps.LatLng(coordinates);
+                    map.setCenter(currentPosition);
+                },
+                fillInAddress() {
+                    place = autocomplete.getPlace();
+
+                    if (place.geometry === undefined) {
+                        return;
+                    }
+
+                    this.resetFields();
+                    document.getElementById('mw-sl__lat').value = place.geometry.location.lat();
+                    document.getElementById('mw-sl__lng').value = place.geometry.location.lng();
+                    let placeName = '';
+
+                    for (let i = 0; i < place.address_components.length; i++) {
+                        let addressType = place.address_components[i].types[0];
+                        if (componentForm[addressType]) {
+                            document.getElementById('mw_' + addressType).value = place.address_components[i][componentForm[addressType]];
+
+                            if (placeName) {
+                                placeName += ', ';
+                            }
+                            placeName += place.address_components[i][componentForm[addressType]];
+                        }
+                    }
+
+                    document.getElementById('mw_location_current_location_info').innerHTML = placeName;
+                },
+                resetFields() {
+                    for (let component in componentForm) {
+                        document.getElementById('mw_' + component).value = '';
+                    }
+                },
+                createMarker(location) {
+                    let params = {
+                        position: location,
+                        icon: '<?= $escaper->escapeHtml($block->getMapIcon())?>',
+                        map,
+                        <?php if (count($locations) > 255) :?>
+                            optimized: false
+                        <?php endif; ?>
+                    }
+                    return new google.maps.Marker(params);
+                },
+
+                showLocationDetails(code) {
+                    document.getElementById('mw-map-block').dispatchEvent(
+                        new CustomEvent('mw-marker-click', {
+                            bubbles: true,
+                            detail: {code}
+                        })
+                    );
+                },
+                setMapCenterOnFilter(detail) {
+                    //Add action on filter click
+                    const { code, name } = detail;
+
+                    if (code !== 'all') {
+                        if (placesCoordinates[code]['lat'] === 0) {
+                            geocoder.geocode({'address': name}, function (results, status) {
+                                if (status === 'OK') {
+                                    map.setCenter(results[0].geometry.location);
+                                    map.setZoom(zoom + 1);
+                                } else {
+                                    console.log('Geocode was not successful for the following reason: ' + status);
+                                }
+                            });
+                        } else {
+                            map.setCenter(placesCoordinates[code]);
+                            map.setZoom(zoom + 1);
+                        }
+                    }
+                },
+                setMapCenterOnDetails(detail) {
+                    const { code } = detail;
+
+                    map.setCenter(locations[code]);
+                    map.setZoom(zoom + 5);
+                },
+                updateMarkers() {
+                    //delete old markers
+                    for (let i = 0; i < markers.length; i++) {
+                        markers[i].setMap(null);
+                    }
+                    markers = [];
+
+                    const showLocationDetails = this.showLocationDetails;
+
+                    //add markers on map
+                    for (const [id, position] of Object.entries(locations)) {
+                        const marker = new google.maps.Marker({
+                            position: position,
+                            map: map,
+                            icon: '<?= $block->escapeHtml($block->getMapIcon())?>',
+                        });
+                        //Add click action for marker
+                        marker.addListener('click', function () {
+                            map.setCenter(position);
+                            map.setZoom(zoom + 5);
+                            showLocationDetails(id);
+                        });
+                        markers.push(marker);
+                    }
+                    markerCluster.clearMarkers();
+                    markerCluster = new MarkerClusterer(map, markers,
+                        {
+                            imagePath: '<?= $block->escapeJs($block->getClusterIcon())?>',
+                            gridSize: 30
+                        }
+                    );
+                },
+                setMapOnResetSearch() {
+                    map.setCenter(center);
+                    map.setZoom(zoom);
+
+                    this.updateMarkers();
+                },
+                setMapCenterOnLocationFound() {
+                    if (place !== undefined && place.geometry !== undefined) {
+                        map.setCenter(place.geometry.location);
+                        map.fitBounds(place.geometry.viewport);
+                    }
+
+                    this.updateMarkers();
+                },
+                onGetLocation() {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                            this.showPosition.bind(this),
+                            this.locationFail.bind(this),
+                            {
+                                maximumAge: 50000,
+                                timeout: 10000,
+                                enableHighAccuracy: true
+                            }
+                        );
+                    }
+                    else {
+                        getLocationButton.innerHTML = '<?= $escaper->escapeHtml(
+                            __("Geolocation is not supported by this browser.")
+                        )?>';
+                    }
+                },
+                locationFail(error, apiKey) {
+                    switch (error.code) {
+                        case error.TIMEOUT:
+                            console.log(
+                                '<?= $escaper->escapeHtml(
+                                    __("Browser geolocation timeout error. ")
+                                )?>' + error.message);
+
+                            this.addSearchError(
+                                '<?= $escaper->escapeHtml(__("Could not load geo position. "))?>'
+                            );
+                            break;
+                        case error.PERMISSION_DENIED:
+                            this.tryAPIGeolocation.call(this, apiKey);
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                        default:
+                            console.log(
+                                '<?= $escaper->escapeHtml(
+                                    __("Geo position unavailable.")
+                                )?>' + error.message);
+
+                            this.addSearchError(
+                                '<?= $escaper->escapeHtml(__("Could not load geo position from browser."))?>'
+                            );
+                            break;
+                    }
+                },
+                tryAPIGeolocation(apiKey) {
+                    this.setModalLoading(true);
+                    const body = new URLSearchParams();
+                    const url = 'https://www.googleapis.com/geolocation/v1/geolocate?key=<?=
+                        $escaper->escapeHtml($block->getApiKey())?>';
+
+                    fetch(url, {
+                        method: 'post',
+                        body,
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }})
+                        .then(response => {
+                            if (! response.ok) {
+                                console.log('<?= $escaper->escapeHtml(
+                                        __("API Geolocation error."))?>'
+                                    + response.error.responseJSON.error.message);
+
+                                this.addSearchError('<?= $escaper->escapeHtml(
+                                    __("Could not load geo position."))?>'
+                                );
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            this.showPosition(
+                                {
+                                    coords: {
+                                        latitude: data.location.lat,
+                                        longitude: data.location.lng
+                                    }
+                                }
+                            );
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            this.addSearchError('<?= $escaper->escapeHtml(
+                                __("Could not load geo position."))?>');
+                        })
+                        .finally(() => {
+                            this.setModalLoading(false);
+                        })
+                },
+                addSearchError(text) {
+                    this.$root.dispatchEvent(
+                        new CustomEvent('mw-add-search-error', {
+                            bubbles: true,
+                            detail: {text}
+                        })
+                    );
+                },
+                setModalLoading(isLoading) {
+                    this.$root.dispatchEvent(
+                        new CustomEvent('mw-set-modal-content-loading', {
+                            bubbles: true,
+                            detail: {isLoading}
+                        })
+                    );
+                },
+            }
+        }
+    </script>
+
+    <div id="mw-map-block-init"
+         @mw-marker-click="map.onMarkerClick($event)"
+         @mw-change-search-text="search.changeSearchText($event.detail.text)"
+         @mw-add-search-error="search.setError($event.detail.text)"
+         @mw-set-modal-content-loading="setContentLoading($event.detail.isLoading)">
+        <div x-data="initMwMapLocator()" id="mw-map-block"
+             @mw-set-map-center-on-filter-item.window="setMapCenterOnFilter($event.detail)"
+             @mw-set-map-center-on-location.window="setMapCenterOnDetails($event.detail)"
+             @mw-on-location-found.window="setMapCenterOnLocationFound($event.detail)"
+             @mw-on-get-location.window="onGetLocation()"
+             @mw-on-reset-search.window="setMapOnResetSearch()">
+            <div id="mw-sl-map" class="w-full h-72"></div>
+        </div>
+    </div>
+<?php endif; ?>

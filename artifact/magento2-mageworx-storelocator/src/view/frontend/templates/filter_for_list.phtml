@@ -1,0 +1,123 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+
+/** @var $block \MageWorx\StoreLocator\Block\Filter */
+$locations    = $block->getLocations();
+$defaultPlace = $block->getCurrentPlace();
+
+/** @var \Hyva\Theme\ViewModel\HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(\Hyva\Theme\ViewModel\HeroiconsSolid::class);
+
+/** @var $escaper \Magento\Framework\Escaper */
+?>
+
+<script>
+    var locations = [];
+    var placesCoordinates = [];
+
+    var locationsDefault = [];
+    var placesCoordinatesDefault = [];
+
+    <?php
+        $loc_data = [];
+        $places_data = [];
+    ?>
+
+    //Add markers on map
+    <?php /** @var \MageWorx\Locations\Api\Data\LocationInterface $location */
+    $locations = $block->getLocations();
+
+    foreach ($locations as $location) :?>
+        locations['<?= $escaper->escapeJs($location->getId())?>'] = <?= $escaper->escapeHtml($block->getLocationCoordinate($location))?>;
+        locationsDefault['<?= $escaper->escapeJs($location->getId())?>'] = <?= $escaper->escapeHtml($block->getLocationCoordinate($location))?>;
+        <?php
+            $id = $escaper->escapeJs($location->getId());
+            $loc = $escaper->escapeHtml($block->getLocationCoordinate($location));
+            $loc_data[] = array($id, $loc);
+        ?>
+    <?php endforeach; ?>
+
+    <?php /** @var \MageWorx\Locations\Api\Data\LocationInterface $location */
+    $places = $block->getParentFilterList();
+
+    foreach ($places as $place) :?>
+        placesCoordinates['<?= $escaper->escapeJs($place->getId()) ?>'] = <?= $escaper->escapeHtml($block->getLocationCoordinate($place))?>;
+        placesCoordinatesDefault['<?= $escaper->escapeJs($place->getId()) ?>'] = <?= $escaper->escapeHtml($block->getLocationCoordinate($place))?>;
+        <?php
+            $id = $escaper->escapeJs($place->getId());
+            $place = $escaper->escapeHtml($block->getLocationCoordinate($place));
+            $places_data[] = array($id, $place);
+        ?>
+    <?php endforeach; ?>
+</script>
+
+<div class="border overflow-y-scroll" style="height: 14rem;" data-stores-locations='<?= json_encode($loc_data); ?>'
+    data-places='<?= json_encode($places_data); ?>' id="data-locations">
+    <div class="flex items-end gap-x-4 px-4 py-8">
+        <?= $heroicons->locationMarkerHtml('w-6 h-6') ?>
+        <span class="leading-4" x-ref="mw-stores-current-place" id="mw-stores-current-place" x-show="!filter.checkedLocation">
+            <?= $escaper->escapeHtml($block->getCurrentPlaceName()); ?>
+        </span>
+        <span class="leading-4" x-show="filter.checkedLocation === 'all'">
+            <?= $escaper->escapeHtml(__('All Stores')); ?>
+        </span>
+        <?php foreach ($block->getParentFilterList() as $place) :?>
+            <span class="leading-4" x-show="filter.checkedLocation === '<?= $escaper->escapeHtml($place->getId()); ?>'">
+                <?= $escaper->escapeHtml($place->getName()); ?>
+            </span>
+        <?php endforeach; ?>
+    </div>
+    <div>
+        <ul class="flex flex-col mx-4">
+            <li>
+                <select x-model="filter.currentFilterListItem" class="mr-2 form-select w-full">
+                    <option value="" id="location-info_all_stores">
+                        <?= $escaper->escapeHtml(__('All Stores')); ?>
+                    </option>
+                    <?php foreach ($block->getParentFilterList() as $place) : ?>
+                        <option :value="'<?= $escaper->escapeHtml($place->getName()); ?>' + '_' + '<?= $escaper->escapeHtml($place->getId()); ?>'"
+                                id="location-info_<?= $escaper->escapeHtml($place->getId()); ?>">
+                            <?= $escaper->escapeHtml($place->getName()); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </li>
+            <li>
+                <div>
+                    <ul class="mt-4">
+                        <?php foreach ($block->getExtraAttributes() as $attribute) : ?>
+                            <li class="flex items-center gap-x-2">
+                                <input type="checkbox" x-model="filter.checkedAttr"
+                                       value="<?= $escaper->escapeHtml($attribute['attribute_code']); ?>"
+                                       id="<?= $escaper->escapeHtml($attribute['attribute_code']); ?>">
+                                <label class="flex items-center gap-x-2"
+                                    for="<?= $escaper->escapeHtml($attribute['attribute_code']); ?>">
+                                    <i class="mw-sl__icon mw-sl__icon--website">
+                                        <?php $icon = $block->getAttributeIcon($attribute['attribute_code']);
+                                        if ($icon): ?>
+                                            <img class="w-4 h-4"
+                                                 src="<?= $escaper->escapeUrl($icon); ?>"
+                                                 alt="<?= $escaper->escapeHtml(__($attribute['frontend_label'])) ?>"/>
+                                        <?php endif;?>
+                                    </i>
+                                    <span><?= $escaper->escapeHtml(__($attribute['frontend_label'])) ?></span>
+                                </label>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="flex mt-4 justify-between">
+                <button class="text-underline" @click="filter.resetFilterList()"><?= $escaper->escapeHtml(__('Clear all')); ?></button>
+                <button class="btn btn-primary text-color-white my-4 justify-center"
+                        @click="filter.onFilterListItemClick()"><?= $escaper->escapeHtml(__('Apply')); ?></button>
+            </li>
+        </ul>
+    </div>
+</div>

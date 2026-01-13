@@ -1,0 +1,27 @@
+<?php
+/** @var Escaper $escaper */
+/** @var HyvaCsp $hyvaCsp */
+/** @var \StripeIntegration\Payments\Block\Minicart\Shortcut $block */
+/** @var \Hyva\Theme\Model\ViewModelRegistry $viewModels */
+
+use Hyva\StripeIntegrationPayments\ViewModel\Checkout;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Magento\Framework\Escaper;
+
+/** @var Checkout $viewModel */
+$viewModel = $viewModels->require(Checkout::class);
+?>
+<?php if ($block->isEnabled("minicart") && !$viewModel->hasHyvaCheckoutInstalled()) : ?>
+
+    <div id="stripeExpressPaymentsMiniCartButtonBridgeComponent"
+         x-data="stripeExpressPaymentsMiniCartButtonBridgeComponent"
+         class="w-full"
+         x-init="preInit"
+         data-buttonconfig="<?= $escaper->escapeHtmlAttr($block->getButtonConfig()); ?>"
+         data-walletparams="<?= $escaper->escapeHtmlAttr($block->initParams->getWalletParams()); // phpcs:ignore ?>"
+    >
+        <div id="payment-request-button-minicart" class="my-2 payment-request-button minicart">&nbsp;</div>
+        <?= $block->getChildHtml('product.info.addtocart.stripe_loading') ?>
+    </div>
+
+<?php endif; ?>

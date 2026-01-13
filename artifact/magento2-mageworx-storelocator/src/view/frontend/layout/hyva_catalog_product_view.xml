@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See https://www.mageworx.com/terms-and-conditions for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <remove src="MageWorx_StoreLocator::location-styles.css"/>
+        <remove src="MageWorx_StoreLocator::styles.css"/>
+        <remove src="MageWorx_StoreLocator::js/maps/autocomplete.js"/>
+        <remove src="MageWorx_StoreLocator::js/markerClusterer.js"/>
+    </head>
+    <body>
+        <referenceBlock name="mageworx.store_locator.locations" remove="true" />
+        <referenceBlock name="product.info.additional">
+            <block class="MageWorx\StoreLocator\Block\Catalog\Product\FindAStore"
+                   name="mageworx.store_locator.locations.additional"
+                   template="Hyva_MageWorxStoreLocator::catalog/product/wrapper.phtml"
+                   ifconfig="mageworx_locations/product_page/show_locations_on_product"
+                   before="-" >
+                <block class="MageWorx\StoreLocator\Block\Popup"
+                       name="mageworx.store_locator.locations.popup"
+                       ifconfig="mageworx_locations/product_page/show_locations_on_product"
+                       template="Hyva_MageWorxStoreLocator::locations/popup.phtml" />
+                <block name="mageworx.store_locator.loading" template="Hyva_Theme::ui/loading.phtml"/>
+            </block>
+        </referenceBlock>
+    </body>
+</page>
