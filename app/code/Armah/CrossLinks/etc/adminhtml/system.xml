@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Cross Linking for Magento 2
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="armah_cross_links" translate="label" type="text" sortOrder="190503" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Seo Cross Linking</label>
+            <tab>armah</tab>
+            <resource>Armah_CrossLinks::config</resource>
+            <group id="armah_information" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+                <label>Information</label>
+                <frontend_model>Armah\CrossLinks\Block\Adminhtml\System\Config\Information</frontend_model>
+            </group>
+
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="product_replacement_limit" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Product Page Replacement Limit</label>
+                    <validate>required-entry validate-digits</validate>
+                </field>
+                <field id="category_replacement_limit" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Category Page Page Replacement Limit</label>
+                    <validate>required-entry validate-digits</validate>
+                </field>
+                <field id="cms_page_replacement_limit" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cms Page Replacement Limit</label>
+                    <validate>required-entry validate-digits</validate>
+                </field>
+                <field id="product_replacement_attributes" translate="label comment" type="multiselect" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Replace on Product Page In</label>
+                    <source_model>Armah\CrossLinks\Model\Source\ProductReplacementAttributes</source_model>
+                </field>
+                <field id="category_replacement_attributes" translate="label comment" type="multiselect" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Replace on Category Page In</label>
+                    <frontend_model>Armah\CrossLinks\Block\Adminhtml\System\Config\Field\Multiselect</frontend_model>
+                    <source_model>Armah\CrossLinks\Model\Source\CategoryReplacementAttributes</source_model>
+                </field>
+            </group>
+
+            <group id="faq" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Armah FAQ and Product Questions Pages</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enabled</label>
+                    <source_model>Armah\CrossLinks\Model\Source\Faq</source_model>
+                    <comment>Equip product pages with the advanced FAQ section and provide customers with additional information on products and services in your store.</comment>
+                </field>
+                <field id="replacement_limit" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Page Replacement Limit</label>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                    <validate>required-entry validate-digits</validate>
+                </field>
+            </group>
+
+            <group id="blog" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Armah Blog Pro Pages</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enabled</label>
+                    <source_model>Armah\CrossLinks\Model\Source\Blog</source_model>
+                    <comment>Equip Blog Posts with the advanced Blog section and provide customers with additional information on products and services in your store.</comment>
+                </field>
+                <field id="replacement_limit" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Page Replacement Limit</label>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                    <validate>required-entry validate-digits</validate>
+                </field>
+            </group>
+
+            <group id="custom_tab" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Armah Product Tabs</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enabled</label>
+                    <source_model>Armah\CrossLinks\Model\Source\CustomTabs</source_model>
+                    <comment>Equip product pages with the advanced Product Tabs section and provide customers with additional information on products and services in your store.</comment>
+                </field>
+                <field id="replacement_limit" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Page Replacement Limit</label>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                    <validate>required-entry validate-digits</validate>
+                </field>
+            </group>
+
+            <group id="advanced" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Advanced</label>
+                <field id="regexpr" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Regexpr for "+"</label>
+                    <validate>required-entry</validate>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

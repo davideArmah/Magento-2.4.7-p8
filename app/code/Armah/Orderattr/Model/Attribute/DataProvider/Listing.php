@@ -1,0 +1,72 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Custom Checkout Fields for Magento 2
+ */
+
+namespace Armah\Orderattr\Model\Attribute\DataProvider;
+
+use Armah\Orderattr\Model\ResourceModel\Attribute\CollectionFactory;
+
+/**
+ * DataProvider for checkout attributes listing
+ *
+ * @property \Armah\Orderattr\Model\ResourceModel\Attribute\Collection $collection
+ * @method \Armah\Orderattr\Model\ResourceModel\Attribute\Collection getCollection()
+ */
+class Listing extends \Magento\Ui\DataProvider\AbstractDataProvider
+{
+    public function __construct(
+        $name,
+        $primaryFieldName,
+        $requestFieldName,
+        CollectionFactory $collectionFactory,
+        array $meta = [],
+        array $data = []
+    ) {
+        parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
+        $this->collection = $collectionFactory->create();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getData()
+    {
+        $items = [];
+        foreach ($this->getCollection()->getItems() as $attribute) {
+            $items[] = $attribute->toArray();
+        }
+
+        return [
+            'totalRecords' => $this->getCollection()->getSize(),
+            'items' => $items
+        ];
+    }
+
+    /**
+     * self::setOrder() alias
+     *
+     * @param string $field
+     * @param string $direction
+     * @return void
+     */
+    public function addOrder($field, $direction)
+    {
+        if ($field == 'attribute_id') {
+            $field = 'main_table.attribute_id';
+        }
+
+        parent::addOrder($field, $direction);
+    }
+
+    public function addFilter(\Magento\Framework\Api\Filter $filter)
+    {
+        if ($filter->getField() == 'attribute_id') {
+            $filter->setField('main_table.attribute_id');
+        }
+        // @phpstan-ignore-next-line as adding return statement cause of backward compatibility issue
+        parent::addFilter($filter);
+    }
+}

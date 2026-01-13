@@ -1,0 +1,40 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Armah\SeoToolkitLite\Api\Data\RedirectInterface" type="Armah\SeoToolkitLite\Model\Redirect" />
+    <preference for="Armah\SeoToolkitLite\Api\RedirectRepositoryInterface" type="Armah\SeoToolkitLite\Model\Repository\RedirectRepository" />
+    <preference for="Armah\SeoToolkitLite\Model\Redirect\Command\DeleteExpiredRedirectsInterface"
+                type="Armah\SeoToolkitLite\Model\Redirect\Command\DeleteExpiredRedirects" />
+    <preference for="Armah\SeoToolkitLite\Model\Redirect\Query\GetListByTargetPathInterface"
+                type="Armah\SeoToolkitLite\Model\Redirect\Query\GetListByTargetPath" />
+
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="armah_seotoolkitlite_redirect_listing_data_source"
+                      xsi:type="string">Armah\SeoToolkitLite\Model\ResourceModel\Redirect\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Armah\SeoToolkitLite\Model\ResourceModel\Redirect\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">armah_seotoolkit_redirect</argument>
+            <argument name="resourceModel" xsi:type="string">Armah\SeoToolkitLite\Model\ResourceModel\Redirect</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Eav">
+        <plugin name="Armah_SeoToolKitLite:show_attributes"
+                type="Armah\SeoToolkitLite\Plugin\Catalog\Ui\DataProvider\Product\Form\Modifier\EavPlugin"/>
+    </type>
+
+    <type name="Magento\Catalog\Model\Product">
+        <plugin name="Armah_SeoToolkitLite::redirects_for_deleted_products"
+                type="Armah\SeoToolkitLite\Plugin\Catalog\Model\Product\CreateRedirects"/>
+    </type>
+
+    <type name="Magento\Catalog\Model\Category">
+        <plugin name="Armah_SeoToolkitLite::redirects_for_deleted_categories"
+                type="Armah\SeoToolkitLite\Plugin\Catalog\Model\Category\CreateRedirects"/>
+    </type>
+</config>

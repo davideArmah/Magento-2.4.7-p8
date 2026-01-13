@@ -7,7 +7,10 @@
  * See https://hyva.io/license
  */
 -->
-<page layout="3columns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-
-
+<page layout="2columns-left"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="header.container" htmlClass="flex flex-col sticky top-0 z-50" htmlId="main-header">
+        </referenceContainer>
+    </body>
 </page>

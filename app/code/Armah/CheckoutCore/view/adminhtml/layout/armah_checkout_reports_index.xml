@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package One Step Checkout Core for Magento 2
+ */-->
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <script src="Armah_CheckoutCore::js/reports/refresh.js"/>
+        <css src="Armah_CheckoutCore::css/reports.css" />
+    </head>
+    <update handle="styles" />
+    <body>
+        <referenceContainer name="page.main.actions">
+            <container htmlClass="store-switcher" htmlTag="div">
+                <block class="Armah\CheckoutCore\Block\Adminhtml\Reports\Filters" name="adminhtml.checkout.reports.date.switcher"/>
+            </container>
+        </referenceContainer>
+        <referenceContainer name="content">
+            <uiComponent name="armah_checkout_reports"/>
+        </referenceContainer>
+    </body>
+</page>

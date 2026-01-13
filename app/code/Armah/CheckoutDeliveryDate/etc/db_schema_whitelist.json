@@ -1,0 +1,17 @@
+{
+    "armah_archeckout_delivery": {
+        "column": {
+            "id": true,
+            "order_id": true,
+            "quote_id": true,
+            "date": true,
+            "time": true,
+            "comment": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "ARMAH_ARCHKT_DELIVERY_ORDER_ID_SALES_ORDER_ENTT_ID": true,
+            "ARMAH_ARCHECKOUT_DELIVERY_QUOTE_ID_QUOTE_ENTITY_ID": true
+        }
+    }
+}

@@ -1,0 +1,12 @@
+/* Custom module styles */
+.page-layout-2columns-left,
+.page-layout-2columns-right,
+.page-layout-3columns{
+    .column.main{
+        .widget.armsorting.grid{
+            .items-wrapper{
+                @apply xl:grid-cols-3 sm:grid-cols-2 grid-cols-1;
+            }
+        }
+    }
+}

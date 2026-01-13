@@ -1,0 +1,66 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Cross Linking for Magento 2
+ */
+/* @var $block \Armah\CrossLinks\Block\Adminhtml\Link\Edit\Form\Renderer\ReferenceResource */
+$element = $block->getElement();
+$note = $element->getNote() ?
+    '<div class="note admin__field-note" id="' . $element->getId() . '-note">' . $element->getNote() . '</div>' :
+    '';
+$elementBeforeLabel = $element->getExtType() == 'checkbox admin__control-checkbox' ||
+    $element->getExtType() == 'radio admin__control-radio';
+$addOn = ($element->getBeforeElementHtml() || $element->getAfterElementHtml()) && !$element->getNoWrapAsAddon();
+$fieldId = ($element->getHtmlContainerId()) ? ' id="' . $element->getHtmlContainerId() . '"' : '';
+$fieldClass = "admin__field field field-{$element->getId()} {$element->getCssClass()}";
+$fieldClass .= ($elementBeforeLabel) ? ' choice' : '';
+$fieldClass .= ($addOn) ? ' with-addon' : '';
+$fieldClass .= ($element->getRequired()) ? ' required _required' : '';
+$fieldClass .= ($note) ? ' with-note' : '';
+$fieldClass .= (!$element->getLabelHtml()) ? ' no-label' : '';
+
+$fieldAttributes = $fieldId . ' class="' . $fieldClass . '" '
+    . $block->getUiId('form-field', $element->getId())
+    . ($element->getFieldExtraAttributes() ? ' ' . $element->getFieldExtraAttributes() : '');
+?>
+
+<script>
+    require([
+        'Armah_CrossLinks/js/reference/resource/manager',
+        <?php // Somehow, this Require initialization can work before mixins. That's why we Require them by force ?>
+        'mixins!Armah_CrossLinks/js/reference/resource/manager'
+    ], function () {
+        ResourceManager.init({
+            <?= /** @noEscape */ $block->getReferenceResourceText() ? /** @noEscape */ "referenceResourceText:'{$block->getReferenceResourceText()}'," : ''?>
+            <?= /** @noEscape */ $block->getReferenceResourceValue() ? /** @noEscape */ "referenceResourceValue:'{$block->getReferenceResourceValue()}'" : ''?>
+        });
+    })
+</script>
+
+<?php if (!$element->getNoDisplay()): ?>
+    <?php if ($element->getType() == 'hidden'): ?>
+        <?= $element->getElementHtml() ?>
+    <?php else: ?>
+        <div <?= /** @noEscape */ $fieldAttributes ?>>
+            <?php if ($elementBeforeLabel): ?>
+                <?= $element->getElementHtml() ?>
+                <?= $element->getLabelHtml('', $element->getScopeLabel()) ?>
+                <?= /** @noEscape */ $note ?>
+            <?php else: ?>
+                <?= $element->getLabelHtml('', $element->getScopeLabel()) ?>
+                <div class="admin__field-control control">
+                    <?= $element->getElementHtml(); ?>
+                    <?= $block->getCatalogFieldHtml(); ?>
+                    <?php foreach ($block->getPickerProcessors() as $pickerProcessor): ?>
+                        <?php if ($pickerProcessor->getBlockClass()): ?>
+                            <div class="<?= /* @noEscape */ $pickerProcessor->getStyleClass() ?>" style="display:none;">
+                                <?= /* @noEscape */ $block->createBlock($pickerProcessor->getBlockClass(), $pickerProcessor->getPickerBlockData()) ?>
+                            </div>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>

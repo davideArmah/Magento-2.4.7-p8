@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Cash on Delivery for Magento 2
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <cashondelivery>
+                <enable_payment_fee>0</enable_payment_fee>
+                <display_fee_at_cart>1</display_fee_at_cart>
+                <display_fee_at_sales>1</display_fee_at_sales>
+            </cashondelivery>
+        </payment>
+    </default>
+</config>

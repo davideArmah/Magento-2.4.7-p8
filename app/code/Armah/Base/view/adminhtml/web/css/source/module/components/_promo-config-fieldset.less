@@ -1,0 +1,28 @@
+//
+//  Armah Promotion Config Fieldset
+//  ______________________________________________
+
+//
+//  Variables
+//  --------------------------------------------
+@arbase__promoconfig__message__color: #adadad;
+
+//
+//  Common
+//  ----------------------------------------------
+
+& when (@media-common = true) {
+    .arpromo-config-icon.fieldset-icon {
+        float: left;
+        height: 36px;
+        margin-right: 1rem;
+        width: 36px;
+    }
+
+    .arpromo-config-fieldset-notification-message {
+        color: @arbase__promoconfig__message__color;
+        display: block;
+        font-size: 1.2rem;
+        font-weight: 400;
+    }
+}

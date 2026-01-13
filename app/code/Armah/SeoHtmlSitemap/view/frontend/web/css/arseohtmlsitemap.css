@@ -1,0 +1,103 @@
+.sitemapTree-0 li > ul {
+    padding-left: 0;
+}
+
+.sitemapSection {
+    padding-bottom: 35px;
+}
+
+.sitemapSection h2 {
+    padding-bottom: 15px;
+}
+
+
+.sitemapSection .ar-sitemap-wrap a.disabledLink {
+    color : #333333;
+    cursor: default;
+    text-decoration: none;
+}
+
+.sitemapSection .ar-sitemap-wrap a .text-highlight {
+    color: #F94D1A;
+}
+
+.ar-sitemap-cell {
+    padding: 0 5px 5px 0
+}
+
+.ar-clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+
+.ar-clearfix {
+    display: inline-block;
+    width: 100%;
+}
+
+html[xmlns] .ar-clearfix {
+    display: block;
+}
+
+* html .ar-clearfix {
+    height: 1%;
+}
+
+.htmlsitemap-search-input {
+    display: block;
+    width: 100%;
+}
+
+.htmlsitemap-search-wrapper label {
+    display: block;
+    padding-bottom: 5px;
+    font-weight: bold;
+}
+
+
+.htmlsitemap-search-wrapper {
+    margin: 0 auto;
+    width: 50%;
+    display: block;
+}
+
+.sitemapSection ul {
+    padding-left: 1.5em;
+}
+
+.sitemapSection ul li {
+    margin-left: 2em;
+}
+
+.ar-sitemap-column {
+    float: left;
+}
+
+.ar-sitemap-cell li {
+    list-style-type: none;
+    word-wrap: break-word;
+}
+
+@media screen and (max-width: 400px) {
+    .ar-sitemap-column {
+        width: 100% !important;
+    }
+
+    .ar-sitemap-cell {
+        padding-bottom: 0;
+    }
+
+    .ar-sitemap-list {
+        margin-bottom: 0;
+    }
+}
+
+@media screen and (min-width: 401px) and (max-width: 768px) {
+    .ar-sitemap-column {
+        width: 50% !important;
+    }
+}

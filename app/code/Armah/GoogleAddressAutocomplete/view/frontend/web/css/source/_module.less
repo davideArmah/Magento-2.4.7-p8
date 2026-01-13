@@ -1,0 +1,75 @@
+//
+//  Armah Google Address Autocomplete module
+//  ____________________________________________
+
+//
+//  Variables
+//  _____________________________________________
+
+@aratocomplete-text-color: @color-gray34;
+@aratocomplete-background-color: @color-white;
+@aratocomplete-icon-color: @color-gray78;
+@aratocomplete-icon-hover-color: #1979c2;
+@aratocomplete-shadow: 0 0 3px #00699d;
+@aratocomplete-item-delimiter: 1px solid #eaeaea;
+@aratocomplete-item-hover-color: #e8f6ff;
+
+//
+//  Common
+//  --------------------------------------------
+
+& when (@media-common = true) {
+    .arautocomplete-suggestions-container {
+        & {
+            padding-top: .4rem;
+            position: absolute;
+            z-index: 1;
+        }
+
+        .arautocomplete-suggestions-list {
+            background: @aratocomplete-background-color;
+            border: 1px solid @color-gray80;
+            box-sizing: border-box;
+            cursor: pointer;
+            filter: drop-shadow(@aratocomplete-shadow);
+            list-style: none;
+            padding: .1rem;
+        }
+    }
+
+    .arautocomplete-suggestions-container .arautocomplete-suggestions-list li {
+        & {
+            .lib-icon-font(@icon-location, @_icon-font-color-hover: @aratocomplete-icon-hover-color, @_icon-font-color: @aratocomplete-icon-color, @_icon-font-display: flex, @_icon-font-size: 14px);
+            align-items: flex-start;
+            align-self: stretch;
+            border-bottom: @aratocomplete-item-delimiter;
+            display: flex;
+            flex-direction: row;
+            gap: 9px;
+            margin: 0;
+            padding: 9px;
+        }
+
+        &:before {
+            flex-shrink: 0;
+        }
+
+        &.-active:before {
+            color: @aratocomplete-icon-hover-color;
+        }
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        &:hover,
+        &.-active {
+            background: @aratocomplete-item-hover-color;
+        }
+
+        &:active,
+        &.-active {
+            box-shadow: @aratocomplete-shadow;
+        }
+    }
+}

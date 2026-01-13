@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package One Step Checkout Delivery Date for Magento 2 (System)
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:armah:module:Armah_Base:etc/less_to_css.xsd">
+    <module name="Armah_CheckoutDeliveryDate">
+        <handle name="checkout_index_index" />
+        <cssOptions fileName="archeckoutdd" path="css/source/mkcss" />
+        <ifconfig>armah_checkout/delivery_date/enabled</ifconfig>
+    </module>
+</config>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) 2023 armah (https://www.armah.it)
+ * @package One Step Checkout Gift Wrap for Magento 2 (System)
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Armah\CheckoutGiftWrap\Api\GiftWrapInformationManagementInterface"
+                type="Armah\CheckoutGiftWrap\Model\GiftWrapInformationManagement" />
+    <preference for="Armah\CheckoutGiftWrap\Api\GuestGiftWrapInformationManagementInterface"
+                type="Armah\CheckoutGiftWrap\Model\GuestGiftWrapInformationManagement" />
+
+    <preference for="Armah\CheckoutGiftWrap\Api\GiftMessageInformationManagementInterface"
+                type="Armah\CheckoutGiftWrap\Model\GiftMessageInformationManagement" />
+    <preference for="Armah\CheckoutGiftWrap\Api\GuestGiftMessageInformationManagementInterface"
+                type="Armah\CheckoutGiftWrap\Model\GuestGiftMessageInformationManagement" />
+
+    <type name="Armah\CheckoutGiftWrap\Model\GiftWrapInformationManagement">
+        <arguments>
+            <argument name="giftWrapProvider" xsi:type="object">Armah\CheckoutGiftWrap\Model\GiftWrapProvider</argument>
+        </arguments>
+    </type>
+</config>

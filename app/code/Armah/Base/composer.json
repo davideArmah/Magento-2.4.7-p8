@@ -1,0 +1,22 @@
+{
+    "name": "armah/base",
+    "description": "Base by Armah",
+    "require": {
+        "php": ">=7.4",
+        "ext-dom": "*",
+        "monolog/monolog": ">=1.17"
+    },
+    "type": "magento2-module",
+    "version": "1.21.0",
+    "license": [
+        "proprietary"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Armah\\Base\\": ""
+        }
+    }
+}

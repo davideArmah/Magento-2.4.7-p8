@@ -1,0 +1,19 @@
+<div class="archeckout-delivery-date" data-bind="blockLoader: isLoading">
+    <div class="archeckout-title-container">
+        <p class="step-title archeckout-title"
+           data-archeckout-js="step-title"
+           data-bind="i18n: getDeliveryDateName()"
+           data-role="title"></p>
+    </div>
+
+    <div class="step-content archeckout-content"
+         data-archeckout-js="step-content"
+         data-bind="mageInit: {'checkoutCollapsibleSteps': {}}">
+        <div class="archeckout-wrapper">
+            <each args="data: elems, as: 'element'">
+                <render if="hasTemplate()"></render>
+            </each>
+            <div class="clearer"></div>
+        </div>
+    </div>
+</div>

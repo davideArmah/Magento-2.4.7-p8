@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package One Step Checkout Core for Magento 2
+ */-->
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="img-src">
+            <values>
+                <value id="data" type="host">data:</value>
+            </values>
+        </policy>
+        <policy id="script-src">
+            <values>
+                <!-- @see \Armah\CheckoutCore\Plugin\Framework\View\Page\Config\Renderer\DisableJsMixins -->
+                <value id="armah-disable-osc" type="hash" algorithm="sha256">XGfPSYcBWPq7sx/ucAvvEcAKkiSRS2GeZReWO0f5vXQ=</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

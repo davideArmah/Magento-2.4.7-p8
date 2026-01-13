@@ -1,0 +1,64 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah
+ * @package Improved Sorting Hyva Compatibility by Armah
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Armah\Sorting\Block\Direction;
+
+/** @var Escaper $escaper */
+/** @var Direction $block */
+/** @var ViewModelRegistry $viewModels */
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+?>
+<script>
+    function armSortingDirection() {
+        return {
+            selectors: {
+                sorterDirection: '.sorter-action',
+                sorterSelect: '.sorter-options'
+            },
+            directionElement: false,
+            selectElement: false,
+            permanentDirectionAttributes: <?= /** @noEscape */ $block->getPermanentDirectionAttributesJson() ?>,
+
+            initArmSortingDirection() {
+                this.directionElement = this.$el.querySelector(this.selectors.sorterDirection);
+                this.selectElement = this.$el.querySelector(this.selectors.sorterSelect);
+                this.toggleDirectionSwitcher(this.selectElement.value);
+                this.observeSortOrder();
+            },
+
+            /**
+             * Observe select change and trigger directions
+             */
+            observeSortOrder() {
+                this.selectElement.addEventListener('change', (event) => {
+                    this.toggleDirectionSwitcher(event.target.value);
+                })
+            },
+
+            /**
+             * Check sort method and hide direction link in case asc, desc initial option selected
+             *
+             * @param sortMethod {string}
+             */
+            toggleDirectionSwitcher(sortMethod) {
+                if (this.permanentDirectionAttributes.includes(sortMethod)) {
+                    this.directionElement.classList.add('opacity-0');
+                    this.directionElement.classList.add('pointer-events-none');
+                } else {
+                    this.directionElement.classList.remove('opacity-0');
+                    this.directionElement.classList.remove('pointer-events-none');
+                }
+            }
+        }
+    }
+</script>
+<?php isset($hyvaCsp) && $hyvaCsp->registerInlineScript() ?>

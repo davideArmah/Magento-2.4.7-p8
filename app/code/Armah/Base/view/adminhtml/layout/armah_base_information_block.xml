@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <block class="Armah\Base\Block\Adminhtml\System\Config\InformationBlocks\Basic" name="arinfotab.basic">
+            <action method="setClass">
+                <argument name="class" xsi:type="string">armah-info-block</argument>
+            </action>
+            <block class="Armah\Base\Block\Adminhtml\System\Config\InformationBlocks\VersionInfo" name="arinfotab.version"/>
+            <block class="Armah\Base\Block\Adminhtml\System\Config\InformationBlocks\ExistingConflicts" name="arinfotab.conflicts"/>
+            <block class="Armah\Base\Block\Adminhtml\System\Config\InformationBlocks\Basic" name="arinfotab.buttons.wrapper">
+                <action method="setClass">
+                    <argument name="class" xsi:type="string">arbase-buttons-container</argument>
+                </action>
+                <block class="Armah\Base\Block\Adminhtml\System\Config\InformationBlocks\UserGuide" name="arinfotab.guide"/>
+            </block>
+        </block>
+    </body>
+</page>

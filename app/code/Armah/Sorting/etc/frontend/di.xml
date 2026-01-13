@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah 
+ * @package Improved Sorting for Magento 2
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Catalog\Block\Product\ProductList\Toolbar">
+        <plugin name="Armah_Sorting::catalogToolbar" type="Armah\Sorting\Plugin\Catalog\Product\ProductList\Toolbar"/>
+    </type>
+
+    <type name="Magento\Catalog\Model\ResourceModel\Product\Collection">
+        <plugin name="Armah_Sorting::SortingMethodsProcessor" type="Armah\Sorting\Plugin\Catalog\Product\Collection"/>
+    </type>
+    <type name="Armah\Sorting\Plugin\CatalogSearch\Model\ResourceModel\Fulltext\Collection\ApplySorting">
+        <arguments>
+            <argument name="isFulltextCollection" xsi:type="boolean">true</argument>
+        </arguments>
+    </type>
+    <type name="Magento\CatalogSearch\Model\ResourceModel\Fulltext\Collection">
+        <plugin name="Armah_Sorting::SortingMethodsProcessor"
+                type="Armah\Sorting\Plugin\CatalogSearch\Model\ResourceModel\Fulltext\Collection\ApplySorting"/>
+    </type>
+    <type name="Armah\Shopby\Model\ResourceModel\Fulltext\Collection">
+        <plugin name="Armah_Sorting::SortingMethodsProcessor"
+                type="Armah\Sorting\Plugin\CatalogSearch\Model\ResourceModel\Fulltext\Collection\ApplySorting"/>
+    </type>
+    <type name="Armah\ShopbyLite\Model\ResourceModel\Fulltext\Collection">
+        <plugin name="Armah_Sorting::SortingMethodsProcessor"
+                type="Armah\Sorting\Plugin\CatalogSearch\Model\ResourceModel\Fulltext\Collection\ApplySorting"/>
+    </type>
+
+    <type name="Magento\Catalog\Model\ResourceModel\Product\Collection">
+        <plugin name="Armah_Sorting::prevent_double_sort"
+                type="Armah\Sorting\Plugin\Catalog\Model\ResourceModel\Product\Collection\PreventDoubleSort" />
+    </type>
+    <type name="Magento\CatalogSearch\Block\Result">
+        <plugin name="Armah_Sorting::SetDefaultSortBy" type="Armah\Sorting\Plugin\Block\Result"/>
+    </type>
+    <type name="Magento\Catalog\Helper\Product\ProductList">
+        <plugin name="Armah_Sorting::GetDefaultSortField" type="Armah\Sorting\Plugin\Catalog\Helper\Product\ProductList"/>
+    </type>
+    <type name="Magento\Catalog\Block\Product\ListProduct">
+        <plugin name="Armah_Sorting::AddIdentities" type="Armah\Sorting\Plugin\Catalog\Product\ListProduct"/>
+    </type>
+    <type name="Magento\Catalog\Model\Category">
+        <plugin name="Armah_Sorting::sort_available_options" type="Armah\Sorting\Plugin\Catalog\Model\Category\SortAvailableOptions"/>
+    </type>
+
+    <type name="Armah\Xsearch\Block\Search\Product">
+        <plugin name="Armah_Sorting::AddSortOrders"
+                type="Armah\Sorting\Plugin\Xsearch\Block\Search\Product\AddSortOrders"/>
+    </type>
+    <type name="Armah\Xsearch\Model\Adapter\Product">
+        <plugin name="Armah_Sorting::AddSortOrders"
+                type="Armah\Sorting\Plugin\Xsearch\Model\Adapter\Product\AddSortOrders"/>
+    </type>
+    <type name="Armah\Sorting\Plugin\Xsearch\Model\Adapter\Product\AddSortOrders">
+        <arguments>
+            <argument name="getDefaultSortOrders"
+                      xsi:type="object">Armah\Sorting\Model\Method\GetAllSortOrders</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="Armah\Sorting\Model\Method\GetAllSortOrders"
+                 type="Armah\Sorting\Model\Method\GetDefaultSortOrders">
+        <arguments>
+            <argument name="withHighOrders" xsi:type="boolean">true</argument>
+        </arguments>
+    </virtualType>
+</config>

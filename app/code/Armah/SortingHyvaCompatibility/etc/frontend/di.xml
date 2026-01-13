@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah
+ * @package Improved Sorting Hyva Compatibility by Armah
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Hyva\CompatModuleFallback\Model\CompatModuleRegistry">
+        <arguments>
+            <argument name="compatModules" xsi:type="array">
+                <item name="armah-sorting-hyva-compatibility" xsi:type="array">
+                    <item name="original_module" xsi:type="string">Armah_Sorting</item>
+                    <item name="compat_module" xsi:type="string">Armah_SortingHyvaCompatibility</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Catalog\Block\Product\ProductList\Toolbar">
+        <plugin name="Armah_SortingHyvaCompatibility::wrapSorter"
+                type="Armah\SortingHyvaCompatibility\Plugin\SorterWrapper"/>
+    </type>
+</config>

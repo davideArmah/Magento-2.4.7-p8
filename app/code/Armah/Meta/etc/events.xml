@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Meta Tags Templates for Magento 2
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+
+    <event name="catalog_product_save_after">
+        <observer name="Armah_Meta::AfterProductSave" instance="Armah\Meta\Observer\Catalog\Product\AfterSave"/>
+    </event>
+
+    <event name="catalog_product_save_before">
+        <observer name="Armah_Meta::AfterProductBefore" instance="Armah\Meta\Observer\Catalog\Product\BeforeSave"/>
+    </event>
+
+    <event name="catalog_controller_category_init_after">
+        <observer name="Armah_Meta::CategoryInitAfter" instance="Armah\Meta\Observer\Catalog\Category\InitAfter"/>
+    </event>
+
+    <event name="catalog_controller_product_view">
+        <observer name="Armah_Meta::ProductView" instance="Armah\Meta\Observer\Catalog\Product\View"/>
+    </event>
+
+    <event name="catalog_product_import_bunch_save_after">
+        <observer name="Armah_Meta::ChangeUrlKeyAfterImport" instance="Armah\Meta\Observer\Catalog\Product\Import"/>
+    </event>
+</config>

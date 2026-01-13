@@ -8,6 +8,7 @@
     ],
     "config": {
         "allow-plugins": {
+            "cweagans/composer-patches": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "laminas/laminas-dependency-plugin": true,
             "magento/*": true,
@@ -18,9 +19,25 @@
     },
     "version": "2.4.7-p8",
     "require": {
-        "magento/product-community-edition": "2.4.7-p8",
+        "aitoc/smtp": "^1.0",
+        "cweagans/composer-patches": "^2.0",
+        "feedaty/module-badge2": "^2.10",
+        "magento/composer-dependency-version-audit-plugin": "~0.1",
         "magento/composer-root-update-plugin": "^2.0.4",
-        "magento/composer-dependency-version-audit-plugin": "~0.1"
+        "magento/product-community-edition": "2.4.7-p8",
+        "mageplaza/magento-2-italian-language-pack": "dev-master",
+        "magestyapps/module-web-images": "^1.2",
+        "hyva-themes/hyva-ui": "^2.6",
+        "hyva-themes/i18n-it-it": "dev-main",
+        "hyva-themes/magento2-cms-tailwind-jit": "^1.2",
+        "hyva-themes/magento2-compat-module-fallback": "^1.1",
+        "hyva-themes/magento2-default-theme": "^1.3",
+        "hyva-themes/magento2-heroicons2": "^1.0",
+        "hyva-themes/magento2-klaviyo-reclaim": "^1.0",
+        "hyva-themes/magento2-luma-checkout": "^1.1",
+        "hyva-themes/magento2-theme-fallback": "^1.0",
+        "scalapay/scalapay-magento-2": "^4.2",
+        "xtento/productexport": "^2.17"
     },
     "autoload": {
         "exclude-from-classmap": [
@@ -42,15 +59,6 @@
         }
     },
     "require-dev": {
-        "hyva-themes/magento2-reset-theme": "^1.1.10",
-        "hyva-themes/magento2-theme-fallback": "dev-main",
-        "hyva-themes/magento2-luma-checkout": "dev-main",
-        "hyva-themes/magento2-cms-tailwind-jit": "dev-main",
-        "hyva-themes/i18n-it-it": "dev-main",
-        "hyva-themes/magento2-theme-module": "^1.3.16",
-        "hyva-themes/magento2-compat-module-fallback": "^1.1.3",
-        "hyva-themes/magento2-default-theme": "^1.3.16",
-        "hyva-themes/magento2-mollie-theme-bundle": "^1.0.1",
         "allure-framework/allure-phpunit": "^2",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7 || ^1.0",
         "dg/bypass-finals": "^1.4",
@@ -81,28 +89,20 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "repositories": {
-        "local-src": {
-            "type": "path",
-            "url": "artifact/*",
-            "options": {
-                "versions": {
-                    "hyva-themes/magento2-reset-theme": "1.1.10",
-                    "hyva-themes/magento2-theme-module": "1.3.16",
-                    "hyva-themes/magento2-default-theme": "1.3.16",
-                    "hyva-themes/magento2-mollie-theme-bundle": "1.0.1",
-                    "hyva-themes/magento2-email-module": "1.0.5",
-                    "hyva-themes/magento2-order-cancellation-webapi": "1.0.0",
-                    "hyva-themes/magento2-compat-module-fallback": "1.1.3"
-                }
-            }
+        "private-packagist": {
+            "type": "composer",
+            "url": "https://hyva-themes.repo.packagist.com/carrellodigitale-it/"
         },
         "0":{
             "type": "composer",
             "url": "https://repo.magento.com/"
+        },
+        "xtento": {
+            "type": "composer",
+            "url": "https://repo.xtento.com"
         }
     },
     "extra": {
         "magento-force": "override"
     }
 }
-

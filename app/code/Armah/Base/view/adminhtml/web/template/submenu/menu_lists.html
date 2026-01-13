@@ -1,0 +1,14 @@
+<div class="arbase-menu-container" afterRender="afterRender.bind($data)">
+    <!-- ko ifnot: noSearchResults -->
+        <!-- ko scope: 'arbase_solutions' -->
+            <!-- ko template: { name: templates.list } --><!-- /ko-->
+        <!-- /ko-->
+        <!-- ko scope: 'arbase_simples' -->
+            <!-- ko template: { name: templates.list } --><!-- /ko-->
+        <!-- /ko -->
+        <!-- ko scope: 'arbase_links' -->
+            <!-- ko template: { name: templates.list } --><!-- /ko-->
+        <!-- /ko -->
+    <!-- /ko -->
+    <p class="arbase-notice" data-bind="visible: $data.noSearchResults, i18n: 'Sorry, no products were found.'"></p>
+</div>

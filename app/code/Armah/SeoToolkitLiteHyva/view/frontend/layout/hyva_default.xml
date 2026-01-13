@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.com)
+ * @package Seo Toolkit Core Hyva Compatibility
+ */-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="before.body.end">
+            <block name="armah.seotoolkit.toolbar.js" template="Armah_SeoToolkitLiteHyva::js/toolbar.phtml" />
+            <block name="armah.seotoolkit.button.js" template="Armah_SeoToolkitLiteHyva::js/button.phtml" />
+        </referenceContainer>
+    </body>
+</page>

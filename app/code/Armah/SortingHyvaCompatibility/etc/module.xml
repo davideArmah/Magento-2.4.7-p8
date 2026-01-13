@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah
+ * @package Improved Sorting Hyva Compatibility by Armah
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+    <module name="Armah_SortingHyvaCompatibility">
+        <sequence>
+            <module name="Armah_Sorting"/>
+            <module name="Hyva_CompatModuleFallback"/>
+        </sequence>
+    </module>
+</config>

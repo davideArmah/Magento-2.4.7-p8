@@ -1,0 +1,47 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package HTML Sitemap for Magento 2
+ */
+
+use Magento\Framework\Escaper;
+use Armah\SeoHtmlSitemap\Block\Adminhtml\Form\Field\Position;
+
+/** @var Escaper $escaper */
+/** @var Position $block */
+?>
+<td class="label">
+    <label><?= $escaper->escapeHtml(__('Sorting Order')) ?></label>
+</td>
+<td colspan="3">
+    <table class="arseohtml-sort-order" id="arseohtml-sort-order">
+        <?php foreach ($block->getPositions() as $key => $index): ?>
+            <tr>
+                <th>
+                </th>
+                <td class="item-position">
+                    <?= $escaper->escapeHtml($index) ?>
+                    <div class="draggable"></div>
+                    <input type="hidden"
+                           name="<?= $escaper->escapeHtmlAttr($block->getNamePrefix($key)) ?>"
+                           value="<?= $escaper->escapeHtmlAttr($index) ?>">
+                </td>
+                <th style="min-width: 69px; visibility: hidden;"></th>
+            </tr>
+        <?php endforeach ?>
+    </table>
+</td>
+<script>
+    require([
+        'jquery',
+        'collapsable'
+    ], function ($) {
+        $('#arseohtml-sort-order').sortable({
+            axis: 'y',
+            handle: '.item-position',
+            items: 'tr',
+            tolerance: 'pointer'
+        });
+    });
+</script>

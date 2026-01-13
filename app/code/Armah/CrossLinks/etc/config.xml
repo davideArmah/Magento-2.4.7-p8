@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Cross Linking for Magento 2
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <armah_cross_links>
+            <general>
+                <label>General</label>
+                <enabled>0</enabled>
+                <product_replacement_limit>10</product_replacement_limit>
+                <category_replacement_limit>10</category_replacement_limit>
+                <cms_page_replacement_limit>10</cms_page_replacement_limit>
+            </general>
+            <faq>
+                <replacement_limit>10</replacement_limit>
+            </faq>
+            <blog>
+                <replacement_limit>10</replacement_limit>
+            </blog>
+            <custom_tab>
+                <replacement_limit>10</replacement_limit>
+            </custom_tab>
+            <advanced>
+                <regexpr><![CDATA[[A-Za-z0-9]+]]></regexpr>
+            </advanced>
+        </armah_cross_links>
+    </default>
+</config>

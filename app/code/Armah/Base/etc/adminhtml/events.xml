@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="armah_base_add_information_content">
+        <observer name="armah_base_add_information_content" instance="Armah\Base\Observer\GenerateInformationTab"/>
+    </event>
+
+    <event name="controller_action_predispatch">
+        <observer name="armah_base_admin_notification"
+                  instance="Armah\Base\Observer\PreDispatchAdminActionController" />
+    </event>
+
+    <event name="admin_system_config_changed_section_armah_products">
+        <observer name="Armah_Base::sendVerifyRequest" instance="Armah\Base\Observer\Adminhtml\SendVerifyRequest"/>
+    </event>
+    <event name="layout_load_before">
+        <observer name="Armah_Base::MarkAdminTheme" instance="Armah\Base\Observer\Adminhtml\MarkAdminTheme"/>
+    </event>
+</config>

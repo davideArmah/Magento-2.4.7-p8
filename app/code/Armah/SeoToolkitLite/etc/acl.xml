@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package SEO Toolkit Base for Magento 2
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Magento_Backend::content">
+                    <resource id="Armah_SeoToolkitLite::seotoolkitlite" title="Armah SEO Base Settings" />
+                </resource>
+                <resource id="Magento_Backend::stores">
+                    <resource id="Magento_Backend::stores_settings">
+                        <resource id="Magento_Config::config">
+                            <resource id="Armah_SeoToolkitLite::config" title="Armah SEO Base Settings" sortOrder="190520" />
+                        </resource>
+                    </resource>
+                </resource>
+                <resource id="Magento_Backend::marketing">
+                    <resource id="Armah_SeoToolkitLite::seo" title="Armah SEO Base Settings">
+                        <resource id="Armah_SeoToolkitLite::redirects" title="Manage Redirects" sortOrder="190520">
+                            <resource id="Armah_SeoToolkitLite::redirect_management" title="Manage Redirects" translate="title" sortOrder="10"/>
+                        </resource>
+                    </resource>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

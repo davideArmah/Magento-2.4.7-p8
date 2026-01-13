@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) 2023 Armah (https://www.armah.it)
+ * @package Cron Schedule List for Magento 2 (System) 
+ */-->
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Armah_CronScheduleList::css/messages.css"/>
+    </head>
+    <body>
+        <referenceContainer name="content">
+            <block class="Armah\CronScheduleList\Block\Adminhtml\Advertising" name="armah_cron_advertising"/>
+            <block class="Armah\CronScheduleList\Block\Adminhtml\Notice" name="armah_cron_notice" template="Armah_CronScheduleList::notice.phtml" />
+            <uiComponent name="armah_cronschedulelist_schedule_listing"/>
+        </referenceContainer>
+    </body>
+</page>

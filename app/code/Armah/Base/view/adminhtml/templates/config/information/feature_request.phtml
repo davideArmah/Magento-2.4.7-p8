@@ -1,0 +1,13 @@
+<?php
+
+/** @var \Armah\Base\Block\Adminhtml\System\Config\InformationBlocks\FeatureRequest $block */
+/** @var \Magento\Framework\Escaper $escaper */
+?>
+<?php if (!$block->isOriginMarketplace()): ?>
+    <a href="<?= $escaper->escapeUrl($block->getFeatureRequestLink()) ?>"
+       class="arbase-button"
+       target="_blank"
+       title="<?= $escaper->escapeHtmlAttr(__("Request New Feature")) ?>">
+        <?= $escaper->escapeHtml(__("Request New Feature")) ?>
+    </a>
+<?php endif; ?>

@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package One Step Checkout Core for Magento 2
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <type name="Magento\Checkout\Block\Onepage">
+        <arguments>
+            <argument name="layoutProcessors" xsi:type="array">
+                <item name="addressFormAttributes" xsi:type="object">Armah\CheckoutCore\Cache\CachedLayoutProcessor\AddressFormAttributes</item>
+                <item name="directoryData" xsi:type="object">Armah\CheckoutCore\CachedLayoutProcessor\DirectoryData</item>
+                <item name="armahCheckout" sortOrder="100" xsi:type="object">Armah\CheckoutCore\CachedLayoutProcessor\ArmahCheckout</item>
+                <item name="armahCheckoutCustomer" sortOrder="101" xsi:type="object">Armah\CheckoutCore\Block\Onepage\CustomerProcessor</item>
+                <item name="armahCheckoutCaptcha" sortOrder="110" xsi:type="object">Armah\CheckoutCore\CachedLayoutProcessor\ReCaptchaProcessor</item>
+            </argument>
+        </arguments>
+    </type>
+<!--    Checkout Cache with wrapper. START -->
+    <type name="Armah\CheckoutCore\Cache\CachedLayoutProcessor\AddressFormAttributes">
+        <arguments>
+            <argument name="processorClass" xsi:type="string">Magento\Checkout\Block\Checkout\LayoutProcessor</argument>
+            <argument name="attributeValueUpdate" xsi:type="object">Armah\CheckoutCore\Cache\CachedLayoutProcessor\AddressFormAttributes\DefaultAttributeValueUpdate\Proxy</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\StoreId</item>
+                <item name="is_logged" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\IsLoggedIn</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Armah\CheckoutCore\CachedLayoutProcessor\ArmahCheckout" type="Armah\CheckoutCore\Cache\Wrappers\LayoutProcessorCacheWrapper">
+        <arguments>
+            <argument name="processorClass" xsi:type="string">Armah\CheckoutCore\Block\Onepage\LayoutProcessor</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\StoreId</item>
+                <item name="is_logged" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\IsLoggedIn</item>
+                <item name="is_quote_virtual" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\IsVirtual</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Armah\CheckoutCore\CachedLayoutProcessor\DirectoryData" type="Armah\CheckoutCore\Cache\Wrappers\LayoutProcessorCacheWrapper">
+        <arguments>
+            <argument name="processorClass" xsi:type="string">Magento\Checkout\Block\Checkout\DirectoryDataProcessor</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\StoreId</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Armah\CheckoutCore\CachedConfigProvider\ArmahCheckout" type="Armah\CheckoutCore\Cache\Wrappers\ConfigProviderCacheWrapper">
+        <arguments>
+            <argument name="originalClass" xsi:type="string">Armah\CheckoutCore\Model\ConfigProvider</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\StoreId</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Armah\CheckoutCore\CachedLayoutProcessor\ReCaptchaProcessor" type="Armah\CheckoutCore\Cache\Wrappers\LayoutProcessorCacheWrapper">
+        <arguments>
+            <argument name="processorClass" xsi:type="string">Armah\CheckoutCore\Block\Onepage\ReCaptchaProcessor</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\StoreId</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Armah\CheckoutCore\CachedConfigProvider\ArmahCheckoutGdpr" type="Armah\CheckoutCore\Cache\Wrappers\ConfigProviderCacheWrapper">
+        <arguments>
+            <argument name="originalClass" xsi:type="string">Armah\CheckoutCore\Model\CheckoutConfigProvider\Gdpr</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\StoreId</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Armah\CheckoutCore\CachedConfigProvider\ArmahCheckoutCaptcha" type="Armah\CheckoutCore\Cache\Wrappers\ConfigProviderCacheWrapper">
+        <arguments>
+            <argument name="originalClass" xsi:type="string">Armah\CheckoutCore\Model\CheckoutConfigProvider\Captcha</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\StoreId</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayPal\Braintree\Model\Ui\ConfigProviderDiWrapper" type="Armah\Base\Model\Di\Wrapper">
+        <arguments>
+            <argument name="name" xsi:type="string">PayPal\Braintree\Model\Ui\ConfigProvider</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Armah\CheckoutCore\CachedConfigProvider\PayPalBraintree\ConfigProvider" type="Armah\CheckoutCore\Cache\Wrappers\ConfigProviderCacheWrapper">
+        <arguments>
+            <argument name="originalClass" xsi:type="string">PayPal\Braintree\Model\Ui\ConfigProviderDiWrapper</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\StoreId</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayPal\Braintree\Model\Ui\PayPal\ConfigProviderDiWrapper" type="Armah\Base\Model\Di\Wrapper">
+        <arguments>
+            <argument name="name" xsi:type="string">PayPal\Braintree\Model\Ui\PayPal\ConfigProvider</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Armah\CheckoutCore\CachedConfigProvider\PayPalBraintree\PayPalConfigProvider" type="Armah\CheckoutCore\Cache\Wrappers\ConfigProviderCacheWrapper">
+        <arguments>
+            <argument name="originalClass" xsi:type="string">PayPal\Braintree\Model\Ui\PayPal\ConfigProviderDiWrapper</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\StoreId</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayPal\Braintree\Model\ApplePay\Ui\ConfigProviderDiWrapper" type="Armah\Base\Model\Di\Wrapper">
+        <arguments>
+            <argument name="name" xsi:type="string">PayPal\Braintree\Model\ApplePay\Ui\ConfigProvider</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Armah\CheckoutCore\CachedConfigProvider\PayPalBraintree\ApplePayConfigProvider" type="Armah\CheckoutCore\Cache\Wrappers\ConfigProviderCacheWrapper">
+        <arguments>
+            <argument name="originalClass" xsi:type="string">PayPal\Braintree\Model\ApplePay\Ui\ConfigProviderDiWrapper</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\StoreId</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayPal\Braintree\Model\GooglePay\Ui\ConfigProviderDiWrapper" type="Armah\Base\Model\Di\Wrapper">
+        <arguments>
+            <argument name="name" xsi:type="string">PayPal\Braintree\Model\GooglePay\Ui\ConfigProvider</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Armah\CheckoutCore\CachedConfigProvider\PayPalBraintree\GooglePayConfigProvider" type="Armah\CheckoutCore\Cache\Wrappers\ConfigProviderCacheWrapper">
+        <arguments>
+            <argument name="originalClass" xsi:type="string">PayPal\Braintree\Model\GooglePay\Ui\ConfigProviderDiWrapper</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\StoreId</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayPal\Braintree\Model\Venmo\Ui\ConfigProviderDiWrapper" type="Armah\Base\Model\Di\Wrapper">
+        <arguments>
+            <argument name="name" xsi:type="string">PayPal\Braintree\Model\Venmo\Ui\ConfigProvider</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Armah\CheckoutCore\CachedConfigProvider\PayPalBraintree\VenmoConfigProvider" type="Armah\CheckoutCore\Cache\Wrappers\ConfigProviderCacheWrapper">
+        <arguments>
+            <argument name="originalClass" xsi:type="string">PayPal\Braintree\Model\Venmo\Ui\ConfigProviderDiWrapper</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\StoreId</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayPal\Braintree\Model\Ui\ThreeDeeSecure\ConfigProviderDiWrapper" type="Armah\Base\Model\Di\Wrapper">
+        <arguments>
+            <argument name="name" xsi:type="string">PayPal\Braintree\Model\Ui\ThreeDeeSecure\ConfigProvider</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Armah\CheckoutCore\CachedConfigProvider\PayPalBraintree\ThreeDeeSecureConfigProvider" type="Armah\CheckoutCore\Cache\Wrappers\ConfigProviderCacheWrapper">
+        <arguments>
+            <argument name="originalClass" xsi:type="string">PayPal\Braintree\Model\Ui\ThreeDeeSecure\ConfigProviderDiWrapper</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\StoreId</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayPal\Braintree\Model\Ach\Ui\ConfigProviderDiWrapper" type="Armah\Base\Model\Di\Wrapper">
+        <arguments>
+            <argument name="name" xsi:type="string">PayPal\Braintree\Model\Ach\Ui\ConfigProvider</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Armah\CheckoutCore\CachedConfigProvider\PayPalBraintree\AchConfigProvider" type="Armah\CheckoutCore\Cache\Wrappers\ConfigProviderCacheWrapper">
+        <arguments>
+            <argument name="originalClass" xsi:type="string">PayPal\Braintree\Model\Ach\Ui\ConfigProviderDiWrapper</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\StoreId</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayPal\Braintree\Model\Lpm\Ui\ConfigProviderDiWrapper" type="Armah\Base\Model\Di\Wrapper">
+        <arguments>
+            <argument name="name" xsi:type="string">PayPal\Braintree\Model\Lpm\Ui\ConfigProvider</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Armah\CheckoutCore\CachedConfigProvider\PayPalBraintree\LpmConfigProvider" type="Armah\CheckoutCore\Cache\Wrappers\ConfigProviderCacheWrapper">
+        <arguments>
+            <argument name="originalClass" xsi:type="string">PayPal\Braintree\Model\Lpm\Ui\ConfigProviderDiWrapper</argument>
+            <argument name="cacheVariators" xsi:type="array">
+                <item name="store_id" xsi:type="object">Armah\CheckoutCore\Cache\ConditionVariator\StoreId</item>
+            </argument>
+        </arguments>
+    </virtualType>
+<!--    Checkout Cache with wrapper. FINISH -->
+
+    <type name="Armah\CheckoutCore\Block\Frontend\Customer\Address\Edit\CustomFields">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="view_model" xsi:type="object">Armah\CheckoutCore\ViewModel\Frontend\Customer\Address\Edit\CustomFields</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="Armah\CheckoutCore\CaptchaUiConfigResolver" type="Armah\Base\Model\Di\Wrapper">
+        <arguments>
+            <argument name="name" xsi:type="string">Magento\ReCaptchaUi\Model\UiConfigResolverInterface</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Armah\CheckoutCore\IsCaptchaEnabled" type="Armah\Base\Model\Di\Wrapper">
+        <arguments>
+            <argument name="name" xsi:type="string">Magento\ReCaptchaUi\Model\IsCaptchaEnabledInterface</argument>
+        </arguments>
+    </virtualType>
+    <type name="Armah\CheckoutCore\Block\Onepage\ReCaptchaProcessor">
+        <arguments>
+            <argument name="captchaUiConfigResolver" xsi:type="object">Armah\CheckoutCore\CaptchaUiConfigResolver</argument>
+            <argument name="isCaptchaEnabled" xsi:type="object">Armah\CheckoutCore\IsCaptchaEnabled</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Checkout\Block\Checkout\AttributeMerger">
+        <plugin name="Armah_CheckoutCore::AttributeMerger" type="Armah\CheckoutCore\Plugin\Checkout\Block\Checkout\AttributeMerger" />
+    </type>
+    <type name="Magento\Checkout\Block\Checkout\LayoutProcessor">
+        <plugin name="Armah_CheckoutCore::LayoutProcessor" type="Armah\CheckoutCore\Plugin\Checkout\Block\Checkout\LayoutProcessor" />
+    </type>
+
+    <type name="Magento\Checkout\Block\Cart\LayoutProcessor">
+        <plugin name="Armah_CheckoutCore::CartLayoutProcessor" type="Armah\CheckoutCore\Plugin\Checkout\Block\Cart\CartLayoutProcessor" />
+    </type>
+
+    <type name="Magento\Checkout\Model\DefaultConfigProvider">
+        <plugin name="Armah_CheckoutCore::DefaultConfigProvider" type="Armah\CheckoutCore\Plugin\Checkout\Model\DefaultConfigProvider" />
+    </type>
+
+    <type name="Magento\Checkout\Controller\Onepage\Success">
+        <plugin name="Armah_CheckoutCore::SuccessPlugin" type="Armah\CheckoutCore\Plugin\Checkout\Controller\Onepage\SuccessPlugin" />
+    </type>
+
+    <type name="Magento\Framework\View\Page\Config\Renderer">
+        <plugin name="Armah_CheckoutCore::DisableJsMixins" type="Armah\CheckoutCore\Plugin\Framework\View\Page\Config\Renderer\DisableJsMixins" />
+    </type>
+    <type name="Magento\RequireJs\Model\FileManager">
+        <plugin name="Armah_CheckoutCore::merge-js" type="Armah\CheckoutCore\Plugin\RequireJs\Model\FileManagerPlugin"/>
+    </type>
+    <type name="Magento\Framework\View\Asset\ConfigInterface">
+        <plugin name="armahCheckoutConfigInterface" type="Armah\CheckoutCore\Plugin\Framework\View\Asset\ConfigInterfacePlugin"/>
+    </type>
+
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="armah_checkout" xsi:type="object">Armah\CheckoutCore\CachedConfigProvider\ArmahCheckout</item>
+                <item name="armah_checkout_gdpr" xsi:type="object">Armah\CheckoutCore\CachedConfigProvider\ArmahCheckoutGdpr</item>
+                <item name="armah_checkout_captcha" xsi:type="object">Armah\CheckoutCore\CachedConfigProvider\ArmahCheckoutCaptcha</item>
+                <item name="braintree_config_provider" xsi:type="object">Armah\CheckoutCore\CachedConfigProvider\PayPalBraintree\ConfigProvider</item>
+                <item name="braintree_paypal_config_provider" xsi:type="object">Armah\CheckoutCore\CachedConfigProvider\PayPalBraintree\PayPalConfigProvider</item>
+                <item name="braintree_applepay_config_provider" xsi:type="object">Armah\CheckoutCore\CachedConfigProvider\PayPalBraintree\ApplePayConfigProvider</item>
+                <item name="braintree_googlepay_config_provider" xsi:type="object">Armah\CheckoutCore\CachedConfigProvider\PayPalBraintree\GooglePayConfigProvider</item>
+                <item name="braintree_venmo_config_provider" xsi:type="object">Armah\CheckoutCore\CachedConfigProvider\PayPalBraintree\VenmoConfigProvider</item>
+                <item name="braintree_three_d_secure_config_provider" xsi:type="object">Armah\CheckoutCore\CachedConfigProvider\PayPalBraintree\ThreeDeeSecureConfigProvider</item>
+                <item name="braintree_ach_config_provider" xsi:type="object">Armah\CheckoutCore\CachedConfigProvider\PayPalBraintree\AchConfigProvider</item>
+                <item name="braintree_lpm_config_provider" xsi:type="object">Armah\CheckoutCore\CachedConfigProvider\PayPalBraintree\LpmConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Customer\Model\Address">
+        <plugin name="Armah_CheckoutCore::SetHiddenCountryIdValue"
+                type="Armah\CheckoutCore\Plugin\Customer\Model\Address\SetHiddenCountry"/>
+    </type>
+    <type name="Magento\Customer\Block\Address\Edit">
+        <plugin name="Armah_CheckouCore::AddCustomFields"
+                type="Armah\CheckoutCore\Plugin\Customer\Block\Address\Edit\AddCustomFields"/>
+    </type>
+</config>

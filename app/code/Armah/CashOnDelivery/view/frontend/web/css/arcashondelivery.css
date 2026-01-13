@@ -1,0 +1,59 @@
+.arcashdel-input-wrapper {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.arcashdel-input-wrapper .arcashdel-input {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    font-size: 12px;
+}
+
+.arcashdel-btn {
+    margin-left: 15px
+}
+
+.arcashdel-success {
+    margin: 0 0 10px;
+    padding: 12px 20px;
+    background: #e5efe5;
+    color: #006400;
+}
+
+.arcashdel-error {
+    margin: 0 0 10px;
+    padding: 12px 20px;
+    background: #fae5e5;
+    color: #e02b27;
+}
+
+@media only screen and (min-width: 768px) {
+    .arcashdel-input-wrapper {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start;
+    }
+
+    .arcashdel-btn {
+        margin: 10px 0 0;
+    }
+}
+
+@media only screen and (min-width: 1024px) {
+    .arcashdel-input-wrapper {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+    }
+
+    .arcashdel-btn {
+        margin: 0 0 0 15px;
+    }
+}

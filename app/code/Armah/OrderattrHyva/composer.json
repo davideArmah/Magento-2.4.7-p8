@@ -1,0 +1,27 @@
+{
+    "name": "armah/module-orderattr-hyva-compatibility",
+    "description": "Order Attributes Compatibility with Hyv\u00e4 Themes by Armah",
+    "require": {
+        "php": ">=7.3.0",
+        "armah/orderattr": ">=3.7.13",
+        "magento/framework": ">=102.0.0",
+        "hyva-themes/magento2-reset-theme": "*",
+        "hyva-themes/magento2-theme-module": ">=1.1.19",
+        "hyva-themes/magento2-compat-module-fallback": ">=1.1.2",
+        "armah/base": ">=1.14.3"
+    },
+    "homepage": "https://armah.dev/",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": [
+        "Commercial"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Armah\\OrderattrHyvaCompatibility\\": ""
+        }
+    }
+}

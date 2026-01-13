@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Custom Checkout Fields for Magento 2
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Magento\Sales\Model\Order\Pdf\Invoice" type="Armah\Orderattr\Model\Order\Pdf\Invoice" />
+    <preference for="Magento\Sales\Model\Order\Pdf\Shipment" type="Armah\Orderattr\Model\Order\Pdf\Shipment" />
+
+    <type name="Magento\Sales\Block\Adminhtml\Order\Create\Form\Account">
+        <plugin name="Armah_Orderattr::addOrderAttributesToOrderCreateForm" type="Armah\Orderattr\Block\Adminhtml\Order\Plugin\CreateFormOrderAttributes" />
+    </type>
+    <type name="Magento\Sales\Model\AdminOrder\Create">
+        <plugin name="armahOrderattrCreate" type="Armah\Orderattr\Model\Entity\Adapter\Order\Plugin\Admin\CreateOrderPlugin"/>
+    </type>
+    <type name="Magento\Sales\Block\Adminhtml\Order\View\Info">
+        <plugin name="Armah_Orderattr::OrderEditAttributesList" type="Armah\Orderattr\Block\Adminhtml\Order\Plugin\OrderView" />
+    </type>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <plugin name="Armah_Orderattr::addAttributesToGrids" type="Armah\Orderattr\Model\ResourceModel\Value\Plugin\Order\Grid\SearchResult" />
+    </type>
+    <type name="Magento\Ui\Component\Listing\Columns">
+        <plugin name="Armah_Orderattr::OrderAddAttributesGridColumns" type="Armah\Orderattr\Model\ResourceModel\Value\Plugin\Order\Grid\Columns" />
+    </type>
+    <type name="Magento\Eav\Model\Attribute\Data\Select">
+        <plugin name="Armah_Orderattr::AttributeDataSelectPlugin" type="Armah\Orderattr\Model\Attribute\Data\SelectPlugin" />
+    </type>
+
+    <virtualType name="OrderEditFactoryForm" type="Magento\Framework\Data\FormFactory">
+        <arguments>
+            <argument name="instanceName" xsi:type="string">Armah\Orderattr\Block\Adminhtml\Order\Create\Form\Attributes\Data\Form</argument>
+        </arguments>
+    </virtualType>
+    <type name="Armah\Orderattr\Block\Adminhtml\Order\Create\Form\Attributes">
+        <arguments>
+            <argument name="formFactory" xsi:type="object">OrderEditFactoryForm</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Ui\Model\Export\MetadataProvider">
+        <plugin name="Armah_Orderattr::ChangeOptionIdToLabel"
+                type="Armah\Orderattr\Plugin\Ui\Mode\Export\MetadataProvider\ChangeOptionIdToLabel"/>
+    </type>
+</config>

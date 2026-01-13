@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) 2023 Armah (https://www.armah.it)
+ * @package One Step Checkout Gift Wrap for Magento 2 (System)
+ */-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="armah_checkout_invoice_totals" />
+    <update handle="armah_checkout_creditmemo_totals" />
+</page>

@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="armah" translate="label" sortOrder="999999" class="armah-tab arbase-tab-container">
+            <label>Armah Extensions</label>
+        </tab>
+        <section id="armah_products" translate="label" sortOrder="50" type="ar_base_section" showInDefault="1"
+                 showInWebsite="1" showInStore="1">
+            <label><![CDATA[Products]]></label>
+            <tab>armah</tab>
+            <resource>Armah_Base::config</resource>
+            <group id="extensions" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="0"
+                   showInStore="0">
+                <label>Installed Extensions</label>
+                <frontend_model>Armah\Base\Block\Adminhtml\Extensions</frontend_model>
+            </group>
+        </section>
+        <section id="armah_base" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1"
+                 showInStore="1">
+            <label><![CDATA[Settings and Notifications]]></label>
+            <tab>armah</tab>
+            <resource>Armah_Base::config</resource>
+            <group id="notifications" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0"
+                   showInStore="0">
+                <label>Notifications</label>
+                <field id="frequency" translate="label" type="select" sortOrder="10" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Update Frequency</label>
+                    <source_model>Armah\Base\Model\Source\Frequency</source_model>
+                </field>
+                <field id="type" translate="label" type="multiselect" sortOrder="20" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>I want to Receive Notifications about:</label>
+                    <source_model>Armah\Base\Model\Source\NotificationType</source_model>
+                    <backend_model>Armah\Base\Model\Config\Backend\Unsubscribe</backend_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
+            </group>
+
+            <group id="menu" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0"
+                   showInStore="0">
+                <label>Menu</label>
+                <field id="enable" translate="label" type="select" sortOrder="10" showInDefault="1"
+                       showInWebsite="0" showInStore="0">
+                    <label>Enable Armah Menu Item</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <backend_model>Armah\Base\Model\Config\Backend\Menu</backend_model>
+                </field>
+                <frontend_model>Armah\Base\Block\MenuGroup</frontend_model>
+            </group>
+
+            <group id="information" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0"
+                   showInStore="0">
+                <label>System Information</label>
+                <frontend_model>Armah\Base\Block\Info</frontend_model>
+            </group>
+            <group id="system" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>System Settings</label>
+                <field id="cli_php_path" translate="label comment" type="note" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>CLI PHP Path</label>
+                    <comment>Current CLI PHP path of your Magento which is used by our extension when running the commands directly during the processing of PHP requests. To change it, please run bin/magento config:set armah_base/system/cli_php_path %CLI_PHP_PATH% from the command line.</comment>
+                    <frontend_model>Armah\Base\Block\Adminhtml\System\Config\CliPhpPath</frontend_model>
+                </field>
+            </group>
+        </section>
+        <section id="armah_get_support" translate="label" type="ar_base_section" sortOrder="150" showInDefault="1" showInWebsite="1"
+                 showInStore="1">
+            <label>Get Support</label>
+            <tab>armah</tab>
+            <resource>Armah_Base::get_support</resource>
+            <group id="support_plan" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+                <frontend_model>Armah\Base\Block\Adminhtml\GetSupport</frontend_model>
+            </group>
+        </section>
+    </system>
+</config>

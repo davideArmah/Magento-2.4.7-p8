@@ -1,0 +1,21 @@
+{
+    "name": "armah/module-cross-linking",
+    "description": "Seo Cross Linking by Armah",
+    "require": {
+        "php": ">=8.1",
+        "armah/base": ">=1.21.0"
+    },
+    "type": "magento2-module",
+    "version": "1.4.3",
+    "license": [
+        "proprietary"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Armah\\CrossLinks\\": ""
+        }
+    }
+}

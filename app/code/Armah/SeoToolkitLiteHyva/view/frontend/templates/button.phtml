@@ -1,0 +1,31 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.com)
+ * @package Seo Toolkit Core Hyva Compatibility
+ */
+
+use Armah\SeoToolbarAiFix\Block\AiButton;
+use Armah\SeoToolkitLiteHyva\ViewModel\ToolkitIcons;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var AiButton $block */
+/** @var Hyva\Theme\ViewModel\HyvaCsp|null $hyvaCsp */
+
+$toolkitIcons = $viewModels->require(ToolkitIcons::class);
+?>
+<button x-data="initAmToolbarAiButton"
+        data-admin-url="<?= $escaper->escapeUrl($block->getAdminUrl()) ?>"
+        @keyup.enter="openAdmin"
+        @click="openAdmin"
+        class="flex justify-around items-center self-center bg-amtoolbar-background rounded-sm h-9 tracking-tighter px-4 w-34"
+        data-amaifix-js="button"
+>
+    <?= $toolkitIcons->starsHtml('', 16, 16) ?>
+    <span class="text-white text-base font-bold text-center align-middle ml-2">
+        <?= $escaper->escapeHtml(__('Fix Issues with AI')) ?>
+    </span>
+</button>

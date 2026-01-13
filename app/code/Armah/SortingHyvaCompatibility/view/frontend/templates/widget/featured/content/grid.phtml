@@ -1,0 +1,70 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah
+ * @package Improved Sorting Hyva Compatibility by Armah
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Armah\Sorting\Block\Widget\Featured;
+use Hyva\Theme\ViewModel\ProductListItem;
+use Hyva\Theme\ViewModel\ProductPage;
+use Magento\Catalog\Block\Product\ReviewRendererInterface;
+
+/** @var Escaper $escaper */
+/** @var Featured $block */
+/** @var ViewModelRegistry $viewModels */
+
+$productViewModel = $viewModels->require(ProductPage::class);
+$productListItemViewModel = $viewModels->require(ProductListItem::class);
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+?>
+
+<?php if ($block->getProductCollection() && $block->getProductCollection()->getSize()): ?>
+    <?php
+    $type = 'widget-product-grid';
+    $featuredItemRenderer = $block->getLayout()->getBlock('product_list_item');
+    $mode = 'grid';
+    $image = 'category_page_grid';
+    $items = $block->getProductCollection()->getItems();
+
+    $templateType = ReviewRendererInterface::SHORT_VIEW;
+    $description = false;
+
+    $hideDetails = true;
+    $hideRatingSummary = true;
+
+    $featuredItemRenderer->setData('hide_details', $hideDetails);
+    $featuredItemRenderer->setData('hide_rating_summary', $hideRatingSummary);
+    ?>
+    <div class="block widget armsorting block-products-list mt-4 mb-12 <?= /* @noEscape */ $mode ?>">
+        <?php if ($block->getTitle()): ?>
+            <div class="block-title container flex flex-col items-center pt-6 pb-3 mx-auto mb-6 border-b-2
+                    border-gray-300 md:flex-row">
+                <h3 class="text-2xl font-medium text-gray-900 title-font">
+                    <?= $escaper->escapeHtml(__($block->getTitle())) ?>
+                </h3>
+            </div>
+        <?php endif ?>
+        <div class="block-content">
+            <div class="mx-auto grid items-wrapper gap-4 <?= $mode === 'grid' ? 'sm:grid-cols-2 lg:grid-cols-4' : 'grid-cols-1' ?>">
+                <?php foreach ($items as $item): ?>
+                    <?= $productListItemViewModel->getItemHtmlWithRenderer(
+                        $featuredItemRenderer,
+                        $item,
+                        $block,
+                        $mode,
+                        $templateType,
+                        $image,
+                        $description
+                    ) ?>
+                <?php endforeach ?>
+            </div>
+            <?= $block->getPagerHtml() ?>
+        </div>
+    </div>
+<?php endif; ?>

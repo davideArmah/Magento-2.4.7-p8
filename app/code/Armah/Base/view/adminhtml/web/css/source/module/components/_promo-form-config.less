@@ -1,0 +1,27 @@
+//
+//  Armah Promotion Config Field
+//  ______________________________________________
+
+//
+//  Common
+//  ----------------------------------------------
+
+& when (@media-common = true) {
+    .admin__field {
+        .admin__field-label.arpromo-field-label-container {
+            &:before {
+                content: none;
+            }
+        }
+
+        .arpromo-config-content-container {
+            color: @color-gray19;
+            line-height: 1.9rem;
+        }
+
+        .arpromo-config-notification-message {
+            line-height: 1.2rem;
+            margin-top: .5rem;
+        }
+    }
+}

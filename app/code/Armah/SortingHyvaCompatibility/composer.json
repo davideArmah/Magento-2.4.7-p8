@@ -1,0 +1,23 @@
+{
+    "name": "armah/sorting-hyva-compatibility",
+    "description": "This module makes Armah Sorting compatible with Hyva Themes",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "require": {
+        "php": ">=7.4.0",
+        "armah/sorting": ">=1.0.0",
+        "magento/framework": ">=102.0.0",
+        "hyva-themes/magento2-reset-theme": "*",
+        "hyva-themes/magento2-theme-module": ">=1.1.19",
+        "hyva-themes/magento2-compat-module-fallback": ">=1.1.2"
+    },
+    "license": "proprietary",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Armah\\SortingHyvaCompatibility\\": ""
+        }
+    }
+}

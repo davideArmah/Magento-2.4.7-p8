@@ -1,0 +1,269 @@
+//
+//  Armah Base Extensions & Notifications
+//  ____________________________________________
+
+//
+//  Variables
+//  --------------------------------------------
+@arbase__irs__badge-success__bg-color: #3fb87e;
+@arbase__irs__badge-info__bg-color: #bad9ff;
+@arbase__irs__badge-pending__bg-color: #dbdbdb;
+@arbase__irs__badge-warning__bg-color: #ffe49f;
+@arbase__irs__badge-error__bg-color: #f26f5d;
+
+@arbase__irs__tooltip__text-color: #1a1a1a;
+@arbase__irs__tooltip-success__bg-color: #e7f5ee;
+@arbase__irs__tooltip-info__bg-color: #e7edf5;
+@arbase__irs__tooltip-pending__bg-color: #fbfbfb;
+@arbase__irs__tooltip-warning__bg-color: #fcf7ea;
+@arbase__irs__tooltip-error__bg-color: #fceaea;
+
+//
+//  Common
+//  --------------------------------------------
+
+& when (@media-common = true) {
+    /* phpcs:ignore Magento2.Less.ClassNaming.NotAllowedSymbol */
+    .adminhtml-system_config-edit .arbase-page-title {
+        color: @arbase__page-title__color;
+        font-size: 18px;
+        font-weight: bold;
+        letter-spacing: -.03em;
+        margin-bottom: 40px;
+        text-transform: capitalize;
+    }
+
+    .arbase-buttons-block {
+        & {
+            display: flex;
+            margin-bottom: 30px;
+        }
+
+        .arbase-button {
+            border-radius: 4px;
+            color: @color-white;
+            padding: 10px 15px;
+            position: relative;
+            text-decoration: none;
+            transition: background-color .3s ease-in-out;
+        }
+
+        .arbase-button.-orange {
+            & {
+                background-color: @arbase__orange-color;
+                padding-right: 46px;
+            }
+
+            &:hover {
+                background-color: @color-phoenix-brown-almost;
+            }
+
+            &:after {
+                background: @arbase-extensions-icon__updates__background;
+                content: '';
+                height: 10px;
+                position: absolute;
+                right: 24px;
+                top: ~'calc(50% - 6px)';
+                width: 12px;
+            }
+        }
+
+        .arbase-button.-blue {
+            & {
+                background-color: @color-white;
+                border: 1px solid @color-blue-pure;
+                color: @color-gray19;
+                margin-left: 10px;
+                padding-right: 43px;
+            }
+
+            &:hover {
+                background-color: @arbase__button-hover__color;
+            }
+
+            &:after {
+                background: @arbase-extensions-icon__how-to-update__background;
+                content: '';
+                height: 10px;
+                position: absolute;
+                right: 22px;
+                top: ~'calc(50% - 6px)';
+                width: 12px;
+            }
+        }
+    }
+
+    /* phpcs:ignore Magento2.Less.ClassNaming.NotAllowedSymbol */
+    /* Padding removed since badge/logo is no longer displayed
+    .arbase-tab-container > .admin__page-nav-title._collapsible {
+        padding-right: 10rem;
+    }
+    */
+
+    /* phpcs:ignore Magento2.Less.ClassNaming.NotAllowedSymbol */
+    /* Logo/badge removed from page nav titles (Armah SEO, Armah Extensions)
+    .arbase-tab-container > .admin__page-nav-title:before {
+        background: @arbase__orange-color;
+        border-radius: 4px;
+        color: @color-white;
+        font-size: 16px;
+        font-weight: bold;
+        height: 26px;
+        line-height: 22px;
+        padding: 2px 0;
+        position: absolute;
+        right: 50px;
+        text-align: center;
+        top: ~'calc(50% - 13px)';
+        width: 44px;
+    }
+    */
+
+    .arbase-grid-buttons {
+        .arbase-button {
+            background-color: @arbase__grid-button__color;
+            border: 1px solid @arbase__grid-button__border-color;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-weight: 400;
+            margin-right: 15px;
+            padding: 12px;
+            transition: background-color .4s ease-in;
+        }
+
+        .arbase-button.-active,
+        .arbase-button:hover {
+            background-color: @arbase__grid-button__color-hover;
+            color: @color-white;
+        }
+
+        .arbase-counter:before {
+            content: '(';
+        }
+
+        .arbase-counter:after {
+            content: ')';
+        }
+    }
+
+    .arbase-products-table {
+        & {
+            background: @color-white;
+            border-radius: 6px;
+            box-shadow: 0 2px 13px rgba(95, 146, 247, .13);
+            margin-top: 30px;
+            padding: 15px 30px 30px;
+            text-align: left;
+        }
+
+        .arbase-thead .arbase-tr,
+        .arbase-tbody .arbase-tr:not(:last-child) {
+            border-bottom: 1px solid @arbase__products-table__border-color;
+        }
+
+        .arbase-tbody {
+            display: block;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .arbase-th {
+            color: @arbase__products-table__header-color;
+        }
+
+        .arbase-td,
+        .arbase-th {
+            padding: 15px 0;
+        }
+
+        .arbase-tr {
+            display: table;
+            table-layout: fixed;
+            width: 100%;
+        }
+
+    }
+
+    .arbase-products-table,
+    .arbase-menu-container {
+        .arbase-plan {
+            font-weight: bold;
+
+            &:before {
+                content: '(';
+            }
+
+            &:after {
+                content: ')';
+            }
+        }
+    }
+
+    .arbase-table-container {
+        & {
+            width: 100%;
+        }
+
+        .arbase-link {
+            padding-left: 17px;
+            position: relative;
+        }
+
+        .arbase-link:before {
+            background: @arbase-extensions-icon__upgrade__background;
+            content: '';
+            height: 12px;
+            left: 0;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+        }
+
+        .arbase-version {
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .arbase-version:before {
+            content: '';
+            left: 0;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .arbase-version.-last:before {
+            background: @arbase-extensions-icon__last_version__background;
+            height: 7px;
+            width: 9px;
+        }
+
+        .arbase-version.-current:before {
+            background: @arbase-extensions-icon__current_version__background;
+            height: 8px;
+            width: 10px;
+        }
+
+        .arbase-version.-update {
+            color: @arbase__orange-color;
+            padding-left: 26px;
+        }
+
+        .arbase-version.-update:before {
+            background: @arbase-extensions-icon__arrow__background;
+            height: 8px;
+            width: 21px;
+        }
+    }
+
+    .arbase-version-container {
+        margin-bottom: 5px;
+    }
+
+    /* phpcs:ignore Magento2.Less.AvoidId.IdSelectorUsage */
+    .accordion .config #row_cron_configuration .value {
+        width: 70%;
+    }
+}

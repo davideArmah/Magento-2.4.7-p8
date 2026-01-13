@@ -1,0 +1,133 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Escaper $escaper */
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+
+/** @var Hyva\Theme\ViewModel\StoreConfig $storeConfig */
+$storeConfig = $viewModels->require(Hyva\Theme\ViewModel\StoreConfig::class);
+$showMiniCart = $storeConfig->getStoreConfig(\Magento\Checkout\Block\Cart\Sidebar::XML_PATH_CHECKOUT_SIDEBAR_DISPLAY);
+?>
+<script>
+    function initHeader() {
+        return {
+            searchOpen: false,
+            cart: {},
+            getData(data) {
+                if (data.cart) {
+                    this.cart = data.cart
+                }
+            }
+        }
+    }
+
+    function initCompareHeader() {
+        return {
+            compareProducts: null,
+            itemCount: 0,
+            receiveCompareData(data) {
+                if (data['compare-products']) {
+                    this.compareProducts = data['compare-products'];
+                    this.itemCount = this.compareProducts.count;
+                }
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+        try {
+            const div = document.querySelector('#home-first-row-right .box-shadow-pagebuilder');
+            const divPadre = document.querySelector('#home-first-row-right');
+            const a = document.createElement('a');
+            a.href = '/box-in-acciaio';
+            a.className = 'tag-a-menu'
+        
+            a.appendChild(div);
+            divPadre.appendChild(a);
+        } catch (error) {
+            
+        }
+    })
+   
+</script>
+<div id="header" class="relative z-30 w-full shadow border-container-lighter bg-rosso" x-data="initHeader()" @keydown.window.escape="searchOpen = false;" @private-content-loaded.window="getData(event.detail.data)">
+    <div class="container flex flex-wrap items-center justify-between w-full px-2 sm:px-6 py-3 mx-auto mt-0 relative">
+        <?= $block->getChildHtml("topmenu.mobile") ?>
+
+        <!--Search-->
+        <div class="lg:flex w-full lg:w-[28%] xl:w-1/4 absolute top-[70%] lg:hidden right-0" id="search-content" x-show="searchOpen" @click.outside="searchOpen = false">
+            <?= $block->getChildHtml("header-search") ?>
+        </div>
+
+        <div class="lg:flex w-1/4 lg:w-[28%] xl:w-1/4 hidden">
+            <?= $block->getChildHtml("header-search") ?>
+        </div>
+
+        <!--Logo-->
+        <?= $block->getChildHtml('logo'); ?>
+
+        <div class="flex items-center justify-end lg:justify-between order-3 w-[10%] sm:w-1/4 lg:w-[28%] xl:w-1/4">
+
+            <div class="flex-row items-center hidden lg:flex">
+                <?= $hyvaicons->whatsappGialloHtml('w-8 xl:w-12 2xl:w-20 h-10') ?>
+                <div class="flex flex-col font-medium leading-4 text-white xl:leading-5 lg:ml-3 xl:ml-auto">
+                    <div class="text-[0.75rem] lg:text-[0.875rem] xl:text-[1rem] tracking-tight"><?= $escaper->escapeHtml(__('Customer Care')) ?></div>
+                    <a href="tel:3883274125" class="text-[0.75rem] lg:text-[0.875rem] xl:text-[1.25rem] 2xl:text-[1.5rem] tracking-wide font-bold">388 327 41 25</a>
+                </div>
+            </div>
+
+            <!--Search Icon-->
+
+            <div class="flex items-center lg:hidden lg:justify-start lg:w-auto">
+                <button id="menu-search-icon" type="submit" title="<?= $escaper->escapeHtml(__("Search")) ?>" class="flex items-center justify-center visible rounded lg:hidden action search" aria-label="Search" @click.prevent="
+                        searchOpen = !searchOpen;">
+                    <?= $heroicons->searchHtml('text-white lg:text-white border-current inline w-5 sm:w-6 h-5 sm:h-6'); ?>
+                </button>
+            </div>
+
+            <!--Carrello-->
+
+            <a id="menu-cart-icon" <?php if ($showMiniCart) : ?>@click.prevent.stop="$dispatch('toggle-cart',{});" <?php endif ?> class="relative flex items-center inline-block ml-1 no-underline sm:ml-3" href="<?= $escaper->escapeUrl($block->getUrl('checkout/cart/index')) ?>">
+                <span class="hidden text-sm font-bold text-white lg:block label">
+                    <?= $escaper->escapeHtml(__('Cart')) ?>
+                </span>
+
+                <?= $hyvaicons->carrelloHtml(
+                    " w-5 sm:w-6 h-5 sm:h-6 text-white hover:text-gray-100",
+                    25,
+                    25
+                ) ?>
+
+                <span x-text="cart.summary_count" class="absolute top-0 right-0 h-5 px-1 py-1 -mt-5 -mr-4 text-xs font-semibold leading-none text-center text-white uppercase transform fold-cart -translate-x-2 sm:-translate-x-1 translate-y-1/2 rounded-full sm:px-2 bg-turchese"></span>
+            </a>
+
+        </div>
+    </div>
+
+    <!--Cart Drawer-->
+    <?= $block->getChildHtml('cart-drawer'); ?>
+
+    <!--Authentication Pop-Up-->
+    <?= $block->getChildHtml('authentication-popup'); ?>
+</div>

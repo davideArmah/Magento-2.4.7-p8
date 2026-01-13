@@ -1,0 +1,31 @@
+//
+//  Armah Base Copy To Clipboard Btn
+//  ______________________________________________
+
+//
+//  Common
+//  ----------------------------------------------
+
+& when (@media-common = true) {
+    .arbase-clip-btn-contaner {
+        display: inline-block;
+        position: relative;
+        vertical-align: top;
+    }
+
+    .arbase-clip-btn {
+        background: transparent url('@{baseDir}Armah_Base/images/components/clipboard.svg') no-repeat center;
+        border: none;
+        height: 25px;
+        margin: 0;
+        padding: .3rem .4rem;
+        position: absolute;
+        right: 1.5rem;
+        top: 1px;
+        width: 25px;
+
+        &:hover, &:focus {
+            background-color: transparent;
+        }
+    }
+}

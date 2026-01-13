@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <!-- Main Armah Menu -->
+        <add id="Armah_Base::menu"
+             title="Armah"
+             module="Armah_Base"
+             translate="title"
+             sortOrder="69"
+             resource="Armah_Base::menu"/>
+
+        <!-- Catalog Group -->
+        <add id="Armah_Base::catalog_group"
+             title="Catalog Extensions"
+             module="Armah_Base"
+             translate="title"
+             sortOrder="10"
+             parent="Armah_Base::menu"
+             resource="Armah_Base::menu"/>
+
+        <!-- Sales &amp; Marketing Group -->
+        <add id="Armah_Base::sales_group"
+             title="Sales &amp; Marketing"
+             module="Armah_Base"
+             translate="title"
+             sortOrder="20"
+             parent="Armah_Base::menu"
+             resource="Armah_Base::menu"/>
+
+        <!-- Customers Group -->
+        <add id="Armah_Base::customer_group"
+             title="Customer Extensions"
+             module="Armah_Base"
+             translate="title"
+             sortOrder="30"
+             parent="Armah_Base::menu"
+             resource="Armah_Base::menu"/>
+
+        <!-- Content Group -->
+        <add id="Armah_Base::content_group"
+             title="Content Management"
+             module="Armah_Base"
+             translate="title"
+             sortOrder="40"
+             parent="Armah_Base::menu"
+             resource="Armah_Base::menu"/>
+
+        <!-- System &amp; Tools Group -->
+        <add id="Armah_Base::system_group"
+             title="System &amp; Tools"
+             module="Armah_Base"
+             translate="title"
+             sortOrder="50"
+             parent="Armah_Base::menu"
+             resource="Armah_Base::menu"/>
+
+        <!-- SEO &amp; Analytics Group -->
+        <add id="Armah_Base::seo_group"
+             title="SEO &amp; Analytics"
+             module="Armah_Base"
+             translate="title"
+             sortOrder="60"
+             parent="Armah_Base::menu"
+             resource="Armah_Base::menu"/>
+
+        <!-- Reports Group -->
+        <add id="Armah_Base::reports_group"
+             title="Reports &amp; Analytics"
+             module="Armah_Base"
+             translate="title"
+             sortOrder="70"
+             parent="Armah_Base::menu"
+             resource="Armah_Base::menu"/>
+
+        <!-- Settings (Keep at bottom) -->
+        <add id="Armah_Base::settings"
+             title="Settings &amp; Notifications"
+             module="Armah_Base"
+             translate="title"
+             sortOrder="9997"
+             action="adminhtml/system_config/edit/section/armah_base"
+             parent="Armah_Base::menu"
+             resource="Armah_Base::config"/>
+    </menu>
+</config>

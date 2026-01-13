@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package GeoIP Data for Magento 2 (System)
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Armah\Geoip\Api\Data\IpLogInterface" type="Armah\Geoip\Model\IpLog"/>
+    <preference for="Armah\Geoip\Api\IpLog\SaveInterface" type="Armah\Geoip\Model\IpLog\Repository\Save"/>
+    <preference for="Armah\Geoip\Api\IpLog\DeleteInterface" type="Armah\Geoip\Model\IpLog\Repository\Delete"/>
+    <preference for="Armah\Geoip\Api\BlockRepositoryInterface" type="Armah\Geoip\Model\Block\Repository"/>
+    <preference for="Armah\Geoip\Api\BlockV6RepositoryInterface" type="Armah\Geoip\Model\BlockV6\Repository"/>
+    <preference for="Armah\Geoip\Api\LocationRepositoryInterface" type="Armah\Geoip\Model\Location\Repository"/>
+
+    <type name="Armah\Geoip\Model\SyncService\Patch\ApplierComposite">
+        <arguments>
+            <argument name="appliersPool" xsi:type="array">
+                <item name="block" xsi:type="object">Armah\Geoip\Model\SyncService\Patch\Applier\Block</item>
+                <item name="block_v6" xsi:type="object">Armah\Geoip\Model\SyncService\Patch\Applier\BlockV6</item>
+                <item name="location" xsi:type="object">Armah\Geoip\Model\SyncService\Patch\Applier\Location</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Armah\Geoip\Cron\SyncDb">
+        <arguments>
+            <argument name="patchApplier"
+                      xsi:type="object">Armah\Geoip\Model\SyncService\Patch\ApplierComposite</argument>
+        </arguments>
+    </type>
+</config>

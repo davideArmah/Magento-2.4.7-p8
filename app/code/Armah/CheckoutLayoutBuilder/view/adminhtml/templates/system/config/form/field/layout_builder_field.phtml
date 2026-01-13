@@ -1,0 +1,18 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package One Step Checkout Layout Builder for Magento 2 (System)
+ */
+/**
+ * @var $block Armah\CheckoutLayoutBuilder\Block\Config\LayoutBuilderField
+ */
+
+$element = $block->getElement();
+?>
+
+<input type="hidden"
+       id="archeckout-frontend-config"
+       name="<?= /* @noEscape */ $element->getName() ?>"
+       value="<?= /* @noEscape */ $element->getEscapedValue() ?>" />
+

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah 
+ * @package Improved Sorting for Magento 2
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Armah\Xsearch\Block\Search\Product">
+        <plugin name="Armah_Sorting::AddSortOrders"
+                type="Armah\Sorting\Plugin\Xsearch\Block\Search\Product\AddSortOrders"/>
+    </type>
+    <type name="Armah\Sorting\Plugin\Xsearch\Block\Search\Product\AddSortOrders">
+        <arguments>
+            <argument name="getDefaultSortOrders"
+                      xsi:type="object">Armah\Sorting\Model\Method\GetAllSortOrders</argument>
+        </arguments>
+    </type>
+    <virtualType name="Armah\Sorting\Model\Method\GetAllSortOrders"
+                 type="Armah\Sorting\Model\Method\GetDefaultSortOrders">
+        <arguments>
+            <argument name="withHighOrders" xsi:type="boolean">true</argument>
+        </arguments>
+    </virtualType>
+</config>

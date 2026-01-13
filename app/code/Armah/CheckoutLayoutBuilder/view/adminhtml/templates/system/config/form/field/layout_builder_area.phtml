@@ -1,0 +1,38 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package One Step Checkout Layout Builder for Magento 2 (System)
+ */
+/**
+ * @var $block Armah\CheckoutLayoutBuilder\Block\Config\LayoutBuilderArea
+ * @var $escaper Magento\Framework\Escaper
+ */
+
+$element = $block->getElement();
+?>
+
+<input type="hidden"
+       id="archeckout-presets"
+       name="<?= /* @noEscape */ $element->getName() ?>"
+       value="<?= /* @noEscape */ $element->getEscapedValue() ?>" />
+
+<div id="arbuilder-main-container" class="arbuilder-main-container"></div>
+
+<script>
+    require([
+        'arLayoutBuilder',
+        'arUseDefaultStateManager'
+    ], function (LayoutBuilder, useDefaultStateManager) {
+        var React = LayoutBuilder.init('arbuilder-main-container', {
+            defaultBlockTitles: <?= /* @noEscape */ $block->getSerializedData($block->getBlockDefaultNames())?>,
+            staticTitle: "<?= $escaper->escapeHtml(__('Static Block')) ?>",
+            dragIconTitle: "<?= $escaper->escapeHtml(__('Drag Icon')) ?>"
+        });
+
+        // If checkout design use default checkbox exists
+        if (document.getElementById('armah_checkout_design_layout_checkout_design_inherit')) {
+            useDefaultStateManager.init(<?= /* @noEscape */ $block->getSerializedData($block->getConfigForUseDefault())?>);
+        }
+    });
+</script>

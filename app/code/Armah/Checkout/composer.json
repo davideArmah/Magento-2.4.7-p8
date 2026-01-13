@@ -1,0 +1,32 @@
+{
+    "name": "armah/module-single-step-checkout",
+    "description": "One Step Checkout by Armah",
+    "require": {
+        "php": ">=7.3.0",
+        "armah/base": ">=1.19.1",
+        "armah/geoip": ">=1.3.6",
+        "armah/module-one-step-checkout-core": ">=1.3.1",
+        "armah/module-google-address-autocomplete": ">=1.1.2",
+        "armah/module-checkout-layout-builder": "*",
+        "armah/module-checkout-style-switcher": ">=1.1.6",
+        "armah/module-checkout-delivery-date": ">=1.0.6",
+        "armah/module-checkout-gift-wrap": "*",
+        "armah/module-checkout-thank-you-page": "*"
+    },
+    "suggest": {
+        "armah/module-single-step-checkout-mftf-3": "Install module-single-step-checkout-mftf-3 module to be able to run One Step Checkout MFTF tests for Magento 2.4.0+ version."
+    },
+    "type": "magento2-module",
+    "version": "4.4.6",
+    "license": [
+        "proprietary"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Armah\\Checkout\\": ""
+        }
+    }
+}

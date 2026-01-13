@@ -1,0 +1,17 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package One Step Checkout Thank you Page 2 for Magento 2 (System)
+ */
+/**
+ * @var $block Magento\Framework\View\Element\Template
+ * @var $viewModel Armah\CheckoutThankYouPage\ViewModel\SuccessPage
+ */
+ $viewModel = $block->getViewModel() ?>
+
+<?php if ($viewModel->isEnable()): ?>
+    <?= $block->getChildHtml('armah.checkout.success.page') ?>
+<?php else: ?>
+    <?= $block->getChildHtml('magento.success.page') ?>
+<?php endif; ?>

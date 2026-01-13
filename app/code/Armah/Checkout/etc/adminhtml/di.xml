@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package One Step Checkout for Magento 2
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Armah\CheckoutCore\Block\Adminhtml\Field\Edit\Group\Row\Renderer" type="Armah\Checkout\Block\Adminhtml\Field\Edit\Group\Row\Renderer" />
+    <preference for="Armah\CheckoutCore\Block\Adminhtml\Field\Edit\Group\Renderer" type="Armah\Checkout\Block\Adminhtml\Field\Edit\Group\Renderer" />
+
+    <type name="Armah\CheckoutCore\Controller\Adminhtml\Field\Save">
+        <plugin name="Armah_Checkout::savePlaceholder" type="Armah\Checkout\Plugin\Controller\Adminhtml\Field\Save"/>
+    </type>
+    <type name="Armah\Base\Model\ModuleInfoProvider">
+        <plugin name="Armah_Checkout::replaceModuleInfo" type="Armah\Checkout\Plugin\Base\Model\ModuleInfoProvider\ReplaceModuleInfo" />
+    </type>
+    <type name="Magento\Sales\Block\Adminhtml\Order\Create\Form\Address">
+        <plugin name="Armah_Checkout::AddPhoneValidation"
+                type="Armah\Checkout\Plugin\Sales\Block\Adminhtml\Order\Create\Form\Address\AddPhoneValidation"/>
+    </type>
+</config>

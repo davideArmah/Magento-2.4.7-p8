@@ -1,0 +1,213 @@
+//
+//  Geo Ip Import Styles
+//  ____________________________________________
+
+//
+//  Common
+//  --------------------------------------------
+& when (@media-common = true) {
+    .argeoip-import-container {
+        .argeoip-message {
+            color: #ff0000;
+        }
+
+        .argeoip-button {
+            margin-top: 30px;
+            border: none;
+            border-radius: 3px;
+            background-color: #e3e3e3;
+            transition: background-color .3s ease-in;
+        }
+
+        .argeoip-button:hover {
+            background: #ccc;
+        }
+
+        .argeoip-state {
+            position: relative;
+            bottom: 8px;
+            padding: 0;
+            width: 80px;
+            height: 18px;
+            background: #fff;
+            color: #bbb;
+            vertical-align: middle;
+            text-align: center;
+            font-weight: 400;
+        }
+
+        .argeoip-state.-done {
+            color: #514943;
+            font-weight: 600;
+        }
+
+        .argeoip-state.-endimport {
+            left: 190px;
+        }
+
+        .argeoip-state.-endimport.-done {
+            left: 184px;
+        }
+
+        .argeoip-state.-import {
+            left: 94px;
+        }
+    }
+
+    .argeoip-download-state {
+        & {
+            margin-left: 25px;
+            padding: 0 31px 0 27px;
+            width: 130px;
+            height: 28px;
+        }
+
+        &.-download {
+            position: relative;
+            bottom: 23px;
+            left: 155px;
+        }
+
+        .argeoip-label {
+            position: relative;
+            z-index: 10;
+            padding: 14px 32px 4px 0;
+        }
+
+        .argeoip-label.-import {
+            top: 21px;
+            right: 31px;
+        }
+
+        .argeoip-label.-endimport {
+            bottom: 2px;
+            left: 128px;
+        }
+    }
+
+    .argeoip-download-state,
+    .argeoip-download-container {
+        & {
+            position: relative;
+        }
+
+        .argeoip-begin {
+            position: relative;
+            right: 30px;
+            bottom: 1px;
+            z-index: 10;
+            padding-right: 33px;
+            padding-bottom: 28px;
+            background: @argeoip-icon-step__initial__background no-repeat center;
+        }
+
+        .argeoip-begin.-done {
+            background: @argeoip-icon-download__background no-repeat center;
+        }
+
+        .argeoip-counter {
+            position: absolute;
+            bottom: 9px;
+            left: 34%;
+            text-align: center;
+        }
+
+        .argeoip-counter:before {
+            position: absolute;
+            right: ~'calc(100% - 17px)';
+            bottom: 0;
+            left: -17px;
+            width: 34px;
+            height: 21px;
+            background: @argeoip-icon-counter__background no-repeat center;
+            content: attr(data-count);
+            line-height: 14px;
+        }
+
+        .argeoip-counter.-hidden {
+            display: none;
+        }
+    }
+
+    .argeoip-download-container {
+        position: relative;
+        left: 52px;
+        width: 130px;
+    }
+
+    .argeoip-progressbar-container.-import {
+        .argeoip-state.-completed {
+            top: 0;
+            left: 100px;
+        }
+
+        .argeoip-state.-import {
+            top: 0;
+            left: 15px;
+        }
+
+        .argeoip-download-container {
+            left: 0;
+        }
+
+        .argeoip-download-state {
+            padding-bottom: 20px;
+        }
+    }
+
+    .argeoip-line-container {
+        & {
+            position: relative;
+            top: 2px;
+            background: #e3e3e3;
+        }
+
+        .argeoip-line {
+            position: relative;
+            height: 4px;
+            background-color: #2196f3;
+            background-size: 20px 20px;
+            white-space: nowrap;
+        }
+    }
+
+    .argeoip-download-state .argeoip-label.-failed,
+    .argeoip-download-state .argeoip-label {
+        background: @argeoip-icon-step__initial__background no-repeat center;
+    }
+
+    .argeoip-download-container .argeoip-label.-completed,
+    .argeoip-download-state .argeoip-label.-completed {
+        background: @argeoip-icon-step__finish__background no-repeat center;
+    }
+
+    .argeoip-files-container {
+        & {
+            margin-top: 20px;
+        }
+
+        .argeoip-files {
+            position: relative;
+        }
+
+        .argeoip-files.-available {
+            padding-left: 25px;
+        }
+
+        .argeoip-files.-available:before {
+            position: absolute;
+            top: 3px;
+            left: 0;
+            width: 16px;
+            height: 16px;
+            background: @argeoip-icon__available no-repeat center;
+            content: '';
+        }
+    }
+
+    .argeoip-import-date {
+        display: block;
+        margin-top: 15px;
+        color: #bbb;
+    }
+}

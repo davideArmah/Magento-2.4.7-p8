@@ -1,0 +1,40 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Custom Checkout Fields for Magento 2
+ */
+
+use Armah\Orderattr\Block\Order\Attributes;
+use Magento\Framework\Escaper;
+
+/** @var Attributes $block */
+/** @var Escaper $escaper */
+?>
+
+<?php if ($orderAttributeList = $block->getOrderAttributesData()): ?>
+<div class="block block-order-details-view">
+    <div class="block-title">
+        <strong><?= $escaper->escapeHtml(__('Additional Info')) ?></strong>
+    </div>
+    <div class="block-content">
+        <?php foreach ($orderAttributeList as $attribute): ?>
+        <div class="box">
+            <strong class="box-title">
+                <?= $escaper->escapeHtml(__($attribute['label'])) ?>
+            </strong>
+            <div class="box-content">
+                <?php if (is_array($attribute['value'])): ?>
+                    <a class="file-link" target="_blank" href="<?= $escaper->escapeUrl($attribute['value']['url']) ?? '' ?>">
+                        <?= /** @noEscape */ $attribute['value']['name'] ?? '' ?>
+                    </a>
+                <?php else: ?>
+                    <?= /** @noEscape */ $attribute['value'] ?>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php endforeach;?>
+    </div>
+</div>
+<?php endif; ?>
+

@@ -1,0 +1,31 @@
+.block.block-order-details-view {
+    @apply mb-2.5;
+
+    .block-title {
+        @apply mb-6;
+    }
+
+    .block-content {
+        @apply flex flex-wrap justify-start flex-col md:flex-row;
+
+        .box {
+            @apply pr-1.5 w-full flex-auto md:max-w-[50%] lg:flex-grow lg:flex-shrink-0 lg:max-w-[25%];
+        }
+
+        .box-title {
+            @apply mb-2.5 font-semibold;
+        }
+
+        .box-content {
+            @apply break-words pb-5;
+
+            a {
+                @apply text-blue-600 hover:underline;
+            }
+        }
+    }
+}
+
+table.email-items {
+    @apply pb-4;
+}

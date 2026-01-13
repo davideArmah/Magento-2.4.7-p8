@@ -1,0 +1,183 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package SEO Toolkit Base for Magento 2
+ */
+
+use Armah\SeoToolkitLite\Block\Toolbar;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var Toolbar $block */
+?>
+<div class="arskit-toolbar-wrap" data-js="arskit-toolbar">
+    <div class="arskit-toolbar-box">
+        <span class="arskit-title"><?= $escaper->escapeHtml(__('Seo Toolbar'));?></span>
+        <span class="arskit-arrow" data-js="arskit-close"></span>
+    </div>
+
+    <div class="arskit-toolbar-content" data-js="arskit-content" style="display: none;">
+        <div class="arskit-content-header">
+            <div class="arskit-title"><?= $escaper->escapeHtml(__('Page Analysis'));?></div>
+            <?= $block->getChildHtml('armah_seotoolbar_header');?>
+        </div>
+        <table class="arskit-table -analysis">
+            <col width="30%">
+            <col width="70%">
+            <tr>
+                <td><?= $escaper->escapeHtml(__('Robots Meta'));?></td>
+                <td class="arskit-cell -indent"><?= $escaper->escapeHtml($block->getRobotsMeta());?></td>
+            </tr>
+            <tr>
+                <td><?= $escaper->escapeHtml(__('Canonical'));?></td>
+                <td class="arskit-cell">
+                    <?php list($text, $status) = $block->getCanonicalText();?>
+                    <div class="arskit-icon <?= $escaper->escapeHtml($status) ?>">
+                        <?= $escaper->escapeHtml($text);?>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><?= $escaper->escapeHtml(__('Title'));?></td>
+                <td class="arskit-cell">
+                    <?php list($text, $status) = $block->getTitleCount();?>
+                    <div class="arskit-icon <?= $escaper->escapeHtmlAttr($status) ?>"
+                        <?php if ($status === $block::WARNING_CLASS): ?>
+                            data-artoolbar-js="title"
+                        <?php endif; ?>
+                    >
+                        <?= $escaper->escapeHtml($text)?>
+                        <div class="arskit-description">
+                            <?php if ($block->getTitleText()): ?>
+                                <?= $escaper->escapeHtml($block->getTitleText());?>
+                            <?php else: ?>
+                                <?= $escaper->escapeHtml(
+                                    __('Try to enlarge it to %1 characters.', $block->getMaxTitleLength())
+                                );?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><?= $escaper->escapeHtml(__('Meta Description'));?></td>
+                <td class="arskit-cell">
+                    <?php list($text, $status) = $block->getMetaDescCount();?>
+                    <div class="arskit-icon <?= $escaper->escapeHtmlAttr($status) ?>"
+                        <?php if ($status === $block::WARNING_CLASS): ?>
+                            data-artoolbar-js="description"
+                        <?php endif; ?>
+                    >
+                        <?= $escaper->escapeHtml($text)?>
+                        <div class="arskit-description">
+                            <?php if ($block->getMetaDescText()): ?>
+                                <?= $escaper->escapeHtml($block->getMetaDescText());?>
+                            <?php else: ?>
+                                <?= $escaper->escapeHtml(
+                                    __('Try to enlarge it to %1 characters.', $block->getMetaDescLength())
+                                );?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><?= $escaper->escapeHtml(__('Headings'));?></td>
+                <td class="arskit-cell">
+                    <?php list($headings, $status) = $block->getHeadings();?>
+                    <div class="arskit-headings-wrap arskit-icon <?= $escaper->escapeHtml($status) ?>">
+                        <?php foreach ($headings as $name => $text): ?>
+                            <div class="arskit-item">
+                                <div class="arskit-head"><?= $escaper->escapeHtml('<' . $name . '>')?></div>
+                                <div><?= count($text);?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="arskit-description -headings">
+                        <?= $escaper->escapeHtml($block->stripTags(implode(', ', $headings['h1']))); ?>
+                    </div>
+                </td>
+            </tr>
+            <?php $images = $block->getImagesWithoutAlt()?>
+            <?php if ($images): ?>
+                <tr>
+                    <td><?= $escaper->escapeHtml(__('Images'));?></td>
+                    <td class="arskit-cell">
+                        <div class="arskit-icon -warning">
+                            <?= $escaper->escapeHtml(__('%1 image(s) without ALT tag', count($images)));?>
+                            <div class="arskit-description" data-js="arskit-showmore">
+                                <?php foreach ($images as $img): ?>
+                                    <span class="arskit-url"><?= $escaper->escapeHtml($img) ?></span>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            <?php endif; ?>
+        </table>
+        <div class="arskit-background">
+            <table class="arskit-table">
+                <col width="30%">
+                <col width="70%">
+                <tr>
+                    <td><?= $escaper->escapeHtml(__('In-Page Links'));?></td>
+                    <td class="arskit-cell -indent">
+                        <ul class="arskit-page-links">
+                            <?php foreach ($block->getLinksData() as $link => $linkData): ?>
+                                <li class="arskit-item">
+                                    <span class="arskit-label"><?= $escaper->escapeHtml($linkData['label']) ?></span>
+                                    <span class="arskit-count"><?= $escaper->escapeHtml($linkData['count']) ?></span>
+                                </li>
+                            <?php endforeach;?>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><?= $escaper->escapeHtml(__('Schema.org Tags')) ?></td>
+                    <td class="arskit-cell -indent">
+                        <?php if ($block->isSchemaOrgExists()): ?>
+                            <?= $escaper->escapeHtml(__('Great. We have found several schema.org types')) ?>
+                        <?php else: ?>
+                            <?= $escaper->escapeHtml(__('There are no schema.org types')) ?>
+                        <?php endif;?>
+                    </td>
+                </tr>
+                <tr>
+                    <td><?= $escaper->escapeHtml(__('Iframes')) ?></td>
+                    <td class="arskit-cell -indent">
+                        <?= $escaper->escapeHtml($block->getIframeText()); ?>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="arskit-title"><?= $escaper->escapeHtml(__('Page Content')) ?></div>
+        <table class="arskit-table">
+            <col width="30%">
+            <col width="70%">
+            <tr>
+                <td><?= $escaper->escapeHtml(__('State')) ?></td>
+                <td class="arskit-cell -indent"><?= $escaper->escapeHtml($block->getPageState()) ?></td>
+            </tr>
+            <?php $metaTag = $block->getMetaTagTemplateData()?>
+            <?php if ($metaTag): ?>
+                <tr>
+                    <td><?= $escaper->escapeHtml(__('Applied Meta Tags Template'));?></td>
+                    <td class="arskit-cell -indent">
+                        <?php foreach ($metaTag as $template): ?>
+                            <div><?= $escaper->escapeHtml($template);?></div>
+                        <?php endforeach;?>
+                    </td>
+                </tr>
+            <?php endif; ?>
+        </table>
+    </div>
+</div>
+
+<script type="text/x-magento-init">
+            {
+                "[data-js='arskit-toolbar']": {
+                    "arSeoToolbar": {}
+                }
+            }
+</script>

@@ -1,0 +1,20 @@
+<!-- ko if: !$data.isOriginMarketplace -->
+    <div class="arbase-buttons-block">
+        <a class="arbase-button -orange"
+           target="_blank"
+           data-bind="
+               i18n: 'Get Updates',
+               attr: {
+                   title: $t('Get Updates'),
+                   href: '' + $data.seoParams}">
+        </a>
+        <a class="arbase-button -blue"
+           target="_blank"
+           data-bind="
+               i18n: 'How to Update?',
+               attr: {
+                   title: $t('How to Update?'),
+                   href: '' + $data.seoParams}">
+        </a>
+    </div>
+<!-- /ko -->

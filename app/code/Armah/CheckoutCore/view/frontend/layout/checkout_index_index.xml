@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package One Step Checkout Core for Magento 2
+ */-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Armah_CheckoutCore::vendor/tooltipster/css/tooltipster.min.css"/>
+    </head>
+    <body>
+        <referenceContainer name="content">
+            <block class="Armah\CheckoutCore\Block\Onepage\CustomBlock\Block" name="top.custom_block" before="-">
+                <action method="setPosition">
+                    <argument name="position" xsi:type="string">top</argument>
+                </action>
+            </block>
+            <block class="Armah\CheckoutCore\Block\Onepage\CustomBlock\Block" name="bottom.custom_block" after="-">
+                <action method="setPosition">
+                    <argument name="position" xsi:type="string">bottom</argument>
+                </action>
+            </block>
+        </referenceContainer>
+        <referenceBlock name="checkout.root">
+            <action method="setTemplate" ifconfig="armah_checkout/general/enabled">
+                <argument name="setTemplate" xsi:type="string">Armah_CheckoutCore::onepage.phtml</argument>
+            </action>
+            <arguments>
+                <argument name="archeckoutOnepageDataProvider" xsi:type="object">Armah\CheckoutCore\ViewModel\OnepageDataProvider</argument>
+                <argument name="bundleService" xsi:type="object">Armah\CheckoutCore\Model\Optimization\BundleService</argument>
+                <argument name="archeckoutStyleSwitcher"
+                          xsi:type="object">Armah\CheckoutCore\ViewModel\StyleSwitcherProvider</argument>
+                <argument name="jsLayout" xsi:type="array">
+                    <item name="components" xsi:type="array">
+                        <item name="checkout" xsi:type="array">
+                            <item name="children" xsi:type="array">
+                                <item name="sidebar" xsi:type="array">
+                                    <item name="children" xsi:type="array">
+                                        <item name="summary" xsi:type="array">
+                                            <item name="children" xsi:type="array">
+                                                <item name="totals" xsi:type="array">
+                                                    <item name="children" xsi:type="array">
+                                                        <item name="shipping" xsi:type="array">
+                                                            <item name="config" xsi:type="array">
+                                                                <item name="notCalculatedMessage" xsi:type="string" translate="true">Not yet calculated</item>
+                                                            </item>
+                                                        </item>
+                                                    </item>
+                                                </item>
+                                            </item>
+                                        </item>
+                                    </item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
+                </argument>
+            </arguments>
+        </referenceBlock>
+        <referenceBlock name="page.main.title" remove="true"/>
+    </body>
+</page>
