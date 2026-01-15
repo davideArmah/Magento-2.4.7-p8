@@ -1,0 +1,49 @@
+<table class="arbase-table-container">
+    <thead class="arbase-thead">
+    <tr class="arbase-tr">
+        <th class="arbase-th" data-bind="i18n: 'Products'"></th>
+        <th class="arbase-th" data-bind="i18n: 'Version'"></th>
+        <th class="arbase-th" data-bind="i18n: 'Actions'"></th>
+    </tr>
+    </thead>
+    <tbody class="arbase-tbody">
+        <!-- ko foreach: $data.modules -->
+            <tr class="arbase-tr">
+                <td class="arbase-td">
+                    <span data-bind="text: $data.name"></span>
+                    <!-- ko if: $data.plan_label -->
+                        <span class="arbase-plan" data-bind="text: $data.plan_label"></span>
+                    <!-- /ko -->
+                </td>
+                <td class="arbase-td">
+                    <!-- ko if: $data.has_update -->
+                        <div class="arbase-version-container">
+                            <span class="arbase-version -current" data-bind="text: $data.version"></span>
+                            <span class="arbase-version -update" data-bind="text: $data.last_version"></span>
+                        </div>
+                        <a class="arbase-link"
+                           target="_blank"
+                           data-bind="i18n: 'New Update',
+                                      attr: {href: $data.update_url,
+                                      title: $('New Update')}"></a>
+                    <!-- /ko -->
+                    <!-- ko ifnot: $data.has_update -->
+                        <span class="arbase-version -last" data-bind="text: $data.version"></span>
+                    <!-- /ko -->
+                </td>
+                <td class="arbase-td" data-bind="with: $parent.getActionLink($data)">
+                    <!-- ko if: url -->
+                    <a class="arbase-link"
+                       target="_blank"
+                       data-bind="i18n: text,
+                                  attr: {href: url,
+                                  title: text}"></a>
+                    <!-- /ko -->
+                    <!-- ko ifnot: url -->
+                    <span data-bind="i18n: 'None'"></span>
+                    <!-- /ko -->
+                </td>
+            </tr>
+        <!-- /ko-->
+    </tbody>
+</table>

@@ -1,0 +1,35 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Custom Checkout Fields for Magento 2
+ */
+/** @var \Armah\Orderattr\Block\Adminhtml\Order\Create\Form\Attributes $block */
+/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
+/** @var \Magento\Framework\Escaper $escaper */
+?>
+</section><section id="armah-order-attributes" class="admin__page-section armah-order-attributes">
+<div class="admin__page-section-title">
+    <span class="title"><?= $escaper->escapeHtml(__('Order Attributes')); ?></span>
+    <div class="actions"></div>
+</div>
+<div id="order-attributes-fields"
+     class="admin__page-section-content">
+        <?= /** @escapeNotVerified */ $block->getFormHtml();?>
+</div>
+<?php
+$calendarScript = <<<SCRIPT
+    require([
+        "jquery",
+        "mage/calendar"
+    ], function($){
+        $('.date-calendar').each(function(key, item) {
+            var calendar = $(item).data('mage-init');
+            if(calendar) {
+                $(item).calendar(calendar.calendar);
+            }
+        });
+    });
+SCRIPT;
+?>
+<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $calendarScript, false) ?>

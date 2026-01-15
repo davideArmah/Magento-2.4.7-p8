@@ -1,0 +1,11 @@
+#customer-login-container {
+    @apply flex flex-col justify-between xl:px-12;
+
+    @screen md {
+        @apply flex-row;
+    }
+}
+
+#customer-login-container-container {
+    @apply flex flex-col w-full shadow-xl md:flex-row;
+}

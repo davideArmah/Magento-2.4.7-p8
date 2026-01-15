@@ -1,0 +1,26 @@
+<?php
+
+/** @var \Armah\Base\Block\Adminhtml\Extensions $block */
+/** @var \Magento\Framework\Escaper $escaper */
+?>
+
+<!-- ko scope: 'arbase_extensions' -->
+    <!-- ko template: getTemplate() --><!-- /ko-->
+<!-- /ko-->
+
+<script type="text/x-magento-init">
+{
+"*": {
+    "Magento_Ui/js/core/app": {
+            "components": {
+                "arbase_extensions": {
+                    "component": "Armah_Base/js/extensions",
+                    "modulesData": <?= /* @noEscape */ $block->getModulesDataJson() ?>,
+                    "isOriginMarketplace": "<?= /* @noEscape */ $block->isOriginMarketplace() ?>",
+                    "seoParams": "<?= $escaper->escapeHtml($block->getSeoparams()) ?>"
+                }
+            }
+        }
+    }
+}
+</script>

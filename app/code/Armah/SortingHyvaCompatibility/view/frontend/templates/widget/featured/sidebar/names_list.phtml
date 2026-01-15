@@ -1,0 +1,79 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah
+ * @package Improved Sorting Hyva Compatibility by Armah
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Armah\Sorting\Block\Widget\Featured;
+use Magento\Catalog\Block\Product\ReviewRendererInterface;
+use Hyva\Theme\ViewModel\ProductListItem;
+use Magento\Catalog\Block\Product\AbstractProduct;
+use Armah\SortingHyvaCompatibility\ViewModel\WidgetListItem;
+
+/** @var Escaper $escaper */
+/** @var Featured $block */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var WidgetListItem $widgetViewModel */
+$widgetViewModel = $viewModels->require(WidgetListItem::class);
+
+/** @var ProductListItem $productListItemViewModel */
+$productListItemViewModel = $viewModels->require(ProductListItem::class);
+// phpcs:disable Generic.Files.LineLength.TooLong
+?>
+
+<?php if (($_products = $block->getProductCollection()) && $_products->getSize()): ?>
+    <?php
+    $template = 'Armah_SortingHyvaCompatibility::widget/featured/sidebar/list/item.phtml';
+    $mode = 'list';
+    $image = 'featured_products_sidebar';
+    $items = $block->getProductCollection()->getItems();
+    $templateType = ReviewRendererInterface::SHORT_VIEW;
+    $description = false;
+    $hideWishList = true;
+    $hideCompare = true;
+    $hideDetails = true;
+    $hideRatingSummary = false;
+
+    /** retrive list type */
+    $listType = $widgetViewModel::NAMES_ONLY_TYPE;
+
+    $featuredItemRenderer = $block
+        ->getLayout()
+        ->createBlock(AbstractProduct::class)
+        ->setData('hide_details', $hideDetails)
+        ->setData('hide_rating_summary', $hideRatingSummary)
+        ->setData('hide_wishList', $hideWishList)
+        ->setData('hide_compare', $hideCompare)
+        ->setData('list_type', $listType)
+        ->setTemplate($template);
+    ?>
+    <div class="block widget armsorting block-featured-products-list mt-8">
+        <?php if ($block->getTitle()): ?>
+            <div class="border-t border-container mb-6 pt-5">
+                <strong class="title text-primary font-semibold text-lg"><?= $escaper->escapeHtml(__($block->getTitle())) ?></strong>
+            </div>
+        <?php endif ?>
+        <div class="block-content">
+            <div class="mx-auto grid gap-4 <?= $mode === 'grid' ? 'grid-cols-2 lg:grid-cols-3' : 'grid-cols-1' ?>">
+                <?php foreach ($items as $item): ?>
+                    <?= $productListItemViewModel->getItemHtmlWithRenderer(
+                        $featuredItemRenderer,
+                        $item,
+                        $block,
+                        $mode,
+                        $templateType,
+                        $image,
+                        $description
+                    ) ?>
+                <?php endforeach ?>
+            </div>
+            <?= $block->getPagerHtml() ?>
+        </div>
+    </div>
+<?php endif; ?>

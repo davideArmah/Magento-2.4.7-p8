@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\Escaper;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+?>
+<div class="text-white bg-gray-500 border-t shadow body-font">
+    <div class="container py-6 mx-auto lg:py-0">
+        <div class="flex flex-col items-center justify-between order-first grid-cols-1 lg:grid md:grid-cols-5 gap-y-8 lg:gap-y-0 xl:gap-y-16 md:gap-x-8 xl:gap-x-0 2xl:gap-x-8">
+            <?php foreach ($block->getChildNames() as $childName) : ?>
+                <?= $childName !== "footer-copyright"
+                    ? $block->getBlockHtml($childName)
+                    : "" ?>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <div class="border-white bg-rosso border-container">
+        <div class="container flex justify-center py-3 mx-auto tracking-wide">
+            <a href="https://www.armah.it/" class="flex flex-col text-center text-gray-500 title-font md:justify-start">
+                <span class="text-base font-bold text-white">eCommerce agency</span>
+                <!-- <span class="text-xs">Consulenza eCommerce <span class="pl-1">stefanoquitadamo.com</span></span> -->
+                <!-- <span class="ml-3 text-xl">Hyvä Themes</span> -->
+            </a>
+            <p>
+                <?php
+                // $block->getChildHtml("copyright")
+                ?>
+            </p>
+        </div>
+    </div>
+</div>

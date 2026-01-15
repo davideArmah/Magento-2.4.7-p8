@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Cross Linking for Magento 2
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Armah\CrossLinks\Api\LinkInterface" type="Armah\CrossLinks\Model\Link" />
+    <preference for="Armah\CrossLinks\Api\LinkRepositoryInterface" type="Armah\CrossLinks\Model\LinkRepository" />
+
+    <type name="Armah\CrossLinks\Model\Source\ProductReplacementAttributes">
+        <arguments>
+            <argument name="allowedAttributeCodes" xsi:type="array">
+                <item name="description" xsi:type="string">description</item>
+                <item name="short_description" xsi:type="string">short_description</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Armah\CrossLinks\Model\Source\CategoryReplacementAttributes">
+        <arguments>
+            <argument name="allowedAttributeCodes" xsi:type="array">
+                <item name="description" xsi:type="string">description</item>
+                <item name="short_description" xsi:type="string">short_description</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Armah\Base\Plugin\Setup\Model\DeclarationInstaller\ApplyPatchesBeforeDeclarativeSchema">
+        <arguments>
+            <argument name="moduleNames" xsi:type="array">
+                <item name="armah_cross_links" xsi:type="string">Armah_CrossLinks</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Armah\CrossLinks\Model\LinkType\LinkProcessorProvider">
+        <arguments>
+            <argument name="linkTypes" xsi:type="array">
+                <item name="category" xsi:type="array">
+                    <item name="typeCode" xsi:type="const">Armah\CrossLinks\Model\Source\ReferenceType::REFERENCE_TYPE_CATEGORY</item>
+                    <item name="processor" xsi:type="object">Armah\CrossLinks\Model\LinkType\Processor\CategoryLinkProcessor</item>
+                </item>
+                <item name="product" xsi:type="array">
+                    <item name="typeCode" xsi:type="const">Armah\CrossLinks\Model\Source\ReferenceType::REFERENCE_TYPE_PRODUCT</item>
+                    <item name="processor" xsi:type="object">Armah\CrossLinks\Model\LinkType\Processor\ProductLinkProcessor</item>
+                </item>
+                <item name="custom" xsi:type="array">
+                    <item name="typeCode" xsi:type="const">Armah\CrossLinks\Model\Source\ReferenceType::REFERENCE_TYPE_CUSTOM</item>
+                    <item name="processor" xsi:type="object">Armah\CrossLinks\Model\LinkType\Processor\CustomLinkProcessor</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+</config>

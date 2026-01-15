@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="armah_base">
+        <job name="arbase_feeds_refresh" instance="Armah\Base\Cron\RefreshFeedData" method="execute">
+            <config_path>armah_base/cron/feeds_refresh</config_path>
+        </job>
+        <!-- Removed broken cron jobs with missing classes:
+             - armah_base_daily_send_system_info (Armah\Base\Cron\DailySendSystemInfo - class does not exist)
+             - armah_base_instance_registration (Armah\Base\Cron\InstanceRegistration - class does not exist)
+        -->
+    </group>
+</config>

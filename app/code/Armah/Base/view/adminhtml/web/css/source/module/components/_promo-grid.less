@@ -1,0 +1,36 @@
+//
+//  Armah Promotion Grid
+//  ______________________________________________
+
+//
+//  Common
+//  ----------------------------------------------
+
+& when (@media-common = true) {
+    .armah-promo-grid {
+        & {
+            background-blend-mode: color;
+            margin-top: 3rem;
+            padding-bottom: 70rem;
+            position: relative;
+        }
+
+        .armah-promo-grid-link {
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .armah-promo-grid-action {
+            & {
+                align-items: center;
+                display: flex;
+            }
+
+            .promo-grid-image {
+                padding: .5rem;
+            }
+        }
+    }
+}

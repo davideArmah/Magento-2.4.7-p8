@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\HeroiconsSolid;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+
+/** @var HeroiconsSolid $heroiconsSolid */
+$heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+?>
+
+
+
+<div class="flex mt-[2px] bg-arancio">
+    <div class="container flex w-full h-8">
+        <a href="#" class="items-center hidden lg:flex">
+            <?= $heroicons->menuHtml("text-white", 25, 25) ?>
+            <span class="ml-2 font-bold text-white"><?= $escaper->escapeHtml(__('Categories')) ?></span>
+        </a>
+        
+        <div class="flex items-center justify-center w-full text-center">
+            <div class="flex">
+                <span class="mr-1 text-lg font-bold text-white"><?= $escaper->escapeHtml(__('Spedizione sempre')) ?></span>
+                <span class="text-lg font-bold text-black"><?= $escaper->escapeHtml(__('Gratuita')) ?></span>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+{
+    "name": "armah/module-checkout-style-switcher",
+    "description": "One Step Checkout Style Switcher by Armah",
+    "require": {
+        "php": ">=7.3",
+        "armah/base": ">=1.19.1",
+        "armah/module-one-step-checkout-core": "*"
+    },
+    "homepage": "https://armah.dev/",
+    "type": "magento2-module",
+    "version": "1.1.10",
+    "license": [
+        "proprietary"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Armah\\CheckoutStyleSwitcher\\": ""
+        }
+    }
+}

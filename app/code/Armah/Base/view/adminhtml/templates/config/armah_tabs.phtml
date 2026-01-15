@@ -1,0 +1,21 @@
+<?php
+ /** @var \Armah\Base\Block\Adminhtml\System\Config\Tabs $block */ ?>
+
+<!-- ko scope: 'arbase_config_menu' -->
+    <!-- ko template: getTemplate() --><!-- /ko -->
+<!-- /ko-->
+
+<script type="text/x-magento-init">
+{
+"*": {
+    "Magento_Ui/js/core/app": {
+            "components": {
+                "arbase_config_menu": {
+                    "component": "Armah_Base/js/config_menu",
+                    "config": <?= /* @noEscape */ $block->getConfigDataSerialized() ?>
+                }
+            }
+        }
+    }
+}
+</script>

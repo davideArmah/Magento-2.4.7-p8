@@ -1,0 +1,55 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah 
+ * @package Improved Sorting for Magento 2
+ */
+/**
+ * @var Armah\Sorting\Block\Adminhtml\Position $block
+ * @var Escaper $escaper
+ */
+
+use Magento\Framework\Escaper;
+
+?>
+
+<td class="label">
+    <?= $block->getElement()->getLabelHtml('', $block->getElement()->getScopeLabel()) ?>
+</td>
+<td colspan="3">
+    <table class="armahsorting-sort-order" id="armahsorting-sort-order">
+        <?php foreach ($block->getPositions() as $key => $index): ?>
+            <tr>
+                <th></th>
+                <td class="item-position">
+                    <?= /* @noEscape */ $index ?>
+                    <div class="draggable"></div>
+                    <input type="hidden"
+                           name="<?= $escaper->escapeHtmlAttr($block->getNamePrefix($key)) ?>"
+                           value="<?= /* @noEscape */ __($index) ?>">
+                </td>
+                <th style="min-width: 69px; visibility: hidden;"></th>
+            </tr>
+        <?php endforeach ?>
+    </table>
+    <p class="note">
+        <span>
+            <?= /* @noEscape */
+                __('Drag and drop sorting options in the order you want them to appear for the customers.')
+            ?>
+        </span>
+    </p>
+</td>
+<script>
+    require([
+        'jquery',
+        'collapsable'
+    ], function ($) {
+        $('#armahsorting-sort-order').sortable({
+            axis: 'y',
+            handle: '.item-position',
+            items: 'tr',
+            tolerance: 'pointer'
+        });
+    });
+</script>

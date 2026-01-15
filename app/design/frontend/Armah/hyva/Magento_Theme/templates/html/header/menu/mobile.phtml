@@ -1,0 +1,300 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\Navigation;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\Escaper;
+use Hyva\Theme\ViewModel\StoreSwitcher;
+
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+
+/** @var Navigation $viewModelNavigation */
+$viewModelNavigation = $viewModels->require(Navigation::class);
+
+
+/** @var StoreSwitcher $storeSwitcherViewModel */
+$storeSwitcherViewModel = $viewModels->require(StoreSwitcher::class);
+
+$currentStore = $storeSwitcherViewModel->getStore();
+
+$uniqueId = '_' . uniqid();
+
+// Order is important here: 1. build the menu data, 2. then set the cache tags from the view model identities
+$menuItems = $viewModelNavigation->getNavigation(4);
+
+$block->setData('cache_tags', $viewModelNavigation->getIdentities());
+$recaptcha = $block->getData('viewModelRecaptcha');
+
+?>
+<script>
+    function initAuthentication() {
+        return {
+            open: false,
+            forceAuthentication: false,
+            checkoutUrl: '<?= $escaper->escapeUrl($block->getUrl('')) ?>',
+            errors: 0,
+            hasCaptchaToken: 0,
+            displayErrorMessage: false,
+            errorMessages: [],
+            setErrorMessages: function setErrorMessages(messages) {
+                this.errorMessages = [messages];
+                this.displayErrorMessage = this.errorMessages.length;
+            },
+            submitForm: function() {
+                // Do not rename $form, the variable is expected to be declared in the recaptcha output
+                const $form = document.querySelector('#login-form');
+                <?= $recaptcha ? $recaptcha->getValidationJsHtml('customer_login', 'auth-popup') : '' ?>
+
+                if (this.errors === 0) {
+                    this.dispatchLoginRequest($form);
+                }
+            },
+            onPrivateContentLoaded: function(data) {
+                const isLoggedIn = data.customer && data.customer.firstname;
+                if (data.cart && !isLoggedIn) {
+                    this.forceAuthentication = !data.cart.isGuestCheckoutAllowed;
+                }
+            },
+            redirectIfAuthenticated: function(event) {
+                if (event.detail && event.detail.url) {
+                    this.checkoutUrl = event.detail.url;
+                }
+                if (!this.forceAuthentication) {
+                    window.location.href = this.checkoutUrl;
+                }
+            },
+            dispatchLoginRequest: function(form) {
+                this.isLoading = true;
+                const username = this.$refs['customer-email'].value;
+                const password = this.$refs['customer-password'].value;
+                const formKey = hyva.getFormKey();
+                const bodyFields = {
+                    'username': username,
+                    'password': password,
+                    'formKey': formKey
+                };
+                <?php // All recaptcha variants set a input field g-recaptcha-response value 
+                ?>
+                const fieldName = '<?= $recaptcha
+                                        ? $escaper->escapeJs($recaptcha->getResultTokenFieldName('customer_login'))
+                                        : '' ?>';
+                const recaptchaField = fieldName && form[fieldName];
+                if (recaptchaField) {
+                    bodyFields[fieldName] = recaptchaField.value;
+                }
+                fetch('<?= $escaper->escapeUrl($block->getUrl('customer/ajax/login')) ?>', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(bodyFields)
+                }).then(response => {
+                    return response.json()
+                }).then(data => {
+                    this.isLoading = false;
+                    if (data.errors) {
+                        dispatchMessages([{
+                            type: 'error',
+                            text: data.message
+                        }], 5000);
+                        this.errors = 1;
+                        this.hasCaptchaToken = 0;
+                    } else {
+                        window.location.href = this.checkoutUrl;
+                    }
+                });
+            }
+        }
+    }
+</script>
+<script>
+    'use strict';
+    const initMenuMobile<?= $escaper->escapeHtml($uniqueId) ?> = () => {
+        return {
+            mobilePanelActiveId: null,
+            hoverPanelActiveId: null,
+            open: false,
+            activeTab: 1,
+            setActiveMenu(menuNode) {
+                this.activeTab = menuNode
+            }
+        }
+    };
+</script>
+
+
+<div x-data="initMenuMobile<?= $escaper->escapeHtml($uniqueId) ?>()" class="z-20 w-[10%] sm:w-1/4 navigation lg:hidden">
+    <!-- mobile -->
+    <div class="" :class="{'h-screen overflow-x-hidden overflow-y-auto fixed top-0 left-0 w-full bg-container z-50' : open}" @toggle-mobile-menu.window="open = !open, activeTab=open ? 1 : 0" @keydown.window.escape="open=false">
+        <div class="z-10 flex items-baseline justify-between w-auto menu-icon">
+            <div class="flex justify-start w-full bg-transparent">
+                <div class="w-full duration-150 ease-in-out transform transition-display border-container" x-cloak x-show.transition.in.opacity.duration.600="open">
+                    <ul class="flex flex-row tracking-wider uppercase border-gray-200">
+                        <li class="w-full">
+                            <a @click="activeTab = 1" href="#" :class="{ 'active bg-rosso text-white': activeTab == 1 }" class="inline-block w-full p-3 text-lg font-semibold text-center text-white">Menu
+                            </a>
+                        </li>
+                        <li class="w-full">
+                            <a @click="activeTab = 2" href="#" :class="{ 'active bg-rosso text-white': activeTab == 2 }" class="inline-block w-full p-3 text-lg font-semibold text-center text-white">Login
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <a @click="$dispatch('toggle-mobile-menu')" class="flex items-center justify-center cursor-pointer" :class="{ 'ml-auto ': open }" x-cloak>
+                    <?= $heroicons->xHtml('p-0 lg:p-4 w-6 lg:w-auto h-auto mx-4 text-gray-400', 64, 64, [":class" => "{ 'hidden' : !open, 'block': open }"]); ?>
+                    <?= $heroicons->menuHtml('w-5 h-5 sm:w-7 sm:h-7 text-white', 48, 48, [":class" => "{ 'hidden' : open, 'block': !open }"]); ?>
+                </a>
+            </div>
+        </div>
+       
+        <div class="tab-panel" :class="{ 'active': activeTab === 1 }" x-show.transition.in.opacity.duration.600="activeTab === 1">
+            <nav x-cloak class="hidden w-full mt-4 tracking-wider duration-150 ease-in-out transform transition-display gap-1 flex flex-col divide-y" :class="{ 'hidden' : !open }">
+                <?php foreach ($menuItems as $index => $menuItem) : ?>
+                    <div id="menu-<?= $menuItem['id']?>" class="level-0">
+                        <span class="flex items-center transition-transform duration-150 ease-in-out transform" :class="{'-translate-x-full' : mobilePanelActiveId,'translate-x-0' : !mobilePanelActiveId}">
+
+
+                            <div class="flex items-center w-full px-8 py-2 text-base cursor-pointer sm:text-xl font-base level-0">
+                                <a href="<?= $escaper->escapeUrl($menuItem['url']) ?>" title="<?= $escaper->escapeHtmlAttr($menuItem['name']) ?>" class="w-full">
+                                    <?= $escaper->escapeHtml($menuItem['name']) ?>
+                                </a>
+                            </div>
+                            <?php if (!empty($menuItem['childData'])) : ?>
+                                <a class="absolute right-0 flex mr-8 bg-transparent border rounded-full cursor-pointer w-7 h-7 border-container-lighter hover:bg-container hover:border-container" @click="mobilePanelActiveId =
+                                mobilePanelActiveId === '<?= /* @noEscape */ (string) $index ?>' ?
+                                0 : '<?= /* @noEscape */ (string) $index ?>'">
+                                    <?= $heroicons->chevronRightHtml('w-full h-full p-1'); ?>
+                                </a>
+                            <?php endif; ?>
+                        </span>
+                        <?php if (!empty($menuItem['childData'])) : ?>
+                            <div class="absolute top-0 right-0 z-10 w-full h-full transition-transform duration-200 ease-in-out transform translate-x-full bg-white" :class="{'translate-x-full' : mobilePanelActiveId !== '<?= /* @noEscape */ (string) $index ?>','translate-x-0' : mobilePanelActiveId === '<?= /* @noEscape */ (string) $index ?>',}">
+                                <a class="flex items-center w-full px-8 py-2 text-sm cursor-pointer font-base md:py-4 level-0" @click="mobilePanelActiveId = 0">
+                                    <span class="p-1 bg-transparent border rounded-full border-container-lighter hover:bg-container hover:border-container"><?= $heroicons->chevronLeftHtml('w-5 h-5'); ?></span>
+                                    <span class="ml-4"><?= $escaper->escapeHtml($menuItem['name']) ?></span>
+                                </a>
+                                <a href="<?= $escaper->escapeUrl($menuItem['url']) ?>" title="<?= $escaper->escapeHtmlAttr($menuItem['name']) ?>" class="flex items-center w-full px-8 py-4 font-semibold cursor-pointer bg-container-lighter border-container hover:bg-container-darker hover:underline">
+                                    <span class="w-6"></span>
+                                    <span class="ml-4"><?= $escaper->escapeHtml(__('View All')) ?></span>
+                                </a>
+                                <?php foreach ($menuItem['childData'] as $subMenuItem) : ?>
+                                    <a href="<?= $escaper->escapeUrl($subMenuItem['url']) ?>" title="<?= $escaper->escapeHtmlAttr($subMenuItem['name']) ?>" class="flex items-center w-full px-8 py-2 text-lg border-t cursor-pointer md:text-sm font-base level-0">
+                                        <span class="w-6">•</span>
+                                        <span class="ml-4 text-base tracking-wider text-black sm:text-xl lg:ml-0"><?= $escaper->escapeHtml($subMenuItem['name']) ?></span>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </nav>
+        </div>
+
+        <div x-cloak class="tab-panel" :class="{ 'active': activeTab === 2 }" x-show.transition.in.opacity.duration.600="activeTab === 2">
+            <?php if ($block->customerLoggedIn()) : ?>
+
+                <div class="flex flex-col h-full py-10 space-y-6">
+                    <div class="w-full text-2xl">
+                        <a class="flex items-center pl-3 mt-6 hover:bg-gray-100" href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>">
+                            <?= $heroicons->userHtml("h-6 w-6 mr-5", 25, 25) ?>
+                            <?= $escaper->escapeHtml(__('My Account')); ?>
+                        </a>
+                        <a class="flex items-center pl-3 mt-6 hover:bg-gray-100" href="<?= $escaper->escapeUrl($block->getUrl('sales/order/history')) ?>">
+                            <?= $heroicons->shoppingBagHtml("h-6 w-6 mr-5", 25, 25) ?>
+                            <?= $escaper->escapeHtml(__('My Orders')); ?>
+                        </a>
+                        <a class="flex items-center pl-3 mt-6 hover:bg-gray-100" href="<?= $escaper->escapeUrl($block->getUrl('customer/address')) ?>">
+                            <?= $heroicons->identificationHtml("h-6 w-6 mr-5", 25, 25) ?>
+                            <?= $escaper->escapeHtml(__('Address Book')); ?></a>
+                        <a class="flex items-center w-full pl-3 pr-0 mt-6 text-2xl rounded-none btn bg-rosso hover:bg-rosso-400 active:bg-rosso-600" href="<?= $escaper->escapeUrl($block->getUrl('customer/account/logout')) ?>">
+                            <?= $heroicons->logoutHtml("h-6 w-6 mr-5", 25, 25) ?>
+                            <?= $escaper->escapeHtml(__('Sign Out')); ?>
+                        </a>
+                    </div>
+                </div>
+            <?php else : ?>
+
+                <section id="authentication-popup" x-data="initAuthentication()" class="p-6">
+
+
+                    <h2 id="authenticate-customer-login" class="py-3 text-base font-semibold leading-7 text-left text-black border-b border-rosso">
+                        <?= $escaper->escapeHtml(__('Checkout using your account')) ?>
+                    </h2>
+
+                    <form class="form form-login" method="post" @submit.prevent="submitForm();" id="login-form">
+                        <?= $recaptcha ? $recaptcha->getInputHtml('customer_login', 'auth-popup') : '' ?>
+                        <div class="fieldset login">
+                            <div class="field email required">
+                                <label class="pt-4 pb-2 text-left label" for="customer-email">
+                                    <span><?= $escaper->escapeHtml(__('Email Address')) ?></span>
+                                </label>
+                                <div class="flex justify-start control">
+                                    <input name="username" x-ref="customer-email" @change="errors = 0" type="email" required class="w-3/4 form-input input-text focus:ring-0 focus:border-rosso">
+                                </div>
+                            </div>
+                            <div class="pt-4 field password required">
+                                <label for="pass" class="text-left label">
+                                    <span><?= $escaper->escapeHtml(__('Password')) ?></span>
+                                </label>
+                                <div class="flex justify-start control">
+                                    <input name="password" type="password" class="w-3/4 form-input input-text focus:ring-0 focus:border-rosso" required x-ref="customer-password" @change="errors = 0">
+
+                                </div>
+                            </div>
+
+                            <input name="context" type="hidden" value="checkout" />
+                            <div class="flex flex-row-reverse items-center justify-between pt-4 pb-2 mt-6 border-t border-gray-200 align-centers">
+                                <button type="submit" class="inline-flex rounded-lg btn hover:bg-rosso bg-rosso-400">
+                                    <?= $escaper->escapeHtml(__('Sign In')) ?>
+                                </button>
+                                <a class="text-lg text-black font-base" href="<?= $escaper->escapeUrl($block->getUrl('customer/account/forgotpassword')) ?>">
+                                    <?= $escaper->escapeHtml(__('Forgot Your Password?')) ?>
+                                </a>
+                            </div>
+
+                        </div>
+                    </form>
+                    <div class="mx-4">
+                        <?= $recaptcha ? $recaptcha->getLegalNoticeHtml('customer_login') : '' ?>
+                    </div>
+                    <div class="my-10 text-left block-new-customer">
+                        <h2 id="authenticate-new-customer" class="flex mb-2 text-lg font-semibold leading-7 text-gray-900">
+                            <?= $escaper->escapeHtml(__('Checkout as a new customer')) ?>
+                        </h2>
+
+                        <div class="block-content">
+                            <p class="mb-1">
+                                <?= $escaper->escapeHtml(__('Creating an account has many benefits:')) ?>
+                            </p>
+                            <ul class="pl-5 list-disc">
+                                <li> <?= $escaper->escapeHtml(__('See order and shipping status')) ?></li>
+                                <li> <?= $escaper->escapeHtml(__('Track order history')) ?></li>
+                                <li> <?= $escaper->escapeHtml(__('Check out faster')) ?></li>
+                            </ul>
+                            <div class="flex items-center justify-end mt-6 mb-2">
+                                <a href="<?= $escaper->escapeUrl($block->getUrl('customer/account/create')) ?>" class="inline-flex btn hover:bg-rosso bg-rosso-400">
+                                    <?= $escaper->escapeHtml(__('Create an Account')) ?>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>

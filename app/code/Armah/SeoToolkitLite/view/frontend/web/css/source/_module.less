@@ -1,0 +1,317 @@
+// phpcs:ignoreFile
+//
+//  Seo Toolbar
+//  __________________________
+
+//
+//  Variables
+//  ___________________________________
+
+@arskit-toolbar-icon__background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgZmlsbD0ibm9uZSI+PGNpcmNsZSBjeD0iMTUiIGN5PSIxNSIgcj0iMTUiIGZpbGw9IiNGRjk0MTYiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNNyA3Ljc1MmMwIC40ODUuMDE4LjkxMS4wMTggMS4zOTZ2Ny43MDVsLjAwMSAzLjU5OGMwIC41ODktLjAxNSAxLjE4MiAwIDEuNzcydi4wMjZjMCAuNDA2LjM0Ny43NTEuNzU0Ljc1MWgxNC40NzJjLjM5NiAwIC43NzItLjM0NS43NTQtLjc1LS4wMi0uNDA2LS4zMzItLjc1Mi0uNzU0LS43NTJINy43OGwuNzU0Ljc1MXYtMS40NTNsLS4wMDEtMy40NFYxMy4xNCA5LjQ5M2MwLS41OS0uMDAzLTEuMTI1LS4wMTgtMS43MTR2LS4wMjdjMC0uMzk0LS4zMzYtLjc3LS43NDItLjc1MS0uNDE5LjAxOC0uNzczLjMzLS43NzMuNzUxeiIvPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0xMC42MzYgMTguNzA2djMuNDk3YzAgLjQxOC4zMzUuODE2LjcyOC43OTZhLjc3OS43NzkgMCAwIDAgLjcyNy0uNzk2di0zLjA1Mi0uNDQ1YzAtLjQxOC0uMzM0LS44MTYtLjcyNy0uNzk2YS43NzYuNzc2IDAgMCAwLS43MjguNzk2ek0xNC4yNzMgMTUuMTF2Ny4wNTNjMCAuNDM5LjMzNC44NTcuNzI3LjgzNi4zOTMtLjAyLjcyNy0uMzY4LjcyNy0uODM2di02LjE3LS44ODNjMC0uNDM5LS4zMzQtLjg1Ny0uNzI3LS44MzYtLjM5My4wMi0uNzI3LjM2OC0uNzI3LjgzNnpNMTcuOTEgMTUuODV2Ni4yOTljMCAuNDQ3LjMzNC44NzEuNzI3Ljg1LjM5Mi0uMDIxLjcyNy0uMzc0LjcyNy0uODV2LTUuNTItLjc3OGMwLS40NDctLjMzNS0uODcyLS43MjctLjg1LS4zOTMuMDIxLS43MjguMzc0LS43MjguODV6TTIxLjU0NiAxMi44OTNWMjIuMTk4YzAgLjQyLjMzNC44MjEuNzI3LjgwMS4zOTMtLjAyLjcyNy0uMzUyLjcyNy0uODAxdi0zLjE0LTUuMDA2LTEuMTU5YzAtLjQyLS4zMzQtLjgyMS0uNzI3LS44MDEtLjM5My4wMi0uNzI3LjM1Mi0uNzI3LjgwMXpNOC4zODIgMTYuMDI3bDIuMDA4LTEuMzg2YzEuMDYyLS43MzIgMi4xMi0xLjQ2OCAzLjE4My0yLjJsLjczOS0uNTExYy4zMjQtLjIyMS41LS42NjguMjcxLTEuMDI5LS4yMDctLjMxOS0uNjg2LS41MS0xLjAzMi0uMjdsLTIuMDA4IDEuMzg1Yy0xLjA2My43MzMtMi4xMjIgMS40NjktMy4xODQgMi4ybC0uNzM4LjUxMWMtLjMyNS4yMjItLjUwMi42NjktLjI3MiAxLjAzLjIxMS4zMjIuNjg2LjUxIDEuMDMzLjI3eiIvPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0xMy43MzIgMTIuMDA5bDMuMjQ3LjYyLjQ2OC4wOWMuMzg0LjA3NS44MzItLjExLjkyNi0uNTI2LjA4My0uMzcyLS4xMTMtLjg0NS0uNTI3LS45MjRsLTMuMjQ4LS42Mi0uNDY3LS4wOWMtLjM4NC0uMDc0LS44MzMuMTEtLjkyNy41MjYtLjA4Ny4zNjguMTEzLjg0NS41MjguOTI0eiIvPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0xOC4xNzcgMTIuNTI0YzEuMTA4LTEuMTk4IDIuMjE2LTIuMzkyIDMuMzIzLTMuNTkuMTU1LS4xNy4zMTMtLjMzOC40NjgtLjUwNy4yNjctLjI5LjMwOC0uNzgxIDAtMS4wNjMtLjI5LS4yNjYtLjc4LS4zMDgtMS4wNjcgMC0xLjEwNyAxLjE5OC0yLjIxNSAyLjM5Mi0zLjMyMyAzLjU5LS4xNTQuMTY5LS4zMTIuMzM4LS40NjcuNTA3LS4yNjcuMjg5LS4zMDkuNzggMCAxLjA2My4yOS4yNjYuNzguMzA3IDEuMDY2IDB6Ii8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTIwLjY3NSA3Ljg5N3YyLjM1YzAgLjM5NS4zNDcuNzcuNzU0Ljc1Mi40MDctLjAxOS43NTMtLjMzLjc1My0uNzUxdi0yLjM1YzAtLjM5NS0uMzQ2LS43Ny0uNzUzLS43NTItLjQxLjAyLS43NTQuMzMtLjc1NC43NTF6Ii8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTIxLjQyOSA3LjE0NmMtLjc1Ny4wMDgtMS41MTUuMDExLTIuMjcyLjAxOS0uMzk2LjAwNC0uNzcyLjM0Mi0uNzU0Ljc1LjAyLjQwNi4zMzIuNzU2Ljc1NC43NTIuNzU3LS4wMDggMS41MTUtLjAxMSAyLjI3Mi0uMDE5LjM5Ni0uMDA0Ljc3Mi0uMzQyLjc1My0uNzUtLjAxOC0uNDA2LS4zMzEtLjc1Ni0uNzUzLS43NTJ6Ii8+PC9zdmc+) no-repeat center;
+@arskit-toolbar-arrow__background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNCIgaGVpZ2h0PSI4IiBmaWxsPSJub25lIj48cGF0aCBzdHJva2U9IiNCMkIyQjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIxLjUiIGQ9Ik0xMyA3TDcgMSAxIDciLz48L3N2Zz4=) no-repeat center;
+@arskit-toolbar__size: 30px;
+@arskit-toolbar-content__padding: 10px;
+@arskit-warning-icon__background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgZmlsbD0ibm9uZSI+PGNpcmNsZSBjeD0iOSIgY3k9IjkiIHI9IjkiIGZpbGw9IiNFQjU3NTciLz48cGF0aCBzdHJva2U9IiNmZmYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIyIiBkPSJNOSA0djYuNSIvPjxjaXJjbGUgY3g9IjkiIGN5PSIxNCIgcj0iMSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==) no-repeat center;
+@arskit-normal-icon__background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgZmlsbD0ibm9uZSI+PGNpcmNsZSBjeD0iOSIgY3k9IjkiIHI9IjkiIGZpbGw9IiMxNzg3RTAiLz48cGF0aCBzdHJva2U9IiNmZmYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIyIiBkPSJNNS41IDlsMy4xMjUgM0wxMi41IDciLz48L3N2Zz4=) no-repeat center;
+@arskit-separator-wrap__color: #c4c4c4;
+@arskit-toolbar-box__color: #e4e4e4;
+@arskit-background__color: #f6f6f6;
+@arskit-description__color: #adadad;
+@arskit-button-hover__color: #1787e0;
+@arskit-page-links__color: 55b4ff;
+
+//
+//  Common
+//  ----------------------------------------------
+
+& when (@media-common = true) {
+    .arskit-toolbar-wrap {
+        & {
+            background: @color-white;
+            border-radius: 10px;
+            bottom: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, .25);
+            left: 3%;
+            position: fixed;
+            width: 300px;
+            z-index: 9999;
+        }
+
+        &.-open:after {
+            background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0) 35%, @color-white);
+            bottom: 15px;
+            content: '';
+            height: 25px;
+            left: 0;
+            pointer-events: none;
+            position: absolute;
+            width: 100%;
+        }
+
+        &.-open {
+            padding-bottom: 15px;
+        }
+    }
+
+    .arskit-toolbar-box {
+        & {
+            background: @arskit-toolbar-box__color;
+            border-radius: 10px;
+            box-sizing: border-box;
+            cursor: pointer;
+            padding: 10px 20px;
+        }
+
+        &.-open {
+            border-radius: 10px 10px 0 0;
+            cursor: auto;
+        }
+
+        > .arskit-title {
+            & {
+                color: @color-black;
+                display: inline-block;
+                font-size: 18px;
+                font-weight: 600;
+                line-height:  @arskit-toolbar__size;
+            }
+
+            &:before {
+                content: '';
+                display: inline-block;
+                height: @arskit-toolbar__size;
+                margin-right: 10px;
+                background: @arskit-toolbar-icon__background;
+                vertical-align: top;
+                width: @arskit-toolbar__size;
+            }
+        }
+
+        > .arskit-arrow {
+            background: @arskit-toolbar-arrow__background;
+            display: inline-block;
+            float: right;
+            height: @arskit-toolbar__size;
+            width: 12px;
+
+        }
+
+        &.-open > .arskit-arrow {
+            cursor: pointer;
+            transform: rotate(180deg);
+        }
+    }
+
+    .arskit-toolbar-content {
+        & {
+            background: @color-white;
+            box-sizing: border-box;
+            color: @color-black;
+            font-size: 14px;
+            max-height: 75vh;
+            padding: @arskit-toolbar-content__padding;
+            overflow: auto;
+        }
+
+        .arskit-table {
+            table-layout: fixed;
+        }
+
+        .arskit-content-header {
+            border-bottom: 1px solid @arskit-toolbar-box__color;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 0 1rem;
+        }
+
+        .arskit-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 10px;
+        }
+
+        > .arskit-background {
+            background: @arskit-background__color;
+            margin: 5px -10px 25px;
+            padding: @arskit-toolbar-content__padding;
+        }
+
+        .arskit-cell {
+            word-break: break-word;
+            word-wrap: break-word;
+        }
+
+        .arskit-cell.-indent {
+            padding-left: 35px;
+        }
+
+        .arskit-description {
+            color: @arskit-description__color;
+            font-size: 12px;
+        }
+
+        .arskit-description.-headings {
+            padding-left: 25px;
+        }
+
+        .arskit-icon {
+            & {
+                padding-left: 25px;
+                position: relative;
+            }
+
+            &:before {
+                content: '';
+                display: inline-block;
+                height: 18px;
+                left: 0;
+                position: absolute;
+                width: 18px;
+            }
+
+        }
+
+        .arskit-icon.-warning:before {
+            background: @arskit-warning-icon__background;
+        }
+
+        .arskit-icon.-normal:before {
+            background: @arskit-normal-icon__background;
+        }
+    }
+
+    .arskit-headings-wrap {
+        & {
+            .lib-vendor-prefix-display();
+            .lib-vendor-prefix-flex-wrap();
+        }
+
+        > .arskit-item {
+            margin-bottom: 5px;
+            margin-left: 8px;
+            text-align: center;
+        }
+
+        .arskit-head {
+            text-transform: uppercase;
+        }
+    }
+
+    .arskit-page-links {
+        & {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        > .arskit-item {
+            & {
+                padding-left: 10px;
+                position: relative;
+            }
+
+            &:before {
+                background: @arskit-page-links__color;
+                border-radius: 50%;
+                content: '';
+                display: inline-block;
+                height: 5px;
+                left: 0;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 5px;
+            }
+        }
+
+        .arskit-label {
+            display: inline-block;
+            width: 80%;
+        }
+    }
+
+    .arskit-separator-wrap {
+        & {
+            background: @arskit-separator-wrap__color;
+            height: 1px;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        & ~ .arskit-url {
+            display: none;
+        }
+
+        > .arskit-button {
+            & {
+                background: @color-white;
+                border: 1px solid @arskit-separator-wrap__color;
+                border-radius: 20px;
+                color: @arskit-separator-wrap__color;
+                cursor: pointer;
+                font-size: 10px;
+                height: 20px;
+                left: 50%;
+                line-height: 20px;
+                -ms-transform: translate(-50%, -50%);
+                padding: 0 10px;
+                position: absolute;
+                top: 50%;
+                -webkit-transform: translate(-50%, -50%);
+                -webkit-transition: all .3s ease;
+                transform: translate(-50%, -50%);
+                transition: all .3s ease;
+            }
+
+            &:hover {
+                border-color: @arskit-button-hover__color;
+                color: @arskit-button-hover__color;
+            }
+        }
+    }
+
+    //
+    //  Mobile +
+    //  -----------------------------------
+
+    @media (min-width: 480px) {
+        .arskit-toolbar-wrap.-open {
+            width: 450px;
+        }
+
+        .arskit-page-links .arskit-label {
+            width: 55%;
+        }
+    }
+}
+
+//
+//  Tablet +
+//  --------------------------------------------
+
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
+    .arskit-toolbar-wrap {
+        & {
+            bottom: 25px;
+            left: 25px;
+        }
+
+        &.-open {
+            width: 500px;
+        }
+    }
+
+    .arskit-toolbar-content {
+        max-height: 650px;
+    }
+
+    .arskit-headings-wrap {
+        -webkit-flex-wrap: initial;
+        -ms-flex-wrap: initial;
+        flex-wrap: initial;
+    }
+
+    .arskit-page-links .arskit-label {
+        width: 45%;
+    }
+}

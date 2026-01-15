@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+-->
+<page layout="1column"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="after.body.start">
+            <block class="Magento\Framework\View\Element\FormKey" name="formkey" />
+        </referenceContainer>
+
+        <referenceContainer name="page.messages">
+            <block class="Magento\Framework\View\Element\Messages" name="messages" as="messages" template="Magento_Theme::messages.phtml" />
+        </referenceContainer>
+
+        <referenceContainer name="main.content">
+            <block class="Magento\Framework\View\Element\Template" name="skip_to_content.target" before="-" template="Magento_Theme::html/skiptarget.phtml">
+                <arguments>
+                    <argument name="target_id" xsi:type="string">contentarea</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+
+        <referenceContainer name="header.container" htmlClass="flex flex-col sticky z-50 top-0" htmlId="main-header">
+            <container name="header.container.first.second" htmlId="header-first-second-row" htmlTag="div" htmlClass="w-full bg-white" before="-">
+                <container name="header.container.first" htmlId="header-first-row" htmlTag="div" htmlClass="flex justify-center container items-center" before="-">
+                    <block name="top-notification" class="Magento\Customer\Block\Account\Customer" template="Magento_Theme::html/top-notification.phtml">
+                        <block class="Magento\Cms\Block\Block" name="blocco-feedaty-top" before="resta-aggiornato">
+                            <arguments>
+                                <argument name="block_id" xsi:type="string">blocco-feedaty-top</argument>
+                            </arguments>
+                        </block>
+                    </block>
+                </container>
+                <container name="header.container.second" htmlId="header-second-row" htmlTag="div" htmlClass="flex flex-col" after="first">
+                    <block name="header-content" template="Magento_Theme::html/header.phtml">
+                        <block class="Magento\Customer\Block\Account\Customer" name="topmenu_mobile" as="topmenu.mobile" template="Magento_Theme::html/header/menu/mobile.phtml"/>
+                        <block name="logo" class="Magento\Theme\Block\Html\Header\Logo">
+                            <arguments>
+                                <argument name="logoPathResolver" xsi:type="object">Hyva\Theme\ViewModel\Logo\LogoPathResolver</argument>
+                                <!-- These values are used if no width or height is set in the adminhtml theme configuration -->
+                                <argument name="logo_width" xsi:type="number">189</argument>
+                                <argument name="logo_height" xsi:type="number">64</argument>
+                            </arguments>
+                        </block>
+                        <block name="header-search" template="Magento_Theme::html/header/search-form.phtml"/>
+                        <block name="spedizione_gratuita" class="Magento\Cms\Block\Block" after="header-search">
+                            <arguments>
+                                <argument name="block_id" xsi:type="string">spedizione_gratuita</argument>
+                            </arguments>
+                        </block>
+                        <block name="wishlist-drawer" template="Magento_Theme::htlm/wishlist/wishlist-drawer.phtml" ifconfig="checkout/sidebar/display">
+                            <block class="Magento\Customer\Block\Form\Login" name="wishlist-drawer-login" template="Magento_Theme::html/forms/login.phtml">
+                                <container name="form.additional.info" as="form_additional_info"/>
+                            </block>
+                            <block class="Magento\Customer\Block\Form\Login\Info" name="drawer-customer-new" template="Magento_Theme::html/forms/newcustomer.phtml"/>
+                            <block class="Magento\Customer\Block\Form\Login\Info" name="drawer-customer-new" template="Magento_Theme::html/forms/logout.phtml"/>
+
+                            <block name="wishlist-drawer-loading" as="wishlist-loading" template="Hyva_Theme::ui/loading.phtml"/>
+                            <block name="extra_actions" class="Magento\Catalog\Block\ShortcutButtons\InCatalog"/>
+                        </block>
+                        <block name="languages-drawer" template="Magento_Theme::html/languages/languages-drawer.phtml"/>
+                        <block name="cart-drawer" template="Magento_Theme::html/cart/cart-drawer.phtml" ifconfig="checkout/sidebar/display">
+                            <block name="cart-drawer-loading" as="loading" template="Hyva_Theme::ui/loading.phtml"/>
+                            <block name="extra_actions" class="Magento\Catalog\Block\ShortcutButtons\InCatalog"/>
+                        </block>
+                        <block name="header-searchmobile" template="Magento_Theme::html/header/search-mobile.phtml"/>
+
+                    </block>
+                </container>
+
+            </container>
+        </referenceContainer>
+
+        <referenceContainer name="top.container">
+            <block name="bottom-notification" class="Magento\Customer\Block\Account\Customer" template="Magento_Theme::html/bottom-notification.phtml" before="-"/>
+            <container name="home.first.row" htmlId="home-first-row" htmlTag="div" htmlClass="w-full bg-white flex container">
+                <container name="home.first.row.left" htmlId="home-first-row-left" htmlTag="div" htmlClass="z-20">
+                    <block name="topmenu_generic" as="topmenu" template="Magento_Theme::html/header/topmenu.phtml" ttl="3600">
+                        <arguments>
+                            <argument name="cache_lifetime" xsi:type="string">3600</argument>
+                        </arguments>
+                        <block name="topmenu_desktop" as="topmenu.desktop" template="Magento_Theme::html/header/menu/desktop.phtml">
+                            <!-- <arguments>
+                             <argument name="view_model" xsi:type="object">Armah\CategoryAttribute\ViewModel\CategoryAttribute</argument>
+                        </arguments> -->
+                        </block>
+                    </block>
+                </container>
+                <container name="home.first.row.right" htmlId="home-first-row-right" htmlTag="div" htmlClass="z-0">
+                    <block class="Magento\Cms\Block\Block" name="home-main-slide">
+                        <arguments>
+                            <argument name="block_id" xsi:type="string">home-main-slide</argument>
+                        </arguments>
+                    </block>
+                </container>
+            </container>
+            
+            <block class="Magento\Cms\Block\Block" name="resta-aggiornato">
+                <arguments>
+                    <argument name="block_id" xsi:type="string">resta-aggiornato</argument>
+                </arguments>
+            </block>
+                
+        </referenceContainer>
+
+        <referenceContainer name="content">
+
+            <block class="Magento\Theme\Block\Html\Title" name="page.main.title" template="Magento_Theme::html/title.phtml"/>
+
+        </referenceContainer>
+
+        <referenceContainer name="columns.top">
+
+        </referenceContainer>
+
+        <referenceContainer name="footer">
+            
+            <block class="Magento\Cms\Block\Block" name="blocco-banner">
+                <arguments>
+                    <argument name="block_id" xsi:type="string">blocco-banner</argument>
+                </arguments>
+            </block>
+            <block name="footer-content" template="Magento_Theme::html/footer.phtml">
+                <block class="Magento\Cms\Block\Block" name="footer-blocco-telefono">
+                    <arguments>
+                        <argument name="block_id" xsi:type="string">footer-blocco-telefono</argument>
+                    </arguments>
+                </block>
+
+                <block class="Magento\Cms\Block\Block" name="footer-info-acquisti">
+                    <arguments>
+                        <argument name="block_id" xsi:type="string">footer-info-acquisti</argument>
+                    </arguments>
+                </block>
+
+                <block class="Magento\Cms\Block\Block" name="footer-dati-logo">
+                    <arguments>
+                        <argument name="block_id" xsi:type="string">footer-dati-logo</argument>
+                    </arguments>
+                </block>
+
+                <block class="Magento\Cms\Block\Block" name="footer-info-clienti">
+                    <arguments>
+                        <argument name="block_id" xsi:type="string">footer-info-clienti</argument>
+                    </arguments>
+                </block>
+
+                <block class="Magento\Cms\Block\Block" name="footer-social-contact">
+                    <arguments>
+                        <argument name="block_id" xsi:type="string">footer-social-contact</argument>
+                    </arguments>
+                </block>
+            </block>
+            <referenceBlock name="form.subscribe" remove="true"/>
+            <referenceBlock name="footer-column-store" remove="true" />
+        </referenceContainer>
+
+        <referenceContainer name="after.body.start">
+            <block class="Magento\Framework\View\Element\Js\Components" name="head.components" as="components" template="Magento_Theme::html/container.phtml"/>
+        </referenceContainer>
+
+        <referenceContainer name="before.body.end">
+            <block class="Magento\Theme\Block\Html\Footer" name="absolute_footer" template="Magento_Theme::html/absolute_footer.phtml" />
+        </referenceContainer>
+
+        <block class="Magento\Framework\View\Element\Template" name="head.additional" as="head.additional" template="Magento_Theme::html/container.phtml"/>
+
+        <!-- <referenceContainer name="page.wrapper">
+
+        </referenceContainer> -->
+        <referenceBlock name="hero" remove="true"/>
+        <referenceBlock name="content-1" remove="true"/>
+        <referenceBlock name="slider-1" remove="true"/>
+        <referenceBlock name="slider-2" remove="true"/>
+        <referenceBlock name="blocco-banner" remove="true"/>
+    </body>
+</page>

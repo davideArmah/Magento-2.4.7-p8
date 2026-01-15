@@ -1,0 +1,55 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package GeoIP Data for Magento 2 (System)
+ */
+/**
+ * @var \Armah\Geoip\Block\Adminhtml\Settings\Import $block
+ */
+?>
+<div class="argeoip-import-container" data-bind="scope: 'import'">
+    <div class="argeoip-progressbar-container -import">
+        <span class="argeoip-state -import" data-bind="css: {'-done': isDownloadCompleted()}">
+            <?= $block->escapeHtml(__('Import')) ?>
+        </span>
+        <span class="argeoip-state -completed" data-bind="css: {'-done': importDone()}">
+            <?= $block->escapeHtml(__("Completed")) ?>
+        </span>
+        <div class="argeoip-download-state">
+            <span class="argeoip-begin -done" data-bind="css: {'-done': isDownloadCompleted()}"></span>
+            <div class="argeoip-line-container">
+                <span class="argeoip-counter -hidden"
+                      data-bind="
+                      attr: {'data-count': importCounter},
+                      style: {left: importStatusWidth() + '%'},
+                      css: {'-hidden': !isShowImportCounter()}"></span>
+                <div class="argeoip-line"
+                     data-bind="style: {width: importStatusWidth() + '%'}"
+                     style="width: <?= (int)$block->getWidth() ?>%"></div>
+            </div>
+            <span class="<?= $block->escapeHtml($block->getImportedClass()) ?> argeoip-label -endimport"
+                  data-bind="css: {'-completed': importDone()}"></span>
+        </div>
+    </div>
+
+    <div class="argeoip-files-container">
+        <div class="argeoip-files <?= $block->getBlockFileExist() ? '-available' : '' ?>">
+            var/armah/geoip/GeoLite2-City-Blocks-IPv4.csv
+        </div>
+        <div class="argeoip-files <?= $block->getBlockV6FileExist() ? '-available' : '' ?>">
+            var/armah/geoip/GeoLite2-City-Blocks-IPv6.csv
+        </div>
+        <div class="argeoip-files <?= $block->getLocationFileExist() ? '-available' : '' ?>">
+            var/armah/geoip/GeoLite2-City-Locations-en.csv
+        </div>
+    </div>
+    <button class="argeoip-button action-default"
+            type="button"
+            data-bind="
+                disable: !initialStatus(),
+                click: initImport.bind($data),
+                i18n: 'Import',
+                attr: {title: $t('Import')}">
+    </button>
+</div>

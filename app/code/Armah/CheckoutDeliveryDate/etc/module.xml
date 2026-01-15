@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package One Step Checkout Delivery Date for Magento 2 (System)
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+    <module name="Armah_CheckoutDeliveryDate">
+        <sequence>
+            <module name="Armah_Base"/>
+            <module name="Armah_CheckoutCore"/>
+        </sequence>
+    </module>
+</config>

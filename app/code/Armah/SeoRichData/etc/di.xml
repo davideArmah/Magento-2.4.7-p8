@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Google Rich Snippets for Magento 2
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Save Breadcrumb Info -->
+    <type name="Magento\Theme\Block\Html\Breadcrumbs">
+        <plugin name="Armah_SeoRichData::Block_Breadcrumbs" type="Armah\SeoRichData\Plugin\Block\Breadcrumbs" />
+    </type>
+
+    <!-- Remove Malformed Review Rich Data -->
+    <type name="\Magento\Review\Block\Product\ReviewRenderer">
+        <plugin name="Armah_SeoRichData::Block_Review" type="Armah\SeoRichData\Plugin\Microdata\Replacer" />
+    </type>
+    <type name="\Armah\AdvancedReview\Block\Review\Product\View\ListView">
+        <plugin name="Armah_SeoRichData::Armah_Review" type="Armah\SeoRichData\Plugin\Microdata\Replacer" />
+    </type>
+    <type name="\Magento\Review\Block\Product\View\ListView">
+        <plugin name="Armah_SeoRichData::Magento_Review" type="Armah\SeoRichData\Plugin\Microdata\Replacer" />
+    </type>
+    <type name="\Magento\Review\Block\Product\View">
+        <plugin name="Armah_SeoRichData::Hyva_Review" type="Armah\SeoRichData\Plugin\Microdata\Replacer" />
+    </type>
+    <type name="\Magento\Framework\Pricing\Render\Amount">
+        <plugin name="Armah_SeoRichData::Price_Amount" type="Armah\SeoRichData\Plugin\Microdata\Replacer" />
+    </type>
+    <type name="\Magento\Theme\Block\Html\Title">
+        <plugin name="Armah_SeoRichData::Html_Title" type="Armah\SeoRichData\Plugin\Microdata\Replacer" />
+    </type>
+    <type name="\Magento\Catalog\Block\Product\View\Description">
+        <plugin name="Armah_SeoRichData::Product_Description" type="Armah\SeoRichData\Plugin\Microdata\Replacer" />
+    </type>
+    <type name="\Yotpo\Yotpo\Block\Yotpo">
+        <plugin name="Armah_SeoRichData::Yotpo" type="Armah\SeoRichData\Plugin\Microdata\Replacer" />
+    </type>
+
+    <!-- JsonLd processors -->
+    <virtualType name="Armah\SeoRichData\Model\JsonLd\DefaultProcessorProvider" type="Armah\SeoRichData\Model\JsonLd\ProcessorProvider">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="breadcrumbs" xsi:type="object">Armah\SeoRichData\Model\JsonLd\Processor\Breadcrumbs</item>
+                <item name="website" xsi:type="object">Armah\SeoRichData\Model\JsonLd\Processor\Website</item>
+                <item name="organization" xsi:type="object">Armah\SeoRichData\Model\JsonLd\Processor\Organization</item>
+                <item name="category" xsi:type="object">Armah\SeoRichData\Model\JsonLd\Processor\Category</item>
+                <item name="search" xsi:type="object">Armah\SeoRichData\Model\JsonLd\Processor\Search</item>
+                <item name="social_profiles" xsi:type="object">Armah\SeoRichData\Model\JsonLd\Processor\SocialProfiles</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Armah\SeoRichData\Block\JsonLd">
+        <arguments>
+            <argument name="processorProvider" xsi:type="object">Armah\SeoRichData\Model\JsonLd\DefaultProcessorProvider</argument>
+        </arguments>
+    </type>
+</config>

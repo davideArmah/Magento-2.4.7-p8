@@ -1,0 +1,218 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\ProductListItem;
+use Hyva\Theme\ViewModel\ProductPage;
+use Magento\Catalog\Model\Product;
+use Hyva\Theme\ViewModel\Store;
+use Magento\Catalog\Block\Product\ReviewRendererInterface as ProductReviewRenderer;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var Store $viewModelStore */
+$viewModelStore = $viewModels->require(Store::class);
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+/** @var ProductListItem $productListItemViewModel */
+$productListItemViewModel = $viewModels->require(ProductListItem::class);
+/** @var Product $product */
+$product = $productViewModel->getProduct();
+$viewMode = 'grid';
+$imageDisplayArea = 'category_page_grid';
+$showDescription = false;
+
+$title = (string) $block->getTitle();
+$items = $block->getItems() ?? [];
+if (is_object($items) && $items instanceof Iterator) {
+    $items = iterator_to_array($items);
+}
+if (!$itemCount = count($items)) {
+    return '';
+}
+
+$sliderItemRenderer = $block->getLayout()->getBlock('product_list_item')
+    ?: $block->getChildBlock('slider.item.template')
+    ?: $block->getLayout()->createBlock(Template::class);
+
+$hideRatingSummary = (bool) $block->getData('hide_rating_summary');
+$hideDetails = (bool) $block->getData('hide_details');
+
+$sliderItemRenderer->setData('hide_details', $hideDetails);
+$sliderItemRenderer->setData('hide_rating_summary', $hideRatingSummary);
+
+$sharedItemRendererTemplate = null;
+$isSharedItemRenderer = $sliderItemRenderer !== $block->getChildBlock('slider.item.template');
+if ($isSharedItemRenderer && $block->getChildBlock('slider.item.template')) {
+    $sharedItemRendererTemplate = $sliderItemRenderer->getTemplate();
+    $sliderSpecificItemTemplate = $block->getChildBlock('slider.item.template')->getTemplate();
+    $sliderItemRenderer->setTemplate($sliderSpecificItemTemplate);
+}
+
+?>
+<section class="<?=
+    $escaper->escapeHtmlAttr($block->getData('maybe_purged_tailwind_section_classes'))
+        ?: 'my-12 text-gray-700 body-font';
+?>">
+    <?php if ($items) : ?>
+        <div class="relative">
+            <?php if ($title) : ?>
+                <div class="container flex flex-col items-center pt-6 pb-3 mx-auto mb-6 border-b-4 border-dashed border-rosso md:flex-row">
+                    <h3 class="text-2xl font-medium text-gray-900 title-font">
+                        <?= $escaper->escapeHtml(__('Other Products of the brand: ')); ?>
+                    </h3>
+                    <span class="text-xl font-semibold text-rosso product-detail-value">
+                    </span>
+                </div>
+            <?php endif; ?>
+            <div class="glider-contain">
+                <div class="myglider flex items-stretch">
+                    <?php foreach ($items as $product) : ?>
+                        <div class="glider-slide w-full md:w-1/2 lg:w-1/3 xl:w-1/4">
+                            <?=
+                            /** @noEscape */
+                            $productListItemViewModel->getItemHtmlWithRenderer(
+                                $sliderItemRenderer,
+                                $product,
+                                $block,
+                                $viewMode,
+                                ProductReviewRenderer::SHORT_VIEW,
+                                $imageDisplayArea,
+                                $showDescription
+                            ) ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <div role="tablist" class="dots"></div>
+            </div>
+        </div>
+    <?php endif; ?>
+</section>
+<?php
+
+if ($sharedItemRendererTemplate) {
+    $sliderItemRenderer->setTemplate($sharedItemRendererTemplate);
+}
+
+?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var newgliderElement = document.querySelector('.myglider');
+        console.log('Glider element:', newgliderElement); // Debugging line
+        if (newgliderElement) {
+            new Glider(newgliderElement, {
+                slidesToShow: 4,
+                slidesToScroll: 1,
+                draggable: true,
+                dots: '.dots',
+                arrows: false,
+            });
+            console.log('Glider initialized'); // Debugging line
+        } else {
+            console.error('Glider element not found');
+        }
+    });
+</script>
+
+
+<style>
+    .myglider {
+        overflow-x: auto;
+        overflow-y:hidden;
+        white-space: nowrap;
+    }
+
+    .product-item-link {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        line-height: 1.5em;
+        max-height: 3em;
+    }
+
+    .glider-slide {
+        display: inline-block;
+        white-space: normal;
+        flex: 0 0 auto;
+
+    }
+
+    .glider-contain {
+        position: relative;
+    }
+
+    .glider-prev,
+    .glider-next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #000;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        z-index: 10;
+    }
+
+    .glider-prev {
+        left: 0;
+    }
+
+    .glider-next {
+        right: 0;
+    }
+
+    .glider-track {
+        display: flex;
+    }
+
+    .myglider {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #ff0000 #ffffff; /* Firefox */
+}
+
+/* WebKit (Chrome, Safari, ecc.) */
+.myglider::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.myglider::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.myglider::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.myglider::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Firefox */
+.myglider-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+    
+</style>

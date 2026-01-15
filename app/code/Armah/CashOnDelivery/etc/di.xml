@@ -1,0 +1,43 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Armah\CashOnDelivery\Api\Data\PaymentFeeInterface" type="Armah\CashOnDelivery\Model\PaymentFee" />
+    <preference for="Armah\CashOnDelivery\Api\Data\OrderPaymentFeeInterface" type="Armah\CashOnDelivery\Model\OrderPaymentFee" />
+    <preference for="Armah\CashOnDelivery\Api\PaymentFeeRepositoryInterface" type="Armah\CashOnDelivery\Model\Repository\PaymentFeeRepository" />
+    <preference for="Armah\CashOnDelivery\Api\OrderPaymentFeeRepositoryInterface" type="Armah\CashOnDelivery\Model\Repository\OrderPaymentFeeRepository" />
+    <preference for="Armah\CashOnDelivery\Api\PaymentManagementInterface" type="Armah\CashOnDelivery\Model\PaymentManagement" />
+    <preference for="Armah\CashOnDelivery\Api\TaxFeeDetailsInterface" type="Armah\CashOnDelivery\Model\TaxFeeDetails"/>
+
+    <!--set payment method to quote from extension attributes (magento set payment method while place order)-->
+    <type name="Magento\Checkout\Model\TotalsInformationManagement">
+        <plugin name="Armah_CashOnDelivery::Model_TotalsInformationManagement" type="Armah\CashOnDelivery\Plugin\Model\TotalsInformationManagementPlugin" />
+    </type>
+
+    <!--compatibility with magento 2.2.3 (temando shipping)-->
+    <type name="Temando\Shipping\Observer\SaveCheckoutFieldsObserver">
+        <plugin name="Armah_CashOnDelivery::Temando_Shipping_Observer_SaveCheckoutFieldsObserver" type="Armah\CashOnDelivery\Plugin\Shipping\Observer\SaveCheckoutFieldsObserverPlugin" />
+    </type>
+
+    <!--compatibility with magento less then 2.2.4 version-->
+    <type name="Magento\Quote\Model\Cart\CartTotalRepository">
+        <plugin name="Armah_CashOnDelivery::Cart_Total_Repository" type="Armah\CashOnDelivery\Plugin\Cart\CartTotalRepositoryPlugin" />
+    </type>
+
+    <!--compatibility with magento less then 2.2.4 version-->
+    <type name="Magento\Framework\Api\DataObjectHelper">
+        <plugin name="Armah_CashOnDelivery::Api_DataObjectHelper" type="Armah\CashOnDelivery\Plugin\Framework\Api\DataObjectHelperPlugin"/>
+    </type>
+
+    <!--add statuses to order comment field in admin-->
+    <type name="Magento\Sales\Block\Adminhtml\Order\View\History">
+        <plugin name="Armah_CashOnDelivery::Block_Adminhtml_Order_View_History" type="Armah\CashOnDelivery\Plugin\Block\Adminhtml\Order\View\HistoryPlugin"/>
+    </type>
+
+    <!-- compatibility with klarna -->
+    <type name="Klarna\Kp\Model\Api\Request\Builder">
+        <plugin name="Armah_CashOnDelivery::Klarna_Request_Builder" type="Armah\CashOnDelivery\Plugin\Klarna\ModuleKp\Model\Api\Request\BuilderPlugin"/>
+    </type>
+
+    <!-- add fee tax details to totals segment -->
+    <type name="Magento\Quote\Model\Cart\TotalsConverter">
+        <plugin name="Armah_CashOnDelivery::Add_Tax_Details" type="Armah\CashOnDelivery\Plugin\Quote\Model\Cart\TotalsConverter\AddTaxDetails"/>
+    </type>
+</config>

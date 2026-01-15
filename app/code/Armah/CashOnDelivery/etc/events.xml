@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Cash on Delivery for Magento 2
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <!--validate COD payment based on shipping methods and post code-->
+    <event name="payment_method_is_active">
+        <observer name="armah_cash_on_delivery_payment_method_is_active"
+                  instance="Armah\CashOnDelivery\Observer\Payment\Model\Method\CheckAvailable" />
+    </event>
+
+    <!--set status from config 'Order status'-->
+    <event name="sales_order_payment_place_end">
+        <observer name="armah_cash_on_delivery_sales_order_payment_place_end"
+                  instance="Armah\CashOnDelivery\Observer\Sales\Order\Payment\Place" />
+    </event>
+
+    <event name="sales_model_service_quote_submit_success">
+        <observer name="ConvertQuoteToOrderPaymentFee"
+                  instance="Armah\CashOnDelivery\Observer\Quote\Model\ConvertQuoteToOrder" />
+    </event>
+</config>

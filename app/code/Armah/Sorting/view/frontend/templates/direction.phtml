@@ -1,0 +1,16 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah 
+ * @package Improved Sorting for Magento 2
+ */ /** @var \Armah\Sorting\Block\Direction $block */ ?>
+
+<script type="text/x-magento-init">
+        {
+            "[data-role='sorter']": {
+                "Armah_Sorting/js/direction": {
+                    "permanentDirectionMethods": <?= /** @noEscape */ $block->getPermanentDirectionAttributesJson() ?>
+                }
+            }
+        }
+</script>

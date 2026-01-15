@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Custom Checkout Fields for Magento 2
+ */-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+
+    <route url="/V1/armah_orderattr/entityData" method="POST">
+        <service class="Armah\Orderattr\Api\EntityDataRepositoryInterface" method="save"/>
+        <resources>
+            <resource ref="Armah_Orderattr::order_attributes" />
+        </resources>
+    </route>
+    <route url="/V1/armah_orderattr/entityData/:entityId" method="PUT">
+        <service class="Armah\Orderattr\Api\EntityDataRepositoryInterface" method="save"/>
+        <resources>
+            <resource ref="Armah_Orderattr::order_attributes" />
+        </resources>
+    </route>
+    <route url="/V1/armah_orderattr/entityData/:entityId" method="DELETE">
+        <service class="Armah\Orderattr\Api\EntityDataRepositoryInterface" method="deleteById"/>
+        <resources>
+            <resource ref="Armah_Orderattr::order_attributes" />
+        </resources>
+    </route>
+    <route url="/V1/armah_orderattr/entityData" method="GET">
+        <service class="Armah\Orderattr\Api\EntityDataRepositoryInterface" method="getById"/>
+        <resources>
+            <resource ref="Armah_Orderattr::order_attributes" />
+        </resources>
+    </route>
+    <route url="/V1/armah_orderattr/entityData/:orderId" method="GET">
+        <service class="Armah\Orderattr\Api\EntityDataRepositoryInterface" method="getByOrderId"/>
+        <resources>
+            <resource ref="Armah_Orderattr::order_attributes" />
+        </resources>
+    </route>
+    <route url="/V1/armah_orderattr/entityData/all" method="GET">
+        <service class="Armah\Orderattr\Api\EntityDataRepositoryInterface" method="getList" />
+        <resources>
+            <resource ref="Armah_Orderattr::order_attributes" />
+        </resources>
+    </route>
+    <route url="/V1/armah_orderattr/checkoutData" method="POST">
+        <service class="Armah\Orderattr\Api\CheckoutDataRepositoryInterface" method="save"/>
+        <resources>
+            <resource ref="self" />
+        </resources>
+        <data>
+            <parameter name="armahCartId" force="true">%armah_cart_id%</parameter>
+        </data>
+    </route>
+    <route url="/V1/armah_orderattr/guestCheckoutData" method="POST">
+        <service class="Armah\Orderattr\Api\GuestCheckoutDataRepositoryInterface" method="save"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+    <route url="/V1/armah_orderattr/uploadFile" method="POST">
+        <service class="Armah\Orderattr\Api\UploadFileInterface" method="upload"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+</routes>

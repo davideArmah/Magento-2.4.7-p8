@@ -1,0 +1,30 @@
+
+.page-product-bundle {
+    .price-final_price {
+        .price-from,
+        .price-to {
+
+            .price-container {
+                @apply block mb-4 text-gray-700;
+
+                .price-label {
+                    @apply block text-lg font-medium;
+                }
+
+                .price {
+                    @apply text-2xl font-semibold text-rosso;
+                    
+                }
+            }
+
+            .old-price {
+                .price-container {
+                    .price,
+                    .price-label {
+                        @apply inline text-base font-normal text-gray-500;
+                    }
+                }
+            }
+        }
+    }
+}

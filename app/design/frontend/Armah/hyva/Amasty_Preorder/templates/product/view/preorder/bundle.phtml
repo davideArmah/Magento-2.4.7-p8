@@ -1,0 +1,111 @@
+<?php
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) Amasty (https://www.amasty.com)
+ * @package Pre Order Hyva Compatibility
+ */
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+$preorderViewModel = $block->getData('preorder_view_model');
+$preorderBundleViewModel = $block->getData('preorder_bundle_view_model');
+$bundleProduct = $preorderViewModel->getCurrentProduct();
+$preorderInformation = $preorderViewModel->getPreorderInformation($bundleProduct);
+
+if (!$bundleProduct->isSalable()) {
+    return;
+}
+?>
+
+<script>
+    function initAmPreorderBundle(isAllProductsPreorder, map, originalNote = '') {
+        return {
+            isAllProductsPreorder: isAllProductsPreorder,
+            map: map,
+            originalNote: originalNote,
+            initPreorderBundle() {
+                document.querySelectorAll(`[id*=bundle-option]:not([id*=qty])`)?.forEach((elem) => {
+                    this.changeAvailability();
+
+                    elem.addEventListener('change', function () {
+                        this.changeAvailability();
+                        this.dispatchChanges();
+                    }.bind(this));
+                });
+
+                this.initAvailabilityElement();
+                this.initAddToCartButton();
+            },
+            changeAvailability() {
+                this.removePreorderNotes();
+                let isNeedChangePreorderStatus = false;
+
+                document.querySelectorAll(`[id*=bundle-option]:not([id*=qty])`)?.forEach((elem) => {
+                    let selectedValue;
+
+                    if (elem.tagName.toLowerCase() === 'select') {
+                        const selectedValuesInSelect = [];
+                        [...elem.selectedOptions].forEach(option => {
+                            selectedValuesInSelect.push(option.getAttribute('data-option-id'));
+                        });
+                        selectedValue = selectedValuesInSelect;
+                    } else {
+                        if (elem.type.toLowerCase() === 'hidden') {
+                            selectedValue = [`${elem.getAttribute('data-option-id')}-${elem.getAttribute('data-selection-id')}`];
+                        } else if (elem.checked) {
+                            selectedValue = [elem.getAttribute('data-option-id')];
+                        }
+                    }
+
+                    if (selectedValue) {
+                        selectedValue.forEach(option => {
+                            if (this.map[option]) {
+                                const key = option.split('-')[0];
+                                this.createPreorderNote(key, map[option]);
+                                isNeedChangePreorderStatus = true;
+                            }
+                        });
+                    }
+                });
+
+                if (isNeedChangePreorderStatus) {
+                    this.setStatusToPreorder();
+                } else {
+                    this.resetToOriginalStatus();
+                }
+            },
+            createPreorderNote(key, note) {
+                const preorderStatusBlock = document.createElement('div');
+                preorderStatusBlock.classList.add(`preorder-note`);
+                preorderStatusBlock.innerHTML = note;
+                document.querySelectorAll('.fieldset-bundle-options > div')?.[key - 1].
+                    insertAdjacentElement('beforeend', preorderStatusBlock);
+            },
+            removePreorderNotes() {
+                document.querySelectorAll('.preorder-note').forEach(note => {
+                    note.remove();
+                });
+            }
+        }
+    }
+</script>
+
+<div x-data="{
+            ...initAmPreorder(
+                '<?= $escaper->escapeHtml($preorderViewModel->getPreorderNotePosition()) ?>',
+                '<?= $escaper->escapeHtml($preorderViewModel->escapeQuote($preorderInformation->getNote())) ?>',
+                '<?= $escaper->escapeHtml($preorderViewModel->escapeQuote($preorderInformation->getCartLabel())) ?>',
+                '<?= (int)$bundleProduct->getId() ?>'
+            ),
+            ...initAmPreorderBundle(
+                <?= /** @noEscape */ var_export($preorderBundleViewModel->isAllProductsPreorder($bundleProduct), true) ?>,
+                <?= $escaper->escapeHtml($preorderBundleViewModel->getMap($bundleProduct)) ?>,
+                '<?= $escaper->escapeHtml($preorderViewModel->getOriginalNote($bundleProduct)) ?>'
+            ),
+        }"
+     x-init="initPreorderBundle()"
+></div>

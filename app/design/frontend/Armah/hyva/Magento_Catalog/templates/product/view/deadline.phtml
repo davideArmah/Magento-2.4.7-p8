@@ -1,0 +1,20 @@
+<?php
+$currentDate = date('Y-m-d');
+
+// Recupera l'oggetto prodotto corrente
+$product = $block->getProduct();
+
+// Recupera la data di inizio e di fine del prezzo speciale dal prodotto
+$specialFromDate = $product->getData('special_from_date');
+$specialToDate = $product->getData('special_to_date');
+
+// Verifica se il prezzo speciale è valido in base alla data corrente
+if ($currentDate >= $specialFromDate && $currentDate <= $specialToDate) {
+    // Formatta la data di scadenza del prezzo speciale come stringa
+    $formattedSpecialToDate = date('d-m-Y', strtotime($specialToDate));
+
+    // Mostra la scadenza del prezzo speciale se la condizione è vera
+    echo '<div class="flex px-3 py-1 text-base font-semibold text-gray-900 rounded-lg special-price bg-giallo">Offerta a tempo scade il giorno ' . $formattedSpecialToDate . '</div>';
+}
+
+?>

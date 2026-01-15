@@ -1,0 +1,85 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Magento\Framework\Escaper;
+use Magento\LayeredNavigation\Block\Navigation;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+/** @var Navigation $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+
+?>
+<?php if ($block->canShowBlock()) : ?>
+    <div class="md:border-0 md:bg-transparent md:py-0 md:px-0" x-data="initLayeredNavigation()" x-init="checkIsMobileResolution()" @resize.window.debounce="checkIsMobileResolution()" @visibilitychange.window.debounce="checkIsMobileResolution()">
+        <div class="flex items-center justify-between px-3 py-2 bg-transparent border rounded lg:hidden lg:p-0 block-title">
+            <!-- <span class="text-xl font-semibold uppercase text-primary text-md md:text-2xl"> -->
+            <!-- <.?= $escaper->escapeHtml(__('Shop By')) ?> -->
+            <span class="text-lg font-bold text-gray-800 uppercase lg:hidden">
+                <?= $escaper->escapeHtml(__('Filtra')) ?>
+            </span>
+            <span class="hidden px-1 py-1"
+                  :class="{ 'block' : isMobile, 'hidden': !isMobile }">
+                <?= $heroicons->menuHtml(
+                    'transition-transform transform duration-300 ease-in-out text-gray-800',
+                    24,
+                    24,
+                    [":class" => "{ 'rotate-180': blockOpen }"]
+                ); ?>
+            </span>
+        </div>
+        <div class="hidden block-content filter-content md:block" x-cloak>
+            <?= $block->getChildHtml('state') ?>
+            <?php foreach ($block->getFilters() as $key => $filter) : ?>
+                <?php if ($filter->getItemsCount()) : ?>
+                    <?php $status = ($key == 0) ? "true" : "false"; ?>
+                    <div class="px-4 lg:px-0 filter-option border-b-[1.5px] border-gray-800-700 last-of-type:border-none mt-5 w-auto" x-data="{ open: <?= $status ?> }">
+                        <div class="flex items-center justify-between pb-1 border-none cursor-pointer filter-options-title hover:text-secondary-darker"
+                            @click="open = !open">
+                            <span class="text-lg font-semibold tracking-wider text-gray-700 uppercase title md:text-base titolo-sottocategoria">
+                                <?= $escaper->escapeHtml(__($filter->getName())) ?>
+                            </span>
+                            <span class="px-1 py-1 rounded border-container">
+                                <?= $heroicons->plusHtml(
+                                    'transition-transform transform duration-300 ease-in-out text-black',
+                                    14,
+                                    14,
+                                    [":class" => "{ 'rotate-180': open }"]
+                                ); ?>
+                            </span>
+                        </div>
+                        <div class="pt-3 border-gray-800 filter-options-content">
+                            <?= /* @noEscape */ $block->getChildBlock('renderer')->render($filter) ?>
+                        </div>
+
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <script>
+        function initLayeredNavigation() {
+            return {
+                isMobile: false,
+                blockOpen: false,
+                checkIsMobileResolution() {
+                    this.isMobile = window.matchMedia('(max-width: 1023px)').matches;
+                }
+            }
+        }
+    </script>
+<?php endif; ?>

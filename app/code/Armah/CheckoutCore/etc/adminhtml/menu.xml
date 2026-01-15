@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package One Step Checkout Core for Magento 2
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Armah_CheckoutCore::checkout_settings" title="One Step Checkout" translate="title" module="Armah_CheckoutCore" sortOrder="100" parent="Magento_Backend::system" resource="Armah_CheckoutCore::checkout_settings"/>
+        <add id="Armah_CheckoutCore::checkout_settings_fields" title="Manage Checkout Fields" translate="title" module="Armah_CheckoutCore" sortOrder="10" parent="Armah_CheckoutCore::checkout_settings" action="armah_checkout/field" resource="Armah_CheckoutCore::checkout_settings_fields"/>
+        <add id="Armah_CheckoutCore::reports" title="Checkout Analytics" translate="title" module="Armah_CheckoutCore" sortOrder="1" parent="Magento_Reports::report_marketing" action="armah_checkout/reports/" resource="Armah_CheckoutCore::reports"/>
+    </menu>
+</config>

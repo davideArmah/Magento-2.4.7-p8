@@ -1,0 +1,134 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\ViewModel\SvgIcons;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductAttributes;
+use Hyva\Theme\ViewModel\ProductCompare;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\Wishlist;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+/** @var ProductAttributes $attributesViewModel */
+$attributesViewModel = $viewModels->require(ProductAttributes::class);
+/** @var Product $product */
+$product = $productViewModel->getProduct();
+?>
+<script>
+    function initProductInfo() {
+
+        return {
+            isMobile: window.innerWidth < 1024,
+        }
+    }
+</script>
+<div x-data="initProductInfo()" x-on:configurable-selection-changed.window="updateChild(event.detail)" class="order-2 w-full mb-6 md:pl-5 lg:pl-10 md:pb-6 lg:w-1/2 md:mb-0">
+    <p class="mb-3 text-2xl text-center text-gray-900 md:block md:text-3xl title-font lg:text-left">
+        <h1 id="product-name-h1"  class="font-medium text-[25px] leading-[28px] "><?= $escaper->escapeHtml($product->getName()) ?></h1>
+    </p>
+
+    <div id="product-details">
+        <div class="grid items-start grid-cols-1 pt-2 pb-4 border-b-4 border-dashed border-rosso sm:flex last:mb-6 flex-col">
+            <div class="flex justify-center w-full lg:w-4/5 lg:justify-start">
+                <div class="text-xl font-black product-detail-label">
+                    <span class="text-gray-900 "><?= $escaper->escapeHtml(__('Article Code: ')) ?></span>
+                    <span id="product-sku" class="text-rosso"><?= $product->getSku() ?></span>
+                </div>
+            </div>
+            <div class="mx-auto lg:mx-0">
+
+
+<div class="feedaty_widget" data-ver="2021" data-id="65e6fbc8870c0" data-type="product" data-variant="Striscia-slim" data-lang="it-IT" data-gui="it-IT" data-sku="<?= $product->getId() ?>" data-snippets="0"></div>          
+        </div>
+    </div>
+
+    <div class="w-full xl:w-4/5 2xl:w-[70%]">
+
+        <div class="flex flex-col items-center justify-center w-full lg:block lg:w-auto">
+            <span class="text-lg font-bold text-black"><?= $escaper->escapeHtml(__("Prezzi IVA e trasporto inclusi")) ?></span>
+            <?= $block->getChildHtml("product.info.price") ?>
+        </div>
+
+        <div id="scalapay-price-row" class="mt-4"></div>
+
+        <?php if (trim((string) $product->getData('altre_info')) !== ''): ?>
+            <div class="mt-2 text-lg font-semibold text-black altre-info">
+                <?= $escaper->escapeHtml($product->getData('altre_info')) ?>
+            </div>
+        <?php endif; ?>
+
+        <div class="flex flex-col justify-between mt-4 mb-1">
+            <?= $block->getChildHtml("product.info.deadline") ?>
+            <?= $block->getChildHtml('product.info.form') ?>
+            <div class="flex justify-between w-full">
+                <?= $block->getChildHtml("product.info.stockstatus") ?>
+                
+            </div>
+            <?= $block->getChildHtml("alert.urls") ?>
+        </div>
+        <div class="flex mt-2 ml-auto sm:mt-0 fold-prodotto">
+            <?php if ($product->isSaleable()) : ?>
+                
+                
+
+                <?= $block->getChildHtml("product.info.addtocart") ?>
+                <?= $block->getChildHtml("product.info.quantity") ?>
+            <?php endif; ?>
+        </div>
+
+        <div class="my-4 font-medium leading-relaxed prose text-black product-description"><?= $block->getProduct()->getShortDescription() ?></div>
+
+        <div class="flex flex-col items-end my-4 sm:flex-row">
+
+            <div class="flex flex-col p-4 text-lg font-bold text-black border-2 border-gray-300 lg:hidden rounded-2xl gap-y-6">
+                <div class="flex flex-row items-center">
+                    <?= $hyvaicons->renderHtml("box-nero", "w-10 h-10 mr-3"); ?>
+                    <?= $escaper->escapeHtml(__('Spediamo in 2-3 giorni lavorativi in Italia ')) ?><?= $escaper->escapeHtml(__('gratis')) ?>
+                </div>
+                <div class="flex flex-row items-center">
+                    <?= $hyvaicons->renderHtml("box-nero", "w-10 h-10 mr-3"); ?>
+                    <?= $escaper->escapeHtml(__('Puoi pagare alla consegna in contanti ')) ?><?= $escaper->escapeHtml(__('a soli 6 euro')) ?>
+                </div>
+            </div>
+
+        </div>
+
+        <?php if ($product->isSaleable()) : ?>
+            <div class="flex justify-end mt-4">
+                <?= $block->getChildHtml('addtocart.shortcut.buttons') ?>
+            </div>
+        <?php endif; ?>
+
+        <div class="flex justify-end mt-4">
+            <?= $block->getChildHtml('product.info.emailtofriend'); ?>
+            <?= $block->getChildHtml('product.info.additional.actions'); ?>
+        </div>
+    </div>
+    <?php if ($tierPriceBlock = $block->getChildHtml("product.price.tier")) : ?>
+        <div class="py-4 my-2 tier-price-container">
+            <?=
+            /** @noEscape */
+            $tierPriceBlock ?>
+        </div>
+    <?php endif; ?>
+
+    <?= $block->getChildHtml("product.info.additional") ?>
+</div>

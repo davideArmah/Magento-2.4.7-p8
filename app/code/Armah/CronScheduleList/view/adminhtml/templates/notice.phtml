@@ -1,0 +1,15 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) 2023 Armah (https://www.armah.it)
+ * @package Cron Schedule List for Magento 2 (System) 
+ */ /** @var \Armah\CronScheduleList\Block\Adminhtml\Notice $block */ ?>
+<?php /** @var \Magento\Framework\Escaper $escaper */ ?>
+
+<div class="armah_cron_notice">
+    <div class="message">
+        <p>
+            <?= $escaper->escapeHtml(__('Last Cron Activity: %1', $block->getLastActivity())); ?>
+        </p>
+    </div>
+</div>

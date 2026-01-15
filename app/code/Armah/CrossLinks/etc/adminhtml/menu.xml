@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Cross Linking for Magento 2
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Armah_CrossLinks::seo" title="Armah Seo" module="Armah_CrossLinks" parent="Magento_Backend::marketing"
+             sortOrder="30" resource="Armah_CrossLinks::seo"/>
+        <add id="Armah_CrossLinks::crosslinks" title="Cross Links Management" module="Armah_CrossLinks" sortOrder="10"
+             parent="Armah_CrossLinks::seo" action="armah_crosslinks/link/index" resource="Armah_CrossLinks::seo"/>
+    </menu>
+</config>

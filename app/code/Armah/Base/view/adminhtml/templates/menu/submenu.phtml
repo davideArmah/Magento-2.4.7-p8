@@ -1,0 +1,44 @@
+<?php
+
+/** @var \Armah\Base\Block\Adminhtml\Backend\ArmahMenu $block */
+/** @var \Magento\Framework\Escaper $escaper */
+?>
+
+<section class="arbase-submenu submenu"
+         data-bind="scope: 'arbase_submenu'">
+    <!-- ko template: { name: templates.title, data: { title: vendorName }} --><!-- /ko-->
+    <!-- ko scope: 'arbase_search' --><!-- ko template: getTemplate() --><!-- /ko --><!-- /ko-->
+    <!-- ko template: { name: templates.menu_lists } --><!-- /ko-->
+    <!-- ko template: { name: templates.closeButton, data: { action: resetActiveItem.bind($data), role: 'close-submenu' } } --><!-- /ko-->
+    <!-- ko template: { name: templates.submenuSecond } --><!-- /ko-->
+</section>
+
+<script type="text/x-magento-init">
+{
+"*": {
+    "Magento_Ui/js/core/app": {
+            "components": {
+                "arbase_submenu": {
+                    "component": "arBaseSubmenu",
+                    "data": <?= /* @noEscape */ $block->getMenuItemsJson() ?>
+                },
+                "arbase_search": {
+                    "component": "Armah_Base/js/menu/search"
+                },
+                "arbase_solutions": {
+                    "component": "Armah_Base/js/menu/items",
+                    "title": "<?= $escaper->escapeHtml(__('Solutions')) ?>"
+                },
+                "arbase_simples": {
+                    "component": "Armah_Base/js/menu/items",
+                    "title": "<?= $escaper->escapeHtml(__('Extensions')) ?>"
+                },
+                "arbase_links": {
+                    "component": "Armah_Base/js/menu/items",
+                    "title": ""
+                }
+            }
+        }
+    }
+}
+</script>

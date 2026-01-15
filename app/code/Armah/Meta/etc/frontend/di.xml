@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Meta Tags Templates for Magento 2
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <type name="Magento\Framework\View\Page\Title">
+        <plugin name="Armah_Meta::PageTitle" type="Armah\Meta\Plugin\View\Page\Title" />
+    </type>
+
+    <type name="Magento\Framework\View\Page\Config">
+        <plugin name="Armah_Meta::PageConfig" type="Armah\Meta\Plugin\View\Page\Config" sortOrder="30"/>
+    </type>
+
+    <type name="Magento\Theme\Block\Html\Title">
+        <plugin name="Armah_Meta::PageConfig2" type="Armah\Meta\Plugin\Theme\Block\Html\Title" />
+    </type>
+
+    <!-- add text in category end -->
+    <type name="Magento\Catalog\Block\Category\View">
+        <plugin name="Armah_Meta::PageConfig4" type="Armah\Meta\Plugin\Catalog\Block\Category\View" />
+    </type>
+
+    <!-- add description and short description for product -->
+    <type name="Magento\Catalog\Helper\Output">
+        <plugin name="Armah_Meta::PageConfig5" type="Armah\Meta\Plugin\Catalog\Helper\Output" />
+    </type>
+
+    <!-- replace canonical-->
+    <type name="Magento\Framework\View\Asset\Repository">
+        <plugin name="Armah_Meta::PageConfig6" type="Armah\Meta\Plugin\View\Asset\Repository" />
+    </type>
+
+    <type name="Armah\SeoRichData\Model\JsonLd\ProductInfo">
+        <plugin name="Armah_Meta::resolve-data-for-snippets" type="Armah\Meta\Plugin\SeoRichData\Block\Product" />
+    </type>
+
+    <type name="Armah\ShopbyBrand\Controller\Router">
+        <plugin name="Armah_Meta::detect-brand-page" type="Armah\Meta\Plugin\ShopbyBrand\Controller\RouterPlugin" />
+    </type>
+</config>

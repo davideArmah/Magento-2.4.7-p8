@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) 2023 Armah (https://www.armah.it)
+ * @package Cron Schedule List for Magento 2 (System) 
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Armah_CronScheduleList::armah_schedule"
+             title="Armah Cron Scheduler"
+             module="Armah_CronScheduleList"
+             sortOrder="110"
+             parent="Magento_Backend::system"
+             resource="Armah_CronScheduleList::armah_schedule"/>
+        <add id="Armah_CronScheduleList::schedule_list"
+             title="Cron Tasks List"
+             module="Armah_CronScheduleList"
+             sortOrder="10"
+             parent="Armah_CronScheduleList::armah_schedule"
+             action="armah_cronschedulelist/schedule/index"
+             resource="Armah_CronScheduleList::schedule_list"/>
+    </menu>
+</config>

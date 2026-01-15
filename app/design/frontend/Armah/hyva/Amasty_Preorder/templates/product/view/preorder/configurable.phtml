@@ -1,0 +1,37 @@
+<?php
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) Amasty (https://www.amasty.com)
+ * @package Pre Order Hyva Compatibility
+ */
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+$preorderViewModel = $block->getData('preorder_view_model');
+$configurableProduct = $preorderViewModel->getCurrentProduct();
+$productId = $configurableProduct->getId();
+$optionsData = $block->getData('options_data');
+$preorderConfigurableViewModel = $block->getData('preorder_configurable_view_model');
+$preorderInformation = $preorderViewModel->getPreorderInformation($configurableProduct);
+?>
+
+<div x-data="{
+            ...initAmPreorder(
+                '<?= $escaper->escapeHtml($preorderViewModel->getPreorderNotePosition()) ?>',
+                '<?= $escaper->escapeHtml($preorderViewModel->escapeQuote($preorderInformation->getNote())) ?>',
+                '<?= $escaper->escapeHtml($preorderViewModel->escapeQuote($preorderInformation->getCartLabel())) ?>',
+                '<?= (int)$productId ?>'
+            ),
+            ...initAmPreorderConfigurable(
+                <?= /** @noEscape */ var_export($preorderConfigurableViewModel->getIsAllProductsPreorder($configurableProduct), true) ?>,
+                <?= $escaper->escapeHtml($preorderConfigurableViewModel->getMap($configurableProduct)) ?>,
+                '<?= $escaper->escapeHtml($preorderViewModel->getOriginalNote($configurableProduct)) ?>',
+                '<?= (int)$productId ?>'
+            ),
+        }"
+     x-init="initPreorderConfigurable()"
+></div>

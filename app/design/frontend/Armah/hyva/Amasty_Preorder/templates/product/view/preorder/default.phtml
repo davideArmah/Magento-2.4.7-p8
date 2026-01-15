@@ -1,0 +1,31 @@
+<?php
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) Amasty (https://www.amasty.com)
+ * @package Pre Order Hyva Compatibility
+ */
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+$preorderViewModel = $block->getData('preorder_view_model');
+$preorderInformation = $preorderViewModel->getPreorderInformation($preorderViewModel->getCurrentProduct());
+?>
+
+<?php if ($preorderInformation->isPreorder()): ?>
+<div x-data="{
+            ...initAmPreorder(
+                '<?= $escaper->escapeHtml($preorderViewModel->getPreorderNotePosition()) ?>',
+                '<?= $escaper->escapeHtml($preorderViewModel->escapeQuote($preorderInformation->getNote())) ?>',
+                '<?= $escaper->escapeHtml($preorderViewModel->escapeQuote($preorderInformation->getCartLabel())) ?>',
+                '<?= (int)$preorderViewModel->escapeQuote($preorderViewModel->getCurrentProduct()->getId()) ?>',
+                false,
+                true
+            )
+        }"
+     x-init="initPreorder()"
+></div>
+<?php endif; ?>

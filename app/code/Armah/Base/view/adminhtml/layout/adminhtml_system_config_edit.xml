@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="messages.wrapper">
+            <block class="Armah\Base\Block\Adminhtml\Messages" name="arbase.messages" template="Armah_Base::messages.phtml" after="page.messages"/>
+        </referenceContainer>
+        <referenceContainer name="left">
+            <block class="Armah\Base\Block\Adminhtml\Notification" name="arbase.notification" template="Armah_Base::notification.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

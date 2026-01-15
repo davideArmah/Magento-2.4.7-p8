@@ -1,0 +1,92 @@
+<?php
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) Amasty (https://www.amasty.com)
+ * @package Pre Order Hyva Compatibility
+ */
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+$preorderViewModel = $block->getData('preorder_view_model');
+$preorderGroupedViewModel = $block->getData('preorder_grouped_view_model');
+$groupedProduct = $preorderViewModel->getCurrentProduct();
+$preorderInformation = $preorderViewModel->getPreorderInformation($groupedProduct);
+?>
+<script>
+    function initAmPreorderGrouped(preorder = false, map = [], originalNote = '') {
+        return {
+            preorder: preorder,
+            map: map,
+            originalNote: originalNote,
+            initPreorderGrouped() {
+                if(this.isAllProductsPreorder) {
+                    this.setStatusToPreorder();
+                }
+
+                this.initGroupedAvailabilityBlocks();
+
+                this.initAvailabilityElement();
+                this.initAddToCartButton();
+
+                document.querySelectorAll('input[name^=super_group]')?.forEach(input => {
+                    input.addEventListener('change', () => {
+                        this.currentNote = this.originalNote;
+                        Object.entries(this.map).forEach(product => {
+                            this.changeStatusBySimple(product);
+                        });
+                        this.dispatchChangeAvailabilityElement();
+                    });
+                });
+            },
+            initGroupedAvailabilityBlocks() {
+                Object.entries(this.map).forEach(product => {
+                    const preorderAvailabilityBlock = document.createElement('div');
+                    preorderAvailabilityBlock.classList.add(`preorder-status-${this.getProductId(product)}`);
+                    preorderAvailabilityBlock.innerHTML = this.getProductNote(product);
+
+                    document.querySelector(`label[for='super_group[${this.getProductId(product)}]']`)
+                        ?.insertAdjacentElement('beforeend', preorderAvailabilityBlock);
+
+                    this.changeStatusBySimple(product);
+                });
+                this.dispatchChangeAvailabilityElement();
+            },
+            getProductId(product) {
+                return product?.[0];
+            },
+            getProductNote(product) {
+                return product?.[1]?.['note'] || '';
+            },
+            changeStatusBySimple(product) {
+                const qtyInput = document.querySelector(`input[name='super_group[${product?.[0]}]']`);
+
+                if (qtyInput.value >= 1) {
+                    this.currentNote = product?.[1]?.['note'] || '';
+                }
+            }
+        }
+    }
+</script>
+
+<div x-data="{
+            ...initAmPreorder(
+                '<?= $escaper->escapeHtml($preorderViewModel->getPreorderNotePosition()) ?>',
+                '<?= $escaper->escapeHtml($preorderViewModel->escapeQuote($preorderInformation->getNote())) ?>',
+                ''
+            ),
+            ...initAmPreorderGrouped(
+                <?= /** @noEscape */ var_export($preorderInformation->isPreorder(), true) ?>,
+                <?= $escaper->escapeHtml($preorderGroupedViewModel->getMap($groupedProduct)) ?>,
+                '<?= $escaper->escapeHtml($preorderViewModel->getOriginalNote($groupedProduct)) ?>',
+            ),
+        }"
+     x-init="initPreorderGrouped()"
+></div>
+
+
+
+

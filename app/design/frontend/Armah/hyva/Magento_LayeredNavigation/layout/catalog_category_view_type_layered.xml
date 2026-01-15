@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <attribute name="class" value="page-with-filter"/>
+        <referenceContainer name="sidebar.main" htmlTag="div" htmlClass="flex flex-col-reverse">
+
+            <container name="wrapper.navigation.left" htmlTag="div" htmlClass="sidebar sidebar-main order-1">
+                <block name="navigation.left" class="Magento\Catalog\Block\Navigation" template="Magento_Theme::html/header/menu/desktop.phtml" before="-"/>
+            </container>
+            <container name="wrapper.sidebar.main" htmlTag="div" htmlClass="sidebar sidebar-main order-2">
+                <block class="Magento\LayeredNavigation\Block\Navigation\Category" name="catalog.leftnav" template="Magento_LayeredNavigation::layer/view.phtml" after="navigation.left">
+                    <block class="Magento\LayeredNavigation\Block\Navigation\State" name="catalog.navigation.state" as="state" />
+                    <block class="Magento\LayeredNavigation\Block\Navigation\FilterRenderer" name="catalog.navigation.renderer" as="renderer" template="Magento_LayeredNavigation::layer/filter.phtml">
+                        <arguments>
+                            <argument name="product_layer_view_model" xsi:type="object">Magento\LayeredNavigation\ViewModel\Layer\Filter</argument>
+                        </arguments>
+                    </block>
+                </block>
+            </container>
+        </referenceContainer>
+    </body>
+</page>

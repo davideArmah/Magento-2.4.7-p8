@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Meta Tags Templates for Magento 2
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Armah_Meta::seotoolkit"
+             title="Armah Meta"
+             module="Armah_Meta"
+             sortOrder="11"
+             parent="Magento_Backend::content"
+             resource="Armah_Meta::seotoolkit"/>
+
+        <add id="Armah_Meta::config"
+             title="Meta Tags by Category"
+             module="Armah_Meta"
+             sortOrder="1"
+             parent="Armah_Meta::seotoolkit"
+             action="armah_meta/config"
+             resource="Armah_Meta::config"/>
+
+        <add id="Armah_Meta::custom"
+             title="Meta Tags by Custom URLs"
+             module="Armah_Meta"
+             sortOrder="2"
+             parent="Armah_Meta::seotoolkit"
+             action="armah_meta/custom"
+             resource="Armah_Meta::custom"/>
+    </menu>
+</config>

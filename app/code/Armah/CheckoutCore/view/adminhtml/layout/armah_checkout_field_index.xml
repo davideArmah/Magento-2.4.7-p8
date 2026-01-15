@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package One Step Checkout Core for Magento 2
+ */-->
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Armah_CheckoutCore::css/fields.css" />
+    </head>
+    <body>
+        <referenceContainer name="left">
+            <block class="Armah\CheckoutCore\Block\Adminhtml\Field\Edit\Tabs" name="armah_checkout_fields_tabs" >
+                <block class="Armah\CheckoutCore\Block\Adminhtml\Field\Edit\Tabs\CustomerInformation" name="armah_checkout_tab_customer_content"/>
+                <block class="Armah\CheckoutCore\Block\Adminhtml\Field\Edit\Tabs\ShippingMethod" name="armah_checkout_tab_shipping_content"/>
+                <block class="Armah\CheckoutCore\Block\Adminhtml\Field\Edit\Tabs\PaymentMethod" name="armah_checkout_tab_payment_content"/>
+                <block class="Armah\CheckoutCore\Block\Adminhtml\Field\Edit\Tabs\OrderSummary" name="armah_checkout_tab_summary_content"/>
+                <block class="Armah\CheckoutCore\Block\Adminhtml\Field\Edit\Tabs\AdditionalOptions" name="armah_checkout_tab_additional_content"/>
+                <action method="addTab">
+                    <argument name="name" xsi:type="string">armah_checkout_tab_customer</argument>
+                    <argument name="block" xsi:type="string">armah_checkout_tab_customer_content</argument>
+                </action>
+                <action method="addTab">
+                    <argument name="name" xsi:type="string">armah_checkout_tab_shipping</argument>
+                    <argument name="block" xsi:type="string">armah_checkout_tab_shipping_content</argument>
+                </action>
+                <action method="addTab">
+                    <argument name="name" xsi:type="string">armah_checkout_tab_payment</argument>
+                    <argument name="block" xsi:type="string">armah_checkout_tab_payment_content</argument>
+                </action>
+                <action method="addTab">
+                    <argument name="name" xsi:type="string">armah_checkout_tab_summary</argument>
+                    <argument name="block" xsi:type="string">armah_checkout_tab_summary_content</argument>
+                </action>
+                <action method="addTab">
+                    <argument name="name" xsi:type="string">armah_checkout_tab_additional</argument>
+                    <argument name="block" xsi:type="string">armah_checkout_tab_additional_content</argument>
+                </action>
+            </block>
+        </referenceContainer>
+        <referenceContainer name="content">
+            <block class="Magento\Backend\Block\Store\Switcher" template="Magento_Backend::store/switcher.phtml" name="store.switcher" before="-">
+                <arguments>
+                    <argument name="switch_websites" xsi:type="string">0</argument>
+                    <argument name="switch_store_groups" xsi:type="string">0</argument>
+                    <argument name="switch_store_views" xsi:type="string">1</argument>
+                    <argument name="default_selection_name" xsi:type="string" translate="true">Default Values</argument>
+                </arguments>
+            </block>
+            <block class="Magento\Backend\Block\Template"
+                   template="Armah_CheckoutCore::fields/edit/comment.phtml"
+                   name="armah_checkout_fields_comment">
+                <arguments>
+                    <argument name="view_model"
+                              xsi:type="object">Armah\CheckoutCore\ViewModel\Adminhtml\Fields\Comment</argument>
+                </arguments>
+            </block>
+            <block class="Armah\CheckoutCore\Block\Adminhtml\Field\Edit" name="armah_checkout_fields_edit"/>
+            <block class="Armah\CheckoutCore\Block\Adminhtml\Field\Edit\AdditionalOptions" template="Armah_CheckoutCore::fields/edit/form_after.phtml" name="armah_checkout_fields_form_after"/>
+            <block class="Armah\CheckoutCore\Block\Adminhtml\Field\Edit\CustomFields" template="Armah_CheckoutCore::widget/form/fields.phtml" name="armah_checkout_custom_fields_element"/>
+        </referenceContainer>
+    </body>
+</page>

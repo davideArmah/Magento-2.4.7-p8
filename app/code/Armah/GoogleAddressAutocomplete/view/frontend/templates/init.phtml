@@ -1,0 +1,60 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Google Address Autocomplete for Magento 2 (System)
+ */
+    /** @var \Magento\Framework\View\Element\Template $block */
+    /** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
+    /** @var \Armah\GoogleAddressAutocomplete\ViewModel\Init $viewModel */
+
+use Armah\GoogleAddressAutocomplete\Model\Source\ApiOptions;
+
+$viewModel = $block->getData('view_model');
+?>
+
+<?php if ($viewModel->isEnabled() && ($apiKey = $viewModel->getApiKey())): ?>
+    <?php
+    $attributes = [
+        'src' => 'https://maps.googleapis.com/maps/api/js?key=' . $block->stripTags($apiKey) .
+            '&loading=async&libraries=places&callback=arAutocompleteGmapsInit',
+        'async' => 'async',
+        'load' => 'async',
+        'defer' => 'defer'
+    ];
+    ?>
+    <?= /* @noEscape */ $secureRenderer->renderTag('script', $attributes, null, false) ?>
+
+    <?php if ($viewModel->getApiType() === ApiOptions::PLACES_OLD): ?>
+        <?php $arAutocompleteGmapsInitScript = <<<SCRIPT
+            function arAutocompleteGmapsInit() {
+                require(['Armah_GoogleAddressAutocomplete/js/autocomplete'], function (autocomplete) {
+                    autocomplete.options = {$viewModel->getOptionsJson()};
+                    autocomplete.isReady(true);
+                    autocomplete.restrictedCountryList = {$viewModel->getRestrictedCountryList()};
+                });
+            }
+        SCRIPT;
+        ?>
+        <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $arAutocompleteGmapsInitScript, false) ?>
+    <?php endif; ?>
+    <?php if ($viewModel->getApiType() === ApiOptions::PLACES_DATA): ?>
+        <?php $arAutocompleteGmapsInitScript = <<<SCRIPT
+            function arAutocompleteGmapsInit() {
+                require(['Armah_GoogleAddressAutocomplete/js/autocompleteApi'], function (autocomplete) {
+                    autocomplete.includedCounties = {$viewModel->getIncludedCountiesJson()};
+                    autocomplete.init();
+                });
+            }
+        SCRIPT;
+        ?>
+        <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $arAutocompleteGmapsInitScript, false) ?>
+        <?php $placeProcessor = <<<SCRIPT
+            require(['Armah_GoogleAddressAutocomplete/js/model/placeProcessor'], function (placeProcessor) {
+                placeProcessor.regionMap = {$viewModel->getRegionsJson()};
+            });
+        SCRIPT;
+        ?>
+        <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $placeProcessor, false) ?>
+    <?php endif; ?>
+<?php endif; ?>

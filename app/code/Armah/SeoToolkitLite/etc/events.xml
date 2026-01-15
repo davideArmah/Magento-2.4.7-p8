@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package SEO Toolkit Base for Magento 2
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="controller_action_predispatch_cms">
+        <observer name="armah_seo_toolkit" instance="Armah\SeoToolkitLite\Observer\Redirect" />
+    </event>
+
+    <event name="catalog_product_import_bunch_delete_commit_before">
+        <observer name="creating_redirects_after_product_deleted_from_import"
+                  instance="Armah\SeoToolkitLite\Observer\Import\DeleteBehavior\CreateRedirects"/>
+    </event>
+</config>

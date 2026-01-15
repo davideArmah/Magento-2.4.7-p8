@@ -1,0 +1,54 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Magento\Theme\Block\Html\Breadcrumbs;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var Breadcrumbs $block */
+/** @var array $crumbs */
+?>
+<?php if ($crumbs && is_array($crumbs)): ?>
+<nav class="breadcrumbs bg-container-lighter" aria-label="Breadcrumb">
+    <div class="container">
+    <ol class="flex py-1 overflow-x-auto text-sm text-gray-900 rounded snap sm:justify-end lg:py-0 items list-reset">
+            <?php foreach ($crumbs as $crumbName => $crumbInfo) : ?>
+
+                <li class="item flex <?= $escaper->escapeHtmlAttr($crumbName) ?>">
+                    <?php if (!$crumbInfo['first']) : ?>
+                        <span aria-hidden="true" class="px-2 text-900 separator">></span>
+                    <?php endif; ?>
+                    <?php if ($crumbInfo['link']) : ?>
+                        <a href="<?= $escaper->escapeUrl($crumbInfo['link']) ?>" class="capitalize hover:underline whitespace-nowrap" title="<?= $escaper->escapeHtmlAttr($crumbInfo['title']) ?>"><?= $escaper->escapeHtml(strtolower(
+                                                                                                                                                                                                        $crumbInfo['label'] instanceof Magento\Framework\Phrase
+                                                                                                                                                                                                            ? $crumbInfo['label']->__toString()
+                                                                                                                                                                                                            : $crumbInfo['label']
+                                                                                                                                                                                                    )) ?>
+
+                        </a>
+                    <?php elseif ($crumbInfo['last']) : ?>
+                        <a href="<?= $escaper->escapeUrl($crumbInfo['link']) ?>" class="text-gray-600 capitalize hover:underline whitespace-nowrap" aria-current="page"><?= $escaper->escapeHtml(strtolower(
+                                                                                                                                                                            $crumbInfo['label'] instanceof Magento\Framework\Phrase
+                                                                                                                                                                                ? $crumbInfo['label']->__toString()
+                                                                                                                                                                                : $crumbInfo['label']
+                                                                                                                                                                        )) ?>
+
+                        </a>
+                    <?php else : ?>
+                        <span class="whitespace-nowrap"><?= $escaper->escapeHtml($crumbInfo['label']) ?></span>
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+
+
+        </ol>
+    </div>
+</nav>
+<?php endif; ?>

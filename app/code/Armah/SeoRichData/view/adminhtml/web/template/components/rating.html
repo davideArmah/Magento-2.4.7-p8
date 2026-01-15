@@ -1,0 +1,13 @@
+<div class="arseorichdata-item arseorichdata-rating"
+     if="ratingExist()"
+     data-bind="css: getRatingClass()"
+>
+    <div class="rating-summary">
+        <div class="rating-result" data-bind="attr: {title: previewRatingTitle()}">
+            <span data-bind="style: { width: previewRatingValue() + '%' }"></span>
+        </div>
+        <span class="label" if="isTypePercentage()" data-bind="i18n: 'Rating:'"></span>
+        <span class="arseorichdata-title" data-bind="text: previewRatingTitle()"></span>
+    </div>
+    <div class="arseorichdata-reviews" data-bind="i18n: getPreviewReviews()"></div>
+</div>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah 
+ * @package Improved Sorting for Magento 2
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="index">
+        <job name="armahsorting" instance="Armah\Sorting\Cron\Reindex" method="execute">
+            <config_path>crontab/index/jobs/armahsorting/schedule/cron_expr</config_path>
+        </job>
+    </group>
+</config>

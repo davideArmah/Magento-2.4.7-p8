@@ -1,0 +1,123 @@
+//
+//  Compatibility with Armah Jet Theme
+//  ______________________________________________
+
+//
+//  Common
+//  ----------------------------------------------
+
+& when (@media-common =true) {
+    .armah-jet-theme {
+        .archeckout-shipping-address {
+            .checkout-billing-address {
+                .actions-toolbar {
+                    justify-content: flex-end;
+    
+                    >.primary {
+                        display: flex;
+                    }
+    
+                    .action-cancel {
+                        & {
+                            .lib-button-reset();
+                            .ar-margin(0 @indent__l 0 0);
+    
+                            color: @artheme__text-secondary__color;
+                            font-size: 1.6rem;
+                            font-weight: @font-weight__bold;
+                            letter-spacing: .03em;
+                            order: 1;
+                        }
+    
+                        &:hover {
+                            color: @artheme__text-primary__color;
+                        }
+                    }
+    
+                    .action-update {
+                        order: 2;
+                    }
+                }
+            }
+        }
+
+        .fieldset {
+            border: none;
+        }
+    
+        .ar-checkout.-classic {
+            .payment-method-content {
+                padding-bottom: 0;
+            }
+        }
+    
+        .ar-checkout.-modern {
+            .archeckout-step-container {
+                input[type='checkbox'] + label:before {
+                    margin-top: 0;
+                }
+            }
+
+            .archeckout-email {
+                .field-tooltip {
+                    max-height: inherit;
+                    transform: none;
+                }
+    
+                .note {
+                    margin-top: 0;
+                }
+            }
+        }
+    
+        .ar-checkout.-modern.-layout-3columns {
+            .archeckout-email {
+                width: inherit;
+    
+                .note {
+                    margin-top: 10px;
+                }
+            }
+
+            .archeckout-delivery-date {
+                .date {
+                    ._has-datepicker ~ .ui-datepicker-trigger {
+                        right: 0;
+                        top: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+//
+//  Desktop
+//  ---------------------------------------------
+
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__l) {
+    .armah-jet-theme {
+        .ar-checkout.-modern.-layout-3columns {
+            ._has-datepicker {
+                ~.ui-datepicker-trigger {
+                    right: 0 !important;
+                    top: 0 !important;
+                }
+            }
+
+            .checkout-payment-method.submit {
+                .actions-toolbar {
+                    justify-content: center;
+                }
+            }
+        }
+
+        .ar-checkout.-modern {
+            .archeckout-additional-options {
+                .archeckout-checkboxes {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

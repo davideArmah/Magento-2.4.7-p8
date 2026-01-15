@@ -1,0 +1,26 @@
+<!-- ko if: isDisplayed() -->
+    <!-- ko if: taxUtils.isBothPricesDisplayed() || taxUtils.isExcludingDisplayed() -->
+    <tr class="arcodfee-block -excluding-tax">
+        <th colspan="1" style="" class="mark" scope="row">
+            <span class="label" data-bind="i18n: getPaymentFeeLabel"></span>
+            <!-- ko if: taxUtils.isFeeTypeFixed() -->
+            <span class="label" data-bind="i18n: ' (Excl. Tax)'"></span>
+            <!-- /ko -->
+        </th>
+        <td class="amount arcodfee-amount">
+            <!-- ko text: getValue('value_excl_tax') --><!-- /ko -->
+        </td>
+    </tr>
+    <!-- /ko -->
+    <!-- ko if: taxUtils.isFeeTypeFixed() && (taxUtils.isBothPricesDisplayed() || taxUtils.isIncludingTaxDisplayed()) -->
+    <tr class="arcodfee-block -including-tax">
+        <th colspan="1" style="" class="mark" scope="row">
+            <span class="label" data-bind="i18n: getPaymentFeeLabel"></span>
+            <span class="label" data-bind="i18n: ' (Incl. Tax)'"></span>
+        </th>
+        <td class="amount arcodfee-amount">
+            <!-- ko text: getValue('value_incl_tax') --><!-- /ko -->
+        </td>
+    </tr>
+    <!-- /ko -->
+<!-- /ko -->

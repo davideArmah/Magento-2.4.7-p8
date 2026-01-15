@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package SEO Toolkit Base for Magento 2
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Search\Model\Query">
+        <plugin name="Armah_SeoToolkitLite::save_query" type="Armah\SeoToolkitLite\Plugin\Search\Model\Query" sortOrder="1" />
+    </type>
+
+    <type name="Magento\Theme\Block\Html\Pager">
+        <plugin name="Armah_SeoToolkitLite::add-prev-next" type="Armah\SeoToolkitLite\Plugin\Pager" />
+    </type>
+
+    <type name="Magento\Framework\Controller\ResultInterface">
+        <plugin name="Armah_SeoToolkitLite::processPageResult" type="Armah\SeoToolkitLite\Plugin\Framework\Controller\ProcessPageResultPlugin" sortOrder="-1" />
+    </type>
+
+    <type name="Magento\Framework\View\Page\Title">
+        <plugin name="Armah_SeoToolkitLite::add-page-to-title" type="Armah\SeoToolkitLite\Plugin\Framework\View\Page\Title" />
+    </type>
+
+    <type name="Magento\Framework\View\Page\Config">
+        <plugin name="Armah_SeoToolkitLite::add-page-to description" type="Armah\SeoToolkitLite\Plugin\Framework\View\Page\Config" />
+    </type>
+
+    <type name="Magento\Framework\App\Router\NoRouteHandler">
+        <plugin name="Armah_SeoToolkitLite::404_redirect" type="Armah\SeoToolkitLite\Plugin\Framework\App\Router\NoRouteHandler" />
+    </type>
+
+    <type name="Magento\Search\Helper\Data">
+        <plugin name="Armah_SeoToolkitLite::generate_seo_url" type="Armah\SeoToolkitLite\Plugin\Search\Helper\Data"/>
+    </type>
+
+    <type name="Magento\CatalogSearch\Controller\Result\Index">
+        <plugin name="Armah_SeoToolkitLite::redirect_to_seo_url" type="Armah\SeoToolkitLite\Plugin\CatalogSearch\Controller\Result\Index"/>
+    </type>
+
+    <type name="Armah\Shopby\Controller\Search\Result\Index">
+        <plugin name="Armah_SeoToolkitLite::redirect_to_seo_url_shopby" type="Armah\SeoToolkitLite\Plugin\CatalogSearch\Controller\Result\Index"/>
+    </type>
+
+    <type name="Magento\Framework\App\RouterList">
+        <arguments>
+            <argument name="routerList" xsi:type="array">
+                <item name="armah_toolkit" xsi:type="array">
+                    <item name="class" xsi:type="string">Armah\SeoToolkitLite\Controller\Router</item>
+                    <item name="disable" xsi:type="boolean">false</item>
+                    <item name="sortOrder" xsi:type="string">45</item>
+                </item>
+                <item name="armah_toolkit_redirect_pre" xsi:type="array">
+                    <item name="class" xsi:type="string">Armah\SeoToolkitLite\Controller\RouterPreRedirect</item>
+                    <item name="disable" xsi:type="boolean">false</item>
+                    <item name="sortOrder" xsi:type="string">21</item>
+                </item>
+                <item name="armah_toolkit_redirect_post" xsi:type="array">
+                    <item name="class" xsi:type="string">Armah\SeoToolkitLite\Controller\RouterPostRedirect</item>
+                    <item name="disable" xsi:type="boolean">false</item>
+                    <item name="sortOrder" xsi:type="string">61</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Catalog\Block\Category\View">
+        <plugin name="Armah_SeoToolkitLite::category_canonical" type="Armah\SeoToolkitLite\Plugin\Catalog\Block\Category\ViewPlugin"/>
+    </type>
+
+    <type name="Magento\Catalog\Helper\Product\View">
+        <plugin name="Armah_SeoToolkitLite::product_meta_data" type="Armah\SeoToolkitLite\Plugin\Catalog\Helper\Product\ViewPlugin"/>
+    </type>
+
+    <type name="Magento\Cms\Helper\Page">
+        <plugin name="Armah_SeoToolkitLite::cms_robots" type="Armah\SeoToolkitLite\Plugin\Cms\Helper\Page\AddCmsRobotsPlugin"/>
+    </type>
+
+    <type name="Magento\Framework\View\Page\Config">
+        <plugin name="Armah_Meta::replace_meta_robots" type="Armah\SeoToolkitLite\Plugin\Framework\View\Page\Config\ReplaceMetaRobots" sortOrder="20"/>
+    </type>
+</config>

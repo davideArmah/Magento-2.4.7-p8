@@ -1,0 +1,48 @@
+//
+//  Armah Promotion Config Field
+//  ______________________________________________
+
+//
+//  Variables
+//  --------------------------------------------
+@arbase__promoconfig__message__color: #adadad;
+
+//
+//  Common
+//  ----------------------------------------------
+
+& when (@media-common = true) {
+    .arpromo-config-label {
+        align-items: center;
+        display: flex;
+        flex-wrap: nowrap;
+        gap: .8rem;
+        justify-content: right;
+    }
+
+    .arpromo-config-icon {
+        background-position: center;
+        background-repeat: no-repeat;
+        border: none;
+        border-radius: 50%;
+        display: block;
+        height: 32px;
+        min-width: 32px;
+        width: 32px;
+    }
+
+    .arpromo-config-content-container {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+
+        .arpromo-config-notification-message {
+            color: @arbase__promoconfig__message__color;
+            font-size: 1.2rem;
+        }
+    }
+
+    .arpromo-config-dynamic-rows th {
+        color: @arbase__promoconfig__message__color;
+    }
+}

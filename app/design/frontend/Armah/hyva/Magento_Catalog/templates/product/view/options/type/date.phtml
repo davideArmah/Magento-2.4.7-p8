@@ -1,0 +1,48 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Magento\Catalog\Api\Data\ProductCustomOptionInterface;
+use Magento\Catalog\Block\Product\View\Options\Type\Date;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var Date $block */
+
+/* TODO: implement custom select elements */
+?>
+<?php $option = $block->getOption() ?>
+<?php $optionId = $escaper->escapeHtmlAttr($option->getId()) ?>
+<?php $class = ($option->getIsRequire()) ? ' required' : ''; ?>
+<div class="flex flex-col items-center w-full py-2 border-t border-gray-300 sm:flex-row last:mb-6 last:border-b">
+    <label class="w-full text-left text-gray-700 label sm:w-1/2"
+           for="options_<?= $escaper->escapeHtmlAttr($option->getId()) ?>_text">
+        <span><?= $escaper->escapeHtml($option->getTitle()) ?></span>
+        <?php if ($option->getIsRequire()): ?>
+            <span class="text-sm sup">*</span>
+        <?php endif; ?>
+        <span x-html="getFormattedOptionPrice(<?= $escaper->escapeHtmlAttr($option->getId()) ?>) || ''">
+            <?= /* @noEscape */ $block->getFormattedPrice() ?>
+        </span>
+    </label>
+    <div class="flex flex-wrap w-full text-left text-gray-900 gap-y-2 sm:ml-2 sm:w-1/2">
+        <?php if ($option->getType() == ProductCustomOptionInterface::OPTION_TYPE_DATE_TIME
+            || $option->getType() == ProductCustomOptionInterface::OPTION_TYPE_DATE): ?>
+
+            <?= $block->getDateHtml() ?>
+
+        <?php endif; ?>
+
+        <?php if ($option->getType() == ProductCustomOptionInterface::OPTION_TYPE_DATE_TIME
+            || $option->getType() == ProductCustomOptionInterface::OPTION_TYPE_TIME): ?>
+            <?= $block->getTimeHtml() ?>
+        <?php endif; ?>
+
+    </div>
+</div>

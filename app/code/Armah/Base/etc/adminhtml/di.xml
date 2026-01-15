@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\AdminNotification\Block\Grid\Renderer\Actions">
+        <plugin name="Armah_Base::show-unsubscribe-link" type="Armah\Base\Plugin\AdminNotification\Block\Grid\Renderer\Actions"/>
+    </type>
+
+    <type name="Magento\AdminNotification\Block\Grid\Renderer\Notice">
+        <plugin name="Armah_Base::add-armah-class" type="Armah\Base\Plugin\AdminNotification\Block\Grid\Renderer\Notice"/>
+    </type>
+
+    <type name="Magento\AdminNotification\Block\ToolbarEntry">
+        <plugin name="Armah_Base::add-armah-class-logo" type="Armah\Base\Plugin\AdminNotification\Block\ToolbarEntry"/>
+    </type>
+
+    <type name="Magento\ImportExport\Controller\Adminhtml\Import\Download">
+        <arguments>
+            <argument name="componentRegistrar" xsi:type="object">Armah\Base\Component\ComponentRegistrar</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Config\Block\System\Config\Form\Field">
+        <plugin name="Armah_Base::replace-image-path" type="Armah\Base\Plugin\Config\Block\System\Config\Form\Field"/>
+    </type>
+
+    <type name="Magento\Backend\Block\Widget\Form\Element\Dependence">
+        <plugin name="Armah_Base::fix-dependence" type="Armah\Base\Plugin\Adminhtml\Block\Widget\Form\Element\Dependence"/>
+    </type>
+
+    <type name="Magento\Backend\Model\Menu\Builder">
+        <plugin name="Armah_Base::menu_builder" type="Armah\Base\Plugin\Backend\Model\Menu\Builder"/>
+    </type>
+
+    <type name="Magento\Config\Model\Config\Structure">
+        <plugin name="Armah_Base:infoblock" type="Armah\Base\Plugin\Backend\Model\Config\AddInformationBlockPlugin"/>
+    </type>
+    <type name="Magento\Config\Block\System\Config\Tabs">
+        <plugin name="Armah_Base::build_armah_tabs"
+                type="Armah\Base\Plugin\Config\Block\System\Config\BuildArmahTabsPlugin"/>
+    </type>
+
+    <type name="Armah\Base\Model\ArmahMenu\ActiveSolutionsProvider">
+        <arguments>
+            <argument name="solutionsVersions" xsi:type="array">
+                <item name="10" xsi:type="string">Lite</item>
+                <item name="20" xsi:type="string">Pro</item>
+                <item name="30" xsi:type="string">Premium</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="Armah\Base\Model\System\Message\Mage248FixNotification" type="Armah\Base\Model\System\Message\CloseableNotification">
+        <arguments>
+            <argument name="displayValidator" xsi:type="object">Armah\Base\Model\System\Message\DisplayValidator\Mage248FixValidator</argument>
+            <argument name="identity" xsi:type="string">ARMAH_MAGE248FIX_NOTIFICATION</argument>
+            <argument name="message" xsi:type="string"><![CDATA[<p>System Notice: After upgrading to <strong>Magento 2.4.8</strong>, you may encounter frontend and Admin Panel issues related to caching, styles, and table prefix processing, which can impact site functionality and layout.</p><p>To resolve these issues, you may need to install compatibility modules via composer.</p> <p>For more details, refer to the <strong>README</strong> file within the extension.</p><p>{{closeLink}}</p>]]></argument>
+            <argument name="closeLinkText" xsi:type="string"><![CDATA[Click on the link <a href="">to ignore this notification</a>]]></argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\Framework\Notification\MessageList">
+        <arguments>
+            <argument name="messages" xsi:type="array">
+                <item name="mage248fix" xsi:type="string">Armah\Base\Model\System\Message\Mage248FixNotification</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Config\Block\System\Config\Edit">
+        <plugin name="Armah_Base::removeSaveButton" type="Armah\Base\Plugin\Config\Block\System\Config\Edit\RemoveSaveButton"/>
+    </type>
+    <type name="ClassyLlama\AvaTax\Plugin\Model\ConfigPlugin">
+        <plugin name="Armah_Base::disableArmahSectionCheck" type="Armah\Base\Plugin\ClassyLlama\Plugin\Model\ConfigPlugin\DisableArmahSectionCheck"/>
+    </type>
+    <type name="Avalara\AvaTax\Plugin\Model\ConfigPlugin">
+        <plugin name="Armah_Base::disableArmahSectionCheck" type="Armah\Base\Plugin\Avalara\Plugin\Model\ConfigPlugin\DisableArmahSectionCheck"/>
+    </type>
+</config>

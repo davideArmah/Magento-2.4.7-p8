@@ -1,0 +1,78 @@
+//
+//  Armah Base compatibility with admin themes
+//  ______________________________________________
+
+//
+//  Variables
+//  ----------------------------------------------
+
+@armah-button-radius: 32px;
+
+//
+//  Common
+//  ----------------------------------------------
+
+& when (@media-common = true) {
+    .ar-mageos-compat {
+        /* phpcs:ignore Magento2.Less.AvoidId.IdSelectorUsage */
+        #menu-menuarmah-base-menu {
+            .arbase-submenu .arbase-title {
+                color: @color-black;
+            }
+
+            .arbase-submenu:not(.-second) .arbase-menu-item .arbase-menu-item {
+                color: lighten(@submenu-link__color, 30%);
+            }
+
+            > a:before {
+                background-image: url(@arbase-menu-icon__armah-logo-black);
+                background-size: 24px 26px;
+                height: 3.6rem;
+                padding: 0;
+            }
+
+            > a:hover:before,
+            &._show > a:before {
+                &:extend(.admin__menu .level-0:hover>a::before);
+                background-image: url(@arbase-menu-icon__armah-logo-black);
+                background-size: 24px 26px;
+            }
+        }
+
+        .arbase-search-block .arbase-search {
+            background-color: @action-dropdown__background-color;
+            border-color: @action-dropdown__background-color;
+            border-radius: @armah-button-radius;
+        }
+
+        /* phpcs:ignore Magento2.Less.ClassNaming.NotAllowedSymbol */
+        .admin__menu [data-ui-id^='menu-armah-'] .submenu-group-title span:before {
+            background-image: url('@{baseDir}Armah_Base/images/logo.svg');
+        }
+
+        /* phpcs:ignore Magento2.Less.ClassNaming.NotAllowedSymbol */
+        .admin__menu [data-ui-id^='menu-magento-'] [data-ui-id^='menu-magento-'] [data-ui-id^='menu-armah-'] span:before {
+            background-image: url('@{baseDir}Armah_Base/images/logo.svg');
+            margin-top: -.2rem;
+        }
+
+        .arbase-buttons-container .message {
+            margin: 0;
+        }
+
+        .arbase-buttons-block .arbase-button,
+        .arbase-grid-buttons .arbase-button,
+        .arbase-buttons-container .arbase-button {
+            border-radius: @armah-button-radius;
+        }
+
+        .arpromo-config-info {
+            &:extend(.message-notice);
+        }
+
+        //  fix collapsed menu
+        .admin__page-nav._collapsed._show ._collapsed._hide ._collapsible:not(:hover) {
+            background: @admin__page-nav-title__collapsible__background-color;
+        }
+    }
+}

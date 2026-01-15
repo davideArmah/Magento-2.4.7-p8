@@ -1,0 +1,214 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsSolid;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\Escaper;
+
+/** @var ViewModelRegistry $viewModels */
+/** @var HeroiconsSolid $heroIcons */
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+$heroIcons = $viewModels->require(HeroiconsSolid::class);
+$showIcon = $block->getData('show_icon') ?? true;
+
+
+?>
+<script>
+    function initMessages() {
+        "use strict";
+        return {
+            messages: window.mageMessages || [],
+            isEmpty() {
+                return this.messages.reduce(
+                    function(isEmpty, message) {
+                        return isEmpty && message === undefined
+                    }, true
+                )
+            },
+            removeMessage(messageIndex) {
+                this.messages[messageIndex].visible = false;
+            },
+            addMessages(messages, showAfter = 1000, hideAfter = 3000) {
+                messages.map((message) => {
+                    message.visible = false;
+                    this.messages.push(message);
+                    this.setShowTimeOut(this.messages.length - 1, showAfter, hideAfter);
+                });
+            },
+            setShowTimeOut(messageIndex, showAfter = 500, hideAfter) {
+                setTimeout(() => {
+                    this.messages[messageIndex].visible = true;
+                    this.setHideTimeOut(messageIndex, hideAfter);
+                }, showAfter);
+            },
+            setHideTimeOut(messageIndex, hideAfter) {
+                setTimeout((messageIndex) => {
+                    this.removeMessage(messageIndex);
+                }, hideAfter, messageIndex);
+            },
+            getIcon(messageType) {
+                let iconHtml;
+                switch (messageType) {
+                    <?php // phpcs:disable Generic.Files.LineLength.TooLong 
+                    ?>
+                    case 'success':
+                        iconHtml = <?=
+                                    /** @noEscape */
+                                    json_encode($heroIcons->checkCircleHtml('fill-current', 56, 56)) ?>;
+                        break;
+                    case 'removed':
+                        iconHtml = <?=
+                                    /** @noEscape */
+                                    json_encode($heroIcons->exclamationHtml('fill-current text-red-600', 56, 56)) ?>;
+                        break;
+                    case 'removed-item':
+                        iconHtml = <?=
+                                    /** @noEscape */
+                                    json_encode($heroIcons->checkCircleHtml('fill-current', 56, 56)) ?>;
+                        break;
+
+                    case 'error':
+                        iconHtml = <?=
+                                    /** @noEscape */
+                                    json_encode($heroIcons->exclamationHtml('fill-current', 56, 56)) ?>;
+                        break;
+                    case 'warning':
+                        iconHtml = <?=
+                                    /** @noEscape */
+                                    json_encode($heroIcons->exclamationHtml('fill-current', 56, 56)) ?>;
+                        break;
+                    case 'notice':
+                        iconHtml = <?=
+                                    /** @noEscape */
+                                    json_encode($heroIcons->informationCircleHtml('fill-current', 56, 56)) ?>;
+                        break;
+                    case 'info':
+                        iconHtml = <?=
+                                    /** @noEscape */
+                                    json_encode($heroIcons->informationCircleHtml('fill-current', 56, 56)) ?>;
+                        break;
+                        // phpcs:enable Generic.Files.LineLength.TooLong
+                }
+                return iconHtml;
+            },
+            getTitle(messageType) {
+                let title;
+                switch (messageType) {
+                    case 'success':
+                        title = '<?= $escaper->escapeHtml(__('Success')) ?>';
+                        break;
+                    case 'removed':
+                        title = '<?= $escaper->escapeHtml(__('Removed')) ?>';
+                        break;
+                    case 'removed-item':
+                        title = '<?= $escaper->escapeHtml(__('Removed')) ?>';
+                        break;
+                    case 'error':
+                        title = '<?= $escaper->escapeHtml(__('Error')) ?>';
+                        break;
+                    case 'warning':
+                        title = '<?= $escaper->escapeHtml(__('Warning')) ?>';
+                        break;
+                    case 'notice':
+                        title = '<?= $escaper->escapeHtml(__('Notice')) ?>';
+                        break;
+                    case 'info':
+                        title = '<?= $escaper->escapeHtml(__('Info')) ?>';
+                        break;
+                }
+                return title;
+            },
+            getColor(messageType) {
+                let color;
+                switch (messageType) {
+                    case 'success':
+                        color = 'text-green-600';
+                        break;
+                    case 'removed':
+                        color = 'text-red-600';
+                        break;
+                    case 'removed-item':
+                        color = 'text-green-600';
+                        break;
+                    case 'error':
+                        color = 'text-red-600';
+                        break;
+                    case 'warning':
+                        color = 'text-yellow-500';
+                        break;
+                    case 'notice':
+                        color = 'text-blue-500';
+                        break;
+                    case 'info':
+                        color = 'text-blue-500';
+                        break;
+                }
+                return color;
+            },
+            eventListeners: {
+                ['@messages-loaded.window']() {
+                    this.addMessages(event.detail.messages, event.detail.hideAfter)
+                },
+                ['@private-content-loaded.window'](event) {
+                    const data = event.detail.data;
+                    if (
+                        data.messages &&
+                        data.messages.messages &&
+                        data.messages.messages.length
+                    ) {
+                        this.addMessages(data.messages.messages);
+                    }
+                },
+                ['@clear-messages.window']() {
+                    this.messages = [];
+                }
+            }
+        }
+    }
+</script>
+<section x-data="initMessages()" x-bind="eventListeners">
+    <template x-if="!isEmpty()">
+        <div role="alert" class="absolute top-0 left-0">
+            <template x-for="(message, index) in messages" :key="index">
+                <div class="messaggio-padre" x-show="message.visible" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-90" x-init="requestAnimationFrame(() => message.visible = true)">
+                    <template x-if="message">
+                        <div class="w-full max-w-xl p-6 messaggio" :ui-id="'message-' + message.type">
+                            <?php
+                            $containerTemplate = $block->getData('container_template')
+                                ?? 'Magento_Catalog::product/slider/product-slider-container.phtml';
+                            ?>
+                            <div class="flex flex-col gap-4 p-6 pl-8 bg-white shadow-xl rounded-xl sm:flex-row">
+                                <?php if ($showIcon) : ?>
+                                    <div class="flex justify-center sm:block sm:w-14 sm:pt-1 sm:grow-0 sm:shrink-0" :class="getColor(message.type)" x-html="getIcon(message.type)"></div>
+                                <?php endif ?>
+                                <div class="<?php if ($showIcon) : ?>text-center sm:text-left<?php endif ?> sm:pr-12">
+                                    <div class="text-xl font-bold text-gray-800" x-text="getTitle(message.type)"></div>
+                                    <div class="mt-2 text-gray-600">
+                                        <span x-html="message.text"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="absolute right-12 top-12">
+                                <button class="text-gray-300 hover:text-gray-400" title="close" @click.prevent="removeMessage(index)">
+                                    <?= $heroIcons->xHtml('fill-current') ?>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </template>
+</section>

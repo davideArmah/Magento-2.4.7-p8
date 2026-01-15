@@ -1,0 +1,61 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+?>
+
+<?php
+/** @var \Magento\Catalog\Pricing\Render\FinalPriceBox $block */
+
+/** ex: \Magento\Catalog\Pricing\Price\RegularPrice */
+/** @var \Magento\Framework\Pricing\Price\PriceInterface $priceModel */
+$priceModel = $block->getPriceType('regular_price');
+
+/** ex: \Magento\Catalog\Pricing\Price\FinalPrice */
+/** @var \Magento\Framework\Pricing\Price\PriceInterface $finalPriceModel */
+$finalPriceModel = $block->getPriceType('final_price');
+$idSuffix = $block->getIdSuffix() ? $block->getIdSuffix() : '';
+$schema = ($block->getZone() == 'item_view') ? true : false;
+?>
+<div class="flex w-1/2 mb-3 price-custom-container">
+    <?php if ($block->hasSpecialPrice()) :?>
+        <span class="w-full text-xl text-black line-through old-price">
+            <?= /* @noEscape */ $block->renderAmount($priceModel->getAmount(), [
+                'price_id'          => $block->getPriceId('old-price-' . $idSuffix),
+                'price_type'        => 'oldPrice',
+                'include_container' => true,
+                'skip_adjustments'  => true
+            ]); ?>
+        </span>
+        <span class="w-full ml-2 special-price">
+            <?= /* @noEscape */ $block->renderAmount($finalPriceModel->getAmount(), [
+                'display_label'     => __('Special Price'),
+                'price_id'          => $block->getPriceId('product-price-' . $idSuffix),
+                'price_type'        => 'finalPrice',
+                'include_container' => true,
+                'schema' => $schema
+            ]); ?>
+        </span>
+    <?php else :?>
+        <?= /* @noEscape */ $block->renderAmount($finalPriceModel->getAmount(), [
+            'price_id'          => $block->getPriceId('product-price-' . $idSuffix),
+            'price_type'        => 'finalPrice',
+            'include_container' => true,
+            'schema' => $schema
+        ]); ?>
+    <?php endif; ?>
+
+    <?php if ($block->showMinimalPrice()) :?>
+        <?php if ($block->getUseLinkForAsLowAs()) :?>
+            <a href="<?= $block->escapeUrl($block->getSaleableItem()->getProductUrl()) ?>" class="minimal-price-link">
+                <?= /* @noEscape */ $block->renderAmountMinimal() ?>
+            </a>
+        <?php else :?>
+            <span class="minimal-price-link">
+                <?= /* @noEscape */ $block->renderAmountMinimal() ?>
+            </span>
+        <?php endif?>
+    <?php endif; ?>
+
+</div>

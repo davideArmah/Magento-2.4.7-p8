@@ -1,0 +1,416 @@
+<?php
+
+/**
+ * Mirasvit - Search Autocomplete Compatability Module
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+/** @var Escaper $escaper */
+/** @var Template $block */
+/** @var SearchHelper $helper */
+
+/** @var \Mirasvit\SearchAutocomplete\Block\Injection $block */
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Magento\Search\Helper\Data as SearchHelper;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\HeroiconsSolid;
+
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+
+/** @var HeroiconsSolid $heroiconsSolid */
+$heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
+
+$config = $block->getJsConfig();
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
+
+$helper         = $this->helper(SearchHelper::class);
+$col2           = $config['layout'] == "2columns";
+$titleCSS       = 'text-lg leading-normal transition appearance-none text-grey-800 lg:text-xl p-2 gap-1 flex flex-row-reverse justify-end';
+$titleNumberCSS = 'text-gray-500 ml-1 font-bold';
+
+$itemCSS     = 'my-2 flex flex-wrap';
+$itemNameCSS = 'm-1 transform transition duration-500 hover:scale-105 font-bold text-sm leading-loose cursor-pointer';
+?>
+
+<?php /** Main Search Area */ ?>
+<div class="container py-2 mx-auto text-black" x-data="initMirasvitSearch()" @click.away="closeSearch">
+    <form class="form relative minisearch" id="search_mini_form" action="<?= $escaper->escapeUrl($helper->getResultUrl()) ?>" method="get" autocomplete="off">
+        <label class="hidden" for="search" data-role="minisearch-label">
+            <span><?= $escaper->escapeHtml(__('Search')) ?></span>
+        </label>
+        <input id="search" x-ref="searchInput" type="search" name="<?= $escaper->escapeHtmlAttr($helper->getQueryParamName()) ?>" value="<?= $escaper->escapeHtmlAttr($helper->getEscapedQueryText()) ?>" placeholder="<?= $escaper->escapeHtmlAttr(__('Search entire store here...')) ?>" maxlength="<?= $escaper->escapeHtmlAttr($helper->getMaxQueryLength()) ?>" class="w-full h-10 p-2 pr-10 text-sm leading-normal transition border-2 rounded-lg appearance-none border-rosso text-grey-800 focus:border-rosso focus:ring-0 lg:text-sm border-backgrey-700" x-on:keyup.debounce.300="doSearch($refs.searchInput.value)" x-on:click.debounce.150="openSearch" x-on:keydown.debounce.100="startSearch($refs.searchInput.value)"/>
+        <button type="submit"
+                title="<?= $escaper->escapeHtml(__("Search")) ?>"
+                class="absolute top-0 right-0 items-center justify-center hidden w-10 h-10 bg-transparent rounded lg:flex action search"
+                aria-label="Search"
+        >                    <?= $heroicons->searchHtml('text-black border-current inline'); ?>
+
+        </button>
+    </form>
+
+    <div x-cloak x-show="isOpen" id="mirasvitSearchResults" class="absolute appearance-none bg-white border border-light-blue-500 border-solid inset-x-0 leading-normal lg:text-xl mt-1 overflop-2 rounded-b-xl text-grey-800 text-lg transition w-full">
+        <?= $block->getChildHtml('loading.search') ?>
+
+        <template x-if="hotSearch">
+            <div>
+                <p class="<?= $titleCSS ?>">
+                    <?= __('Hot Searches') ?>
+                </p>
+                <div class="my-3 flex flex-wrap">
+                    <?php if ($config['popularSearches']) : ?>
+                        <?php foreach ($config['popularSearches'] as $search) : ?>
+                            <span x-on:click="hotSearchClickEvent" class="m-1 bg-gray-200 hover:bg-gray-300 rounded-full px-2 font-bold text-sm leading-loose cursor-pointer"><?= $escaper->escapeHtml(__($search)) ?></span>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </template>
+
+        <template x-if="searchResults">
+            <div class="overflow-y-auto shadow-xl h-[30rem] md:h-[40rem] lg:h-full <?= $col2 ? 'grid gap-4 lg:grid-cols-12' : '' ?>">
+                <?php if ($col2) : ?>
+                <div class="col-span-12 lg:col-span-8 lg:order-1">
+                    <?php endif; ?>
+                    <p class="<?= $titleCSS ?>">
+                        <?= __('Products') ?>
+                        <template class="flex items-center" x-if="searchProducts != ''">
+                        <span x-html="searchProductsTotal"></span><small class="<?= $titleNumberCSS ?>"></small>
+                        </template>
+                    </p>
+                    <div class="container mx-auto grid grid-cols-2 mb-6 sm:grid-cols-2 md:grid-cols-3 <?= $col2 ? 'lg:grid-cols-4' : 'lg:grid-cols-5 xl:grid-cols-6' ?> p-2 md:pt-6 gap-4">
+                        <template x-for="item in searchProducts">
+                            <div class="flex transform transition duration-500 hover:scale-105 flex-wrap md:max-w-md bg-white border border-50 rounded-md overflow-hidden flex-col lg:flex-row xl:flex-nowrap">
+                                <a x-bind:href="`${item.url}`" class="w-full flex flex-wrap flex-col">
+                                    <?php if ($config['isShowImage']): ?>
+                                        <div class="w-full">
+                                            <img x-bind:src="`${item.imageUrl}`" class="mx-auto"/>
+                                        </div>
+                                    <?php endif ?>
+                                    <div class="w-full p-4">
+                                        <h4 class="text-gray-900 font-bold text-base lg:text-sm leading-5" x-html="item.name"></h4>
+                                        <?php if ($config['isShowRating']): ?>
+                                            <div class="flex items-center mt-3 lg:flex-col xl:flex-row">
+                                                <span class="text-gray-700 font-medium text-base" x-html="item.rating"></span>
+                                            </div>
+                                        <?php endif ?>
+                                        <?php if ($config['isShowDescription']): ?>
+                                            <p class="mt-2 text-gray-600 text-xs truncate" x-html="item.description"></p>
+                                        <?php endif ?>
+                                        <?php if ($config['isShowPrice']): ?>
+                                            <div class="flex items-end justify-end mt-3 lg:flex-col xl:flex-row">
+                                                <span class="text-gray-700 font-bold text-lg" x-html="item.price"></span>
+                                            </div>
+                                        <?php endif ?>
+                                    </div>
+                                </a>
+                            </div>
+                        </template>
+                        <template x-if="searchProducts == ''">
+                            <p><?= $escaper->escapeHtml(__('No results found.')) ?></p>
+                        </template>
+                    </div>
+                    <?php if ($col2) : ?>
+                </div>
+                <div class="col-span-12 lg:col-span-4">
+                    <?php endif; ?>
+
+                    <template x-if="searchCategories != ''">
+                        <div class="mb-6">
+                            <p class="<?= $titleCSS ?>">
+                                <?= __('Categories') ?>
+                                <small class="<?= $titleNumberCSS ?>">(<span x-html="searchCategoriesTotal"></span>)</small>
+                            </p>
+                            <div class="px-2">
+                                <template x-for="category in searchCategories">
+                                    <a x-bind:href="`${category.url}`">
+                                        <div class="<?= $itemCSS ?>">
+                                            <span class="<?= $itemNameCSS ?>" x-html="category.name"></span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template x-if="searchPages != ''">
+                        <div class="mb-6">
+                            <p class="<?= $titleCSS ?>">
+                                <?= __('Pages') ?>
+                                <small class="<?= $titleNumberCSS ?>">(<span x-html="searchPagesTotal"></span>)</small>
+                            </p>
+                            <div class="px-2">
+                                <template x-for="page in searchPages">
+                                    <a x-bind:href="`${page.url}`">
+                                        <div class="<?= $itemCSS ?>">
+                                            <span class="<?= $itemNameCSS ?>" x-html="page.name"></span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template x-if="searchMirasvitBlogPost != ''">
+                        <div class="mb-6">
+                            <p class="<?= $titleCSS ?>">
+                                <?= __('Posts') ?>
+                                <small class="<?= $titleNumberCSS ?>">(<span x-html="searchMirasvitBlogPostTotal"></span>)</small>
+                            </p>
+                            <div class="px-2">
+                                <template x-for="item in searchMirasvitBlogPost">
+                                    <a x-bind:href="`${item.url}`">
+                                        <div class="<?= $itemCSS ?>">
+                                            <span class="<?= $itemNameCSS ?>" x-html="item.name"></span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template x-if="searchMirasvitKbArticle != ''">
+                        <div class="mb-6">
+                            <p class="<?= $titleCSS ?>">
+                                <?= __('Articles') ?>
+                                <small class="<?= $titleNumberCSS ?>">(<span x-html="searchMirasvitKbArticleTotal"></span>)</small>
+                            </p>
+                            <div class="px-2">
+                                <template x-for="item in searchMirasvitKbArticle">
+                                    <a x-bind:href="`${item.url}`">
+                                        <div class="<?= $itemCSS ?>">
+                                            <span class="<?= $itemNameCSS ?>" x-html="item.name"></span>
+                                        </div>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                    <?php if ($col2) : ?>
+                </div>
+            <?php endif; ?>
+
+                <div class="p-4 w-full order-2 col-span-12 bg-gray-100">
+                    <div class="flex items-center justify-center">
+                        <a x-bind:href="numberResultsUrl">
+                            <p class="text-gray-900 transition duration-300 hover:text-gray-500 font-bold text-base lg:text-lg" x-html="numberResults"></p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template x-if="noResults">
+            <div class="bg-gray-100 p-2">
+                <p class="text-lg leading-normal transition appearance-none text-grey-800 lg:text-xl" x-html="noResultsText"></p>
+            </div>
+        </template>
+    </div>
+</div>
+<style>
+    i {
+        margin: 5px;
+    }
+</style>
+<script>
+    function initMirasvitSearch()
+    {
+        return {
+            //initialize Variables
+            hotSearch:        false,
+            searchResults:    false,
+            noResults:        false,
+            isLoading:        false,
+            isOpen:           false,
+            blockConfig:      <?= json_encode($config); ?>,
+            xhttp:            false,
+            noResultsText:    '',
+            numberResults:    '',
+            numberResultsUrl: '',
+
+            searchProductsTotal:          '',
+            searchCategoriesTotal:        '',
+            searchPagesTotal:             '',
+            searchMirasvitKbArticleTotal: '',
+            searchMirasvitBlogPostTotal:  '',
+            
+            searchProducts:          [],
+            searchCategories:        [],
+            searchPages:             [],
+            searchMirasvitBlogPost:  [],
+            searchMirasvitKbArticle: [],
+            
+            searchMap: {
+                'magento_cms_page':         'Pages',
+                'magento_catalog_category': 'Categories',
+                'magento_catalog_product':  'Products',
+                'mirasvit_blog_post':       'MirasvitBlogPost',
+                'mirasvit_kb_article':      'MirasvitKbArticle'
+            },
+            
+            hotSearchClickEvent: function (ev) {
+                var hotSearchClick = event.currentTarget.innerText;
+                document.getElementById("search").value = hotSearchClick;
+
+                this.doSearch(hotSearchClick);
+            },
+            
+            openSearch: function () {
+                this.isOpen = true;
+                searchValue = document.getElementById("search").value.length;
+
+                if (searchValue >= this.blockConfig.minSearchLength) {
+                    this.hideHotSearch();
+                } else {
+                    this.showHotSearch();
+                    this.hideSearchResults();
+                }
+            },
+            
+            startSearch: function (e) {
+                if (e) {
+                    this.isOpen = true;
+                }
+            },
+            
+            closeSearch: function () {
+                this.isOpen = false;
+            },
+            
+            showHotSearch: function () {
+                this.hotSearch = true;
+            },
+            
+            hideHotSearch: function () {
+                this.hotSearch = false;
+            },
+            
+            showSearchResults: function () {
+                this.searchResults = true;
+            },
+            
+            hideSearchResults: function () {
+                this.searchResults = false;
+            },
+
+            showNoResults: function () {
+                this.noResults = true;
+            },
+            
+            hideNoResults: function () {
+                this.noResults = false;
+            },
+            
+            setNoResultsText(text)
+            {
+                if (!text) {
+                    return;
+                }
+                
+                this.noResultsText = text;
+            },
+
+            setNumberResults(text)
+            {
+                this.numberResults = text;
+            },
+            
+            setNumberResultsUrl(text)
+            {
+                this.numberResultsUrl = text;
+            },
+            
+            resetSearchData: function () {
+                // Reinitialize Variables to avoid wrong search results.
+
+                this.searchPagesTotal = 0;
+                this.searchCategoriesTotal = 0;
+                this.searchProductsTotal = 0;
+                this.searchMirasvitKbArticleTotal = 0;
+                this.searchMirasvitBlogPostTotal = 0;
+
+                this.searchProducts = [];
+                this.searchPages = [];
+                this.searchCategories = [];
+                this.searchMirasvitKbArticle = [];
+                this.searchMirasvitBlogPost = [];
+            },
+            
+            doSearch: function (query) {
+                var self = this;
+                // Min search length
+                if (query.length < this.blockConfig.minSearchLength) {
+                    this.showHotSearch();
+                    this.isLoading = false;
+                    this.hideSearchResults();
+                    this.hideNoResults();
+
+                    return;
+                } else {
+                    this.hideHotSearch();
+                    this.isLoading = true;
+                    this.showSearchResults();
+                    this.hideNoResults();
+                }
+                
+                // AJAX for searchautocomplete/ajax/suggest/
+                if (this.xhttp) {
+                    try {
+                        this.xhttp.abort();
+                    } catch {
+                        
+                    }
+                }
+                this.xhttp = new XMLHttpRequest();
+                var xhttp = this.xhttp;
+                
+                var queryEncoded = encodeURIComponent(query);
+                var url = this.blockConfig.url.replace(/\/$/, "") + "/?q=" + queryEncoded + "&store_id=" + this.blockConfig.storeId + "&cat=false";
+                
+                xhttp.open("GET", url, true);
+                xhttp.setRequestHeader("Content-Type", "application/json");
+                
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState === 4 && this.status === 200) {
+                        // Response from ajax call in JSON.
+                        var response = JSON.parse(this.responseText);
+                        
+                        self.resetSearchData();
+                        
+                        // Product Search Results
+                        for (index in response.indexes) {
+                            
+                            if (response.indexes[index].items.length > 0) {
+                                var res = response.indexes[index];
+                                var map = null;
+                                
+                                if (self.searchMap[res.identifier]) {
+                                    map = self.searchMap[res.identifier];
+                                    self['search' + map] = res.items;
+                                    self['search' + map + 'Total'] = res.totalItems;
+                                }
+                            }
+                        }
+                        
+                        self.isLoading = false;
+                        self.hideNoResults();
+                        self.setNumberResults(response.textAll);
+                        self.setNumberResultsUrl(response.urlAll);
+                        
+                        if (response.noResults) {
+                            self.setNoResultsText(response.textEmpty);
+                            self.hideSearchResults();
+                            self.showNoResults();
+                        }
+                    }
+                };
+                xhttp.send();
+            }
+        }
+    }
+</script>

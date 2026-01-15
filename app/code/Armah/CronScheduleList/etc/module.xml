@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) 2023 Armah (https://www.armah.it)
+ * @package Cron Schedule List for Magento 2 (System) 
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+    <module name="Armah_CronScheduleList" setup_version="1.0.0">
+        <sequence>
+            <module name="Armah_Base"/>
+        </sequence>
+    </module>
+</config>

@@ -1,0 +1,70 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\HeroiconsSolid;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Hyva\Theme\ViewModel\CustomerRegistration;
+use Magento\Customer\Block\Account\Customer;
+use Magento\Customer\Model\Account\Redirect;
+use Magento\Framework\Escaper;
+
+
+/** @var CustomerRegistration $customerRegistration */
+$customerRegistration = $viewModels->require(CustomerRegistration::class);
+
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+
+/** @var HeroiconsSolid $heroiconsSolid */
+$heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+?>
+
+<div class="flex-row items-center justify-between w-full md:flex h-8 lg:h-auto">
+    <div class="flex-row items-center hidden w-1/2 lg:flex lg:w-1/4">
+        <?= $hyvaicons->consegnaHtml('text-primary lg:w-4 xl:w-auto'); ?>
+        <span class="text-sm font-black lg:pl-1 xlpl-2 xl:text-base"><?= $escaper->escapeHtml(__("Delivery in 2/5 working days")) ?></span>
+    </div>
+    <div class="flex justify-center md:w-full lg:w-2/4">
+        <?php echo $block->getBlockHtml('blocco-feedaty-top'); ?>
+    </div>
+    <div class="hidden w-1/2 lg:block lg:w-1/4">
+        <div class="hidden w-full ml-1 lg:inline-block sm:ml-3">
+
+            <nav class="flex justify-end font-medium" :class="{ 'hidden' : !open }" @click.away="open = false" aria-labelledby="customer-menu">
+                <?php if ($block->customerLoggedIn()) : ?>
+                    <a class="block px-4 py-2 text-sm font-normal lowercase lg:px-3 lg:py-2 hover:underline" href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>">
+                        <?= $escaper->escapeHtml(__('My Account')); ?>
+                    </a>
+                    <a class="block px-4 py-2 text-sm font-normal lowercase lg:px-3 lg:py-2 hover:underline" href="<?= $escaper->escapeUrl($block->getUrl('sales/order/history')) ?>">
+                        <?= $escaper->escapeHtml(__('My Orders')); ?>
+                    </a>
+                    <a class="block px-4 py-2 text-sm font-normal lowercase lg:px-3 lg:py-2 hover:underline" href="<?= $escaper->escapeUrl($block->getUrl('customer/account/logout')) ?>">
+                        <?= $escaper->escapeHtml(__('Sign Out')); ?>
+                    </a>
+                <?php else : ?>
+                    <a class="block px-4 py-2 font-normal lowercase lg:px-5 lg:py-2 hover:underline" onclick="hyva.setCookie && hyva.setCookie( '<?=
+                                                                                                                                                    /** @noEscape */
+                                                                                                                                                    Redirect::LOGIN_REDIRECT_URL ?>', window.location.href, 1)" href="<?= $escaper->escapeUrl($block->getUrl('customer/account/index')) ?>"> <?= $escaper->escapeHtml(__('sign-in')); ?>
+                    </a>
+                    <?php if ($customerRegistration->isAllowed()) : ?>
+                        <a class="block px-4 py-2 font-normal lowercase lg:px-5 lg:py-2 hover:underline" href="<?= $escaper->escapeUrl($block->getUrl('customer/account/create')) ?>">
+                            <?= $escaper->escapeHtml(__('sign-up')); ?>
+                        </a>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </nav>
+        </div>
+    </div>
+</div>

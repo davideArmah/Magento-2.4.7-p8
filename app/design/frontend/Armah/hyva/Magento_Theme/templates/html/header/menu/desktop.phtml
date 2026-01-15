@@ -1,0 +1,105 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsSolid;
+use Hyva\Theme\ViewModel\Navigation;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\Escaper;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var Navigation $viewModelNavigation */
+$viewModelNavigation = $viewModels->require(Navigation::class);
+
+/** @var HeroiconsSolid $heroiconsSolid */
+$heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
+
+$uniqueId = '_' . uniqid();
+
+// Order is important here: 1. build the menu data, 2. then set the cache tags from the view model identities
+$menuItems = $viewModelNavigation->getNavigation(4);
+
+// sort menu order by id
+usort($menuItems, function ($a, $b) {
+    return $a['position'] <=> $b['position'];
+});
+
+$block->setData('cache_tags', $viewModelNavigation->getIdentities());
+
+
+?>
+<div id="desktop-menu" x-data="initMenuDesktop<?= $escaper->escapeHtml($uniqueId) ?>()" class="z-20 order-2 hidden mt-2 sm:order-1 lg:order-2 navigation lg:flex">
+
+    <!-- desktop -->
+    <div x-ref="nav-desktop" @load.window="setActiveMenu($el)" class="hidden w-full lg:block lg:relative lg:min-h-0 lg:pt-0">
+        <nav class="flex flex-col justify-start min-h-0 duration-150 ease-in-out transform absolute-homepage width-home-page-desktop transition-display top-homepage">
+            <?php foreach ($menuItems as $index => $menuItem) : ?>
+                <input type="hidden" value="<?= json_encode($menuItem);?>"/>
+                <div class="relative pl-3 text-gray-900 cambiocolore hover:text-white megamenu-div hover:bg-rosso level-0 menu-<?= $escaper->escapeHtml($menuItem['id']) ?>"  @mouseenter="hoverPanelActiveId = '<?= /* @noEscape */ (string) $index ?>'" @mouseleave="hoverPanelActiveId = 0">
+                    <span class="flex items-center bg-opacity-95">
+                        <a class="w-full py-0.5 lg:text-sm xl:text-base 2xl:text-lg font-medium level-0 lg:pr-2 xl:pr-3 2xl:pr-5 lg:py-1 border-gray-200 border-b border-dotted flex justify-start" href="<?= $escaper->escapeUrl($menuItem['url']) ?>" title="<?= $escaper->escapeHtmlAttr($menuItem['name']) ?>">
+                            <span class="mt-[1px]">></span> <span class="pl-4"><?= $escaper->escapeHtml($menuItem['name']) ?></span>
+                        </a>
+                    </span>
+                    <?php if (!empty($menuItem['childData'])) : ?>
+                        <div class="absolute top-0 z-50 hidden px-6 py-4 shadow-lg bg-rosso left-home-page over-div" :class="{
+                                'hidden' : hoverPanelActiveId !== '<?= /* @noEscape */ (string) $index ?>',
+                                'block' : hoverPanelActiveId === '<?= /* @noEscape */ (string) $index ?>'
+                            }" id="pannello">
+                            <?php foreach ($menuItem['childData'] as $subMenuItem) : ?>
+                                <a href="<?= $escaper->escapeUrl($subMenuItem['url']) ?>" title="<?= $escaper->escapeHtmlAttr($subMenuItem['name']) ?>" class="block w-full px-3 py-1 my-1 whitespace-nowrap first:mt-0">
+                                    <span class="text-base text-white hover:text-black ">
+                                        <?= $escaper->escapeHtml($subMenuItem['name']) ?>
+                                    </span>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </nav>
+    </div>
+</div>
+<script>
+    'use strict';
+
+    const initMenuDesktop<?= $escaper->escapeHtml($uniqueId) ?> = () => {
+        return {
+            hoverPanelActiveId: null,
+            setActiveMenu(menuNode) {
+                Array.from(menuNode.querySelectorAll('a')).filter(link => {
+                    return link.href === window.location.href.split('?')[0];
+                }).map(item => {
+                    item.classList.add('capitalize');
+                    item.closest('div.level-0') &&
+                        item.closest('div.level-0').querySelector('a.level-0').classList.add('capitalize');
+                });
+            }
+        }
+    }
+</script>
+
+<script>
+    window.addEventListener('scroll', () => {
+        var sidebarMain = document.getElementById("desktop-menu");
+        var parent = sidebarMain.closest('.catalog-product-view, .catalog-category-view');
+        if (parent) {
+            if(window.scrollY > 160){
+                sidebarMain.style.position = 'fixed';
+                sidebarMain.style.top = '20px';
+            } else {
+                sidebarMain.style.position = 'static';
+                sidebarMain.style.top = '168px';
+            }
+        }
+    })
+</script>

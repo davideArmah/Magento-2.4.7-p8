@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Magento\Theme\Block\Html\Header\Logo;
+use Hyva\Theme\ViewModel\Logo\LogoSizeResolver;
+
+/** @var Logo $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var LogoSizeResolver $logoSizeResolver */
+
+$storeName = $block->getThemeName() ?: $block->getLogoAlt();
+
+$logoSizeResolver = $viewModels->require(LogoSizeResolver::class);
+$logoWidth = $logoSizeResolver && $logoSizeResolver->getWidth()
+    ? $logoSizeResolver->getWidth()
+    : $block->getLogoWidth();
+$logoHeight = $logoSizeResolver && $logoSizeResolver->getHeight()
+    ? $logoSizeResolver->getHeight()
+    : $block->getLogoHeight();
+
+/** @var \Hyva\Theme\ViewModel\Logo\LogoPathResolver $logoPathResolver */
+$logoPathResolver = $block->getData('logoPathResolver');
+$logoSrc = $logoPathResolver && method_exists($logoPathResolver, 'getLogoSrc')
+    ? $logoPathResolver->getLogoSrc($block->getData('logo_file'))
+    : $block->getLogoSrc();
+?>
+<div class="order-2 w-4/5 sm:w-2/4 lg:w-auto">
+    <a class="flex items-center justify-center text-xl font-medium tracking-wide text-gray-800 no-underline lg:justify-start hover:no-underline font-title" href="<?= $escaper->escapeUrl($block->getUrl('')) ?>" title="<?= $escaper->escapeHtmlAttr($storeName) ?>" aria-label="store logo">
+        <img class="w-40 sm:w-64 lg:w-80 xl:w-96" src="<?= $escaper->escapeHtmlAttr($block->getViewFileUrl('svg/logo-carrellodigitale-esteso.svg')) ?>" alt="Carrellodigitale" width="250" height="64" loading="lazy">
+    </a>
+</div>

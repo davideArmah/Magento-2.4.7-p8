@@ -1,0 +1,85 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package One Step Checkout Core for Magento 2
+ */
+/**
+ * @var \Armah\CheckoutCore\Block\Onepage\Head $block
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
+ */
+?>
+
+<style>
+    <?php foreach ($block->getFields() as $code => $width): ?>
+    .fieldset.address div[name<?= $code === 'street' ? '*' : '$'?>=".<?= $escaper->escapeHtml($code) ?>"] {
+        width: <?= (float)$width ?>%;
+    }
+    <?php endforeach; ?>
+
+    <?php if ($font = $block->getCustomFont()): ?>
+    body {
+        font-family: '<?= $escaper->escapeHtml($font) ?>',
+        'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+    }
+    <?php endif ?>
+
+    <?php if ($color = $block->getHeadingTextColor()): ?>
+    .step-title,
+    .archeckout-step-container .archeckout-title {
+        color: <?= $escaper->escapeHtml($color) ?> !important;
+    }
+    <?php endif ?>
+
+    <?php if ($color = $block->getBackgroundColor()): ?>
+    #checkout {
+        background: <?= $escaper->escapeHtml($color) ?> !important;
+    }
+    .ar-submit-fixed #checkout-payment-method-load .actions-toolbar {
+        background: <?= $escaper->escapeHtml($color) ?> !important;
+    }
+
+    <?php endif ?>
+
+    <?php if ($color = $block->getSummaryBackgroundColor()): ?>
+    .opc-block-summary {
+        background-color: <?= $escaper->escapeHtml($color) ?> !important;
+    }
+    <?php endif ?>
+
+    <?php if ($color = $block->getButtonColor()): ?>
+    .primary .action.checkout,
+    .action.checkout.armah {
+        background-color: <?= $escaper->escapeHtml($color['normal']) ?> !important;
+        border: none !important;
+    }
+    .primary .action.checkout:hover,
+    .action.checkout.armah:hover {
+        background-color: <?= $escaper->escapeHtml($color['hover']) ?> !important;
+        border: none !important;
+    }
+    <?php endif ?>
+</style>
+
+<?php if ($block->getConfigProvider()->getMultipleShippingAddress()): ?>
+    <?php
+    // add mixin only for one state of config and only on checkout page
+    $messagesMixinScript = <<<SCRIPT
+        require(['ko'], function (ko) {
+            window.isShippingAddressFormOverridden = ko.observable(false);
+        });
+
+    require.config({
+        config: {
+            mixins: {
+                'Magento_Checkout/js/view/shipping-address/list': {
+                    'Armah_CheckoutCore/js/view/shipping-address/list-mixin': true
+                }
+            }
+        }
+    });
+    SCRIPT;
+    ?>
+    <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $messagesMixinScript, false) ?>
+<?php endif; ?>

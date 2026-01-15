@@ -1,0 +1,10 @@
+<!-- ko ifnot: item.foundStr -->
+    <span class="arbase-name" data-bind="i18n: item.label"></span>
+<!-- /ko-->
+<!-- ko if: item.foundStr -->
+    <span class="arbase-flex">
+        <span class="arbase-label" if="item.prevStr" data-bind="text: item.prevStr"></span>
+        <strong class="arbase-label -query" data-bind="text: item.foundStr"></strong>
+        <span class="arbase-label" if="item.residualStr" data-bind="text: item.residualStr"></span>
+    </span>
+<!-- /ko-->

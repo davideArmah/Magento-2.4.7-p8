@@ -1,0 +1,34 @@
+<?php
+
+use Armah\Base\Block\Adminhtml\System\Config\Form\Field\Promo\PromoGrid;
+use Magento\Framework\Escaper;
+
+/**
+ * @var PromoGrid $block
+ * @var Escaper $escaper
+ */
+$uniq = uniqid();
+?>
+<?php if ($block->hasPromoMessage()): ?>
+    <div class="message message-info">
+        <div class="arrelated-product-sales-demo-message">
+            <?= $escaper->escapeHtml($block->getPromoMessage(), ['a', 'b', 'i']) ?>
+        </div>
+    </div>
+<?php endif; ?>
+<div class="armah-promo-grid grid-<?= $escaper->escapeHtmlAttr($uniq) ?><?= $escaper->escapeHtmlAttr($block->getPromoGridClass()) ?>">
+    <div class="armah-promo-grid-link">
+        <form action="<?= $escaper->escapeUrl($block->getSubscribeUrl() ?? '') ?>" target="_blank">
+            <button class="primary armah-promo-grid-action <?= $escaper->escapeHtmlAttr($block->getPromoButtonClass()) ?>">
+                <img class="promo-grid-image" src="<?= $escaper->escapeUrl($block->getIconUrl()) ?>">
+                <span><?= $escaper->escapeHtml(__($block->getPromoButtonText())) ?></span>
+            </button>
+        </form>
+    </div>
+</div>
+<style>
+    .armah-promo-grid.grid-<?= $escaper->escapeCss($uniq) ?> {
+        background: url(<?= $escaper->escapeUrl($block->getGridImageSrc()) ?>) no-repeat center, linear-gradient(transparent, #ffffff);
+        background-size: contain;
+    }
+</style>

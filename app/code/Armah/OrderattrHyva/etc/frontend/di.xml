@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) 2022 Armah (https://www.armah.com)
+ * @package Order Attributes Hyva
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Hyva\CompatModuleFallback\Model\CompatModuleRegistry">
+        <arguments>
+            <argument name="compatModules" xsi:type="array">
+                <item name="armah-orderattr-hyva-compatibility" xsi:type="array">
+                    <item name="original_module" xsi:type="string">Armah_Orderattr</item>
+                    <item name="compat_module" xsi:type="string">Armah_OrderattrHyva</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+</config>

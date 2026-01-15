@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+?>
+
+<button type="submit" form="product_addtocart_form" title="<?= $escaper->escapeHtmlAttr(__('Add to Cart')) ?>" class="flex justify-between w-full h-16 xl:h-16 btn bg-arancio hover:bg-arancio-600 focus:ring-0" id="product-addtocart-button">
+        <span class="text-xl lg:leading-5 font-bold fold-aggiungi-al-carrello uppercase"><?= $block->getData('is_cart_configure') ? $escaper->escapeHtml(__('Update item')) : $escaper->escapeHtml(__('Add to Cart')) ?>
+        </span>
+        <?= $hyvaicons->renderHtml("carrello", "lg:w-8 h-6 lg:h-8 stroke-0 filter-white"); ?>
+
+</button>
+
+<?= $block->getChildHtml('', true) ?>

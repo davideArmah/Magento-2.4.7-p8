@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package One Step Checkout Layout Builder for Magento 2 (System)
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Armah\CheckoutCore\Model\StatisticManagement">
+        <arguments>
+            <argument name="checkoutBlocksProvider" xsi:type="object">Armah\CheckoutLayoutBuilder\Model\Config\CheckoutBlocksProvider</argument>
+        </arguments>
+    </type>
+    <type name="Armah\CheckoutCore\Model\ConfigProvider">
+        <arguments>
+            <argument name="checkoutBlocksProvider" xsi:type="object">Armah\CheckoutLayoutBuilder\Model\Config\CheckoutBlocksProvider</argument>
+        </arguments>
+    </type>
+</config>

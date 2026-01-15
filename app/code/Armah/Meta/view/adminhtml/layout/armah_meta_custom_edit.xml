@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Meta Tags Templates for Magento 2
+ */-->
+<!--
+/**
+ * Copyright © 2015 Armah. All rights reserved.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="left">
+            <block class="Armah\Meta\Block\Adminhtml\Custom\Edit\Tabs" name="armah_meta_config_edit_tabs" />
+        </referenceContainer>
+        <referenceContainer name="content">
+            <block class="Armah\Meta\Block\Adminhtml\Custom\Edit" name="armah_storelocator_location_edit"/>
+        </referenceContainer>
+    </body>
+</page>

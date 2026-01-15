@@ -1,0 +1,19 @@
+{
+    "name": "armah/composite-product-price-indexer",
+    "description": "Composite Product Price Indexer by Armah",
+    "require": {
+        "php": ">=7.3",
+        "armah/base": ">=1.0.0"
+    },
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": "proprietary",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Armah\\CompositeProductPriceIndexer\\": ""
+        }
+    }
+}

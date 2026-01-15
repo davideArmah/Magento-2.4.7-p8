@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Cash on Delivery for Magento 2
+ */-->
+
+<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Armah_CashOnDelivery::css/arcashondelivery.css"/>
+    </head>
+    <body>
+        <referenceContainer name="checkout.cart.items">
+            <block class="Armah\CashOnDelivery\Block\Checkout\Cart\CheckAvailable" name="checkout.cart.cashondelivery.check" as="arcashondelivery.check" template="Armah_CashOnDelivery::checkout/cart/check.phtml"/>
+        </referenceContainer>
+        <move element="checkout.cart.cashondelivery.check" destination="cart.summary" after="checkout.cart.shipping"/>
+    </body>
+</page>
+

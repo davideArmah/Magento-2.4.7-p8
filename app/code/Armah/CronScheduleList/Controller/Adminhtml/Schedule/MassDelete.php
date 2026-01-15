@@ -1,0 +1,87 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) 2023 Armah (https://www.armah.it)
+ * @package Cron Schedule List for Magento 2 (System) 
+ */
+
+namespace Armah\CronScheduleList\Controller\Adminhtml\Schedule;
+
+use Armah\CronScheduleList\Controller\Adminhtml\AbstractSchedule;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Ui\Component\MassAction\Filter;
+use Magento\Cron\Model\ResourceModel\Schedule\CollectionFactory;
+use Psr\Log\LoggerInterface;
+
+class MassDelete extends AbstractSchedule
+{
+    /**
+     * Authorization level of a basic admin session
+     *
+     * @see _isAllowed()
+     */
+    public const ADMIN_RESOURCE = 'Armah_CronScheduleList::schedule_list';
+
+    /**
+     * @var Filter
+     */
+    private $filter;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var CollectionFactory
+     */
+    private $jobsCollectionFactory;
+
+    public function __construct(
+        Context $context,
+        Filter $filter,
+        LoggerInterface $logger,
+        CollectionFactory $jobsCollectionFactory
+    ) {
+        parent::__construct($context);
+        $this->filter = $filter;
+        $this->logger = $logger;
+        $this->jobsCollectionFactory = $jobsCollectionFactory;
+    }
+
+    /**
+     * Mass action execution
+     *
+     * @throws LocalizedException
+     */
+    public function execute()
+    {
+        $this->filter->applySelectionOnTargetProvider();
+
+        /** @var Collection $collection */
+        $collection = $this->filter->getCollection($this->jobsCollectionFactory->create());
+        $deletedJobs = 0;
+
+        if ($collection->count() > 0) {
+            try {
+                foreach ($collection->getItems() as $job) {
+                    $job->delete();
+                    $deletedJobs++;
+                }
+
+                $this->messageManager->addSuccessMessage(
+                    __('%1 task(s) has been successfully deleted', $deletedJobs)
+                );
+
+            } catch (LocalizedException $e) {
+                $this->messageManager->addErrorMessage($e->getMessage());
+            } catch (\Exception $e) {
+                $this->messageManager->addErrorMessage(__('An error has occurred'));
+                $this->logger->critical($e);
+            }
+        }
+
+        return $this->resultRedirectFactory->create()->setRefererUrl();
+    }
+}

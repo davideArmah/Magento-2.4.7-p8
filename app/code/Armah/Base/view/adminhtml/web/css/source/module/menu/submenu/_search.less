@@ -1,0 +1,62 @@
+//
+//  Armah Base Menu Search UiComponent
+//  ______________________________________________
+
+//
+//  Variables
+//  ----------------------------------------------
+
+@arbase-search-icon__size: 20px;
+@arbase-cancel-icon__size: 15px;
+
+//
+//  Common
+//  ----------------------------------------------
+
+& when (@media-common = true) {
+    .arbase-search-block {
+        & {
+            margin: 0 15px 30px;
+            position: relative;
+            z-index: 700;
+        }
+
+        &:before {
+            background: @arbase-menu-icon__search__background;
+            content: '';
+            height: @arbase-search-icon__size;
+            left: 10px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: @arbase-search-icon__size;
+        }
+
+        .arbase-search {
+            background: @arbase__search-input__color;
+            border: 1px solid @arbase__search-input__color;
+            border-radius: 5px;
+            box-sizing: border-box;
+            color: @color-white;
+            padding: 7px 32px 7px 40px;
+            width: 100%;
+        }
+
+        .arbase-search:focus,
+        .arbase-search:active {
+            border: 1px solid @color-blue-pure;
+        }
+
+        .arbase-cancel {
+            background: @arbase-menu-search-icon__close__background;
+            border: none;
+            height: @arbase-cancel-icon__size;
+            padding: 0;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: @arbase-cancel-icon__size;
+        }
+    }
+}

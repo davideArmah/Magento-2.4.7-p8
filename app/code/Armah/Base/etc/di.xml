@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Armah\Base\Model\Feed\Response\FeedResponseInterface" type="Armah\Base\Model\Feed\Response\FeedResponse"/>
+    <preference for="Magento\Framework\Filesystem\DriverInterface" type="Magento\Framework\Filesystem\Driver\File" />
+    <preference for="Armah\Base\Model\SysInfo\Provider\Collector\CacheService\Info\CacheInfoInterface"
+                type="Armah\Base\Model\SysInfo\Provider\Collector\CacheService\Info\CacheInfo" />
+    <preference for="Armah\Base\Api\Data\InstanceDataInterface" type="Armah\Base\Model\InstanceData\InstanceData"/>
+    <preference for="Armah\Base\Api\InstanceDataRepositoryInterface" type="Armah\Base\Model\InstanceData\Repository"/>
+    <preference for="Armah\Base\Api\Data\ScheduleInterface" type="Armah\Base\Model\Schedule\Schedule"/>
+    <preference for="Armah\Base\Api\ScheduleRepositoryInterface" type="Armah\Base\Model\Schedule\Repository"/>
+    <preference for="Armah\Base\Api\Data\InstanceHashInterface" type="Armah\Base\Model\InstanceHash\InstanceHash"/>
+    <preference for="Armah\Base\Api\InstanceHashRepositoryInterface" type="Armah\Base\Model\InstanceHash\Repository"/>
+
+    <type name="Armah\Base\Model\Response\OctetResponseInterfaceFactory">
+        <arguments>
+            <argument name="responseFactoryAssociationMap" xsi:type="array">
+                <item name="file" xsi:type="object">Armah\Base\Model\Response\File\FileOctetResponseFactory</item>
+                <item name="url" xsi:type="object">Armah\Base\Model\Response\File\FileUrlOctetResponseFactory</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Framework\View\TemplateEngine\Php">
+        <plugin name="Armah_Base::AddEscaperToPhpRenderer" type="Armah\Base\Plugin\Framework\View\TemplateEngine\Php" sortOrder="10"/>
+    </type>
+
+    <!--Add possibility for apply patches before DS start-->
+    <virtualType name="Magento\Framework\Setup\Patch\DeclarativeSchemaApplyBeforeReader" type="Magento\Framework\Setup\Patch\PatchReader">
+        <arguments>
+            <argument name="type" xsi:type="string">declarativeSchemaApplyBefore</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Armah\Base\Setup\Patch\PatchApplier" type="Magento\Framework\Setup\Patch\PatchApplier">
+        <arguments>
+            <argument name="dataPatchReader" xsi:type="object">Magento\Framework\Setup\Patch\DeclarativeSchemaApplyBeforeReader</argument>
+            <argument name="schemaPatchReader" xsi:type="object">Magento\Framework\Setup\Patch\DeclarativeSchemaApplyBeforeReader</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Armah\Base\Plugin\Setup\Model\DeclarationInstaller\ApplyPatchesBeforeDeclarativeSchema">
+        <arguments>
+            <argument name="patchApplier" xsi:type="object">Armah\Base\Setup\Patch\PatchApplier</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Framework\Setup\Declaration\Schema\OperationsExecutor">
+        <plugin name="Armah_Base::execute-patches-before-schema-apply"
+                type="Armah\Base\Plugin\Setup\Model\DeclarationInstaller\ApplyPatchesBeforeDeclarativeSchema"/>
+    </type>
+    <!--Add possibility for apply patches before DS end-->
+
+    <type name="Armah\Base\Model\SysInfo\Provider\CollectorPool">
+        <arguments>
+            <argument name="collectors" xsi:type="array">
+                <item name="sysInfoService" xsi:type="array">
+                    <item name="module" xsi:type="object">Armah\Base\Model\SysInfo\Provider\Collector\Module</item>
+                    <item name="config" xsi:type="object">Armah\Base\Model\SysInfo\Provider\Collector\Config</item>
+                    <item name="system" xsi:type="object">Armah\Base\Model\SysInfo\Provider\Collector\System</item>
+                </item>
+                <item name="cacheInfoService" xsi:type="array">
+                    <item name="page" xsi:type="object">Armah\Base\Model\SysInfo\Provider\Collector\CacheService\Page</item>
+                    <item name="opcache" xsi:type="object">Armah\Base\Model\SysInfo\Provider\Collector\CacheService\Opcache</item>
+                    <item name="redis" xsi:type="object">Armah\Base\Model\SysInfo\Provider\Collector\CacheService\Redis</item>
+                </item>
+                <item name="additionalInfoRequest" xsi:type="array">
+                    <item name="magento_edition" xsi:type="object">Armah\Base\Model\SysInfo\Provider\Collector\AdditionalInfoRequest\MagentoEdition</item>
+                    <item name="base_version" xsi:type="object">Armah\Base\Model\SysInfo\Provider\Collector\AdditionalInfoRequest\BaseVersion</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- Cache Info Configuration Start -->
+    <virtualType name="Armah\Base\Model\SysInfo\Provider\Collector\CacheService\Redis\RedisTypeDefaultConfig" type="Armah\Base\Model\SysInfo\Provider\Collector\CacheService\Redis\RedisTypeConfig">
+        <arguments>
+            <argument name="path" xsi:type="string">cache/frontend/default/backend</argument>
+            <argument name="values" xsi:type="array">
+                <item name="0" xsi:type="string">Magento\Framework\Cache\Backend\Redis</item>
+                <item name="1" xsi:type="string">Cm_Cache_Backend_Redis</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Armah\Base\Model\SysInfo\Provider\Collector\CacheService\Redis\RedisTypePageCacheConfig" type="Armah\Base\Model\SysInfo\Provider\Collector\CacheService\Redis\RedisTypeConfig">
+        <arguments>
+            <argument name="path" xsi:type="string">cache/frontend/page_cache/backend</argument>
+            <argument name="values" xsi:type="array">
+                <item name="0" xsi:type="string">Magento\Framework\Cache\Backend\Redis</item>
+                <item name="1" xsi:type="string">Cm_Cache_Backend_Redis</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Armah\Base\Model\SysInfo\Provider\Collector\CacheService\Redis\RedisTypeSessionConfig" type="Armah\Base\Model\SysInfo\Provider\Collector\CacheService\Redis\RedisTypeConfig">
+        <arguments>
+            <argument name="path" xsi:type="string">session/save</argument>
+            <argument name="values" xsi:type="array">
+                <item name="0" xsi:type="string">redis</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Armah\Base\Model\SysInfo\Provider\Collector\CacheService\Redis\RedisTypesResolver">
+        <arguments>
+            <argument name="redisTypeConfigPool" xsi:type="array">
+                <item name="default" xsi:type="object">Armah\Base\Model\SysInfo\Provider\Collector\CacheService\Redis\RedisTypeDefaultConfig</item>
+                <item name="pageCache" xsi:type="object">Armah\Base\Model\SysInfo\Provider\Collector\CacheService\Redis\RedisTypePageCacheConfig</item>
+                <item name="session" xsi:type="object">Armah\Base\Model\SysInfo\Provider\Collector\CacheService\Redis\RedisTypeSessionConfig</item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- Cache Info Configuration End -->
+
+    <type name="Magento\Framework\Config\FileResolverByModule">
+        <plugin name="ArBase::FileResolverByModule"
+                sortOrder="10"
+                type="Armah\Base\Plugin\Framework\Setup\Declaration\Schema\FileSystem\XmlReader\RestrictDropOperationsPlugin"/>
+        <plugin name="ArBase::SchemaUninstallPlugin"
+                sortOrder="50"
+                type="Armah\Base\Plugin\Framework\Setup\Declaration\Schema\FileSystem\XmlReader\SchemaUninstallPlugin"/>
+    </type>
+
+    <!-- CLI Configuration Start -->
+    <!-- CLI Configuration End -->
+    <type name="Magento\Framework\Mview\View\Subscription">
+        <plugin name="Armah_Base::FixInstall" sortOrder="10"
+                type="Armah\Base\Plugin\Framework\Mview\View\Subscription\FixInstall"/>
+    </type>
+    <type name="Magento\Indexer\Model\Indexer">
+        <plugin name="Armah_Base::skipException" sortOrder="10"
+                type="Armah\Base\Plugin\Indexer\Model\Indexer\SkipException"/>
+    </type>
+    <virtualType name="Armah\Base\Model\Source\ActiveWithEmptyOptionCategory" type="Armah\Base\Model\Source\Category">
+        <arguments>
+            <argument name="caption" xsi:type="string" translatable="true">All Categories</argument>
+            <argument name="filters" xsi:type="array">
+                <item name="is_active" xsi:type="string">1</item>
+                <item name="level" xsi:type="array">
+                    <item name="gt" xsi:type="string">0</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Armah\Base\Model\MagentoVersion">
+        <arguments>
+            <argument name="mageOsVersionMap" xsi:type="array">
+                <item name="1.0.0" xsi:type="string">2.4.6</item>
+                <item name="1.0.1" xsi:type="string">2.4.6</item>
+                <item name="1.0.2" xsi:type="string">2.4.6</item>
+                <item name="1.0.3" xsi:type="string">2.4.7</item>
+                <item name="1.0.4" xsi:type="string">2.4.7</item>
+                <item name="1.0.5" xsi:type="string">2.4.7</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Framework\Setup\Declaration\Schema\Operations\CreateTable">
+        <arguments>
+            <argument name="triggers" xsi:type="array">
+                <item name="arMigrateDataSetFromTableColumn"
+                      xsi:type="object">Armah\Base\Setup\Declaration\Schema\Db\MySQL\DDL\Triggers\MigrateDataSetFromTableColumn</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\Setup\Patch\PatchApplier">
+        <plugin name="Armah_Base::DeleteArmahTables"
+                type="Armah\Base\Plugin\Framework\Setup\Patch\DeleteArmahTablesPlugin"/>
+    </type>
+    <type name="Magento\Framework\Setup\Declaration\Schema\SchemaConfig">
+        <arguments>
+            <!-- fix cached tables issue when deleting several modules at once -->
+            <argument name="dbSchemaBuilder" shared="false"
+                      xsi:type="object">Magento\Framework\Setup\Declaration\Schema\Db\SchemaBuilder</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="armah_migration_verify" xsi:type="object">Armah\Base\Console\Command\VerifyMigration</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\App\Router\Base">
+        <plugin name="armah_redirect_old_routes"
+                type="Armah\Base\Plugin\Framework\App\Router\RedirectOldRoutes"
+                sortOrder="1"/>
+    </type>
+</config>

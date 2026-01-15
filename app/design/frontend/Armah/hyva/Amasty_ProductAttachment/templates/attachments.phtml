@@ -1,0 +1,29 @@
+<?php
+/**
+ * @author Amasty Team
+ * @copyright Copyright (c) 2023 Amasty (https://www.amasty.com)
+ * @package Product Attachments Base for Magento 2
+ */
+use Hyva\Theme\ViewModel\SvgIcons;
+$hyvaicons = $viewModels->require(SvgIcons::class);
+?>
+<?php
+/** @var \Amasty\ProductAttachment\Block\Widgets\AttachmentsList $block */
+?>
+<?php if ($files = $block->getAttachments()): ?>
+    <div class="flex flex-row items-center"><?= $hyvaicons->renderHtml("pdf", "w-10 h-10 mr-3"); ?>
+        <?php
+            preg_match_all('/<a[^>]+href=([\'"])(?<href>.+?)\1[^>]*>/i', $block->getRenderer()->getFilesHtml($files), $result);
+
+            if (!empty($result)) {
+                # Found a link.
+                $href = $result['href'][0];
+            }
+            else{
+                $href = null;
+            }
+        ?>
+
+        <a href="<?php echo $href?>"><?= $escaper->escapeHtml(__('Download Product Manual')) ?>
+        </div>
+<?php endif; ?>

@@ -1,0 +1,21 @@
+{
+    "name": "armah/module-google-address-autocomplete",
+    "description": "Google Address Autocomplete By Armah",
+    "require": {
+        "php": ">=8.1",
+        "armah/base": ">=1.20.0"
+    },
+    "type": "magento2-module",
+    "version": "1.2.0",
+    "license": [
+        "proprietary"
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Armah\\GoogleAddressAutocomplete\\": ""
+        }
+    }
+}

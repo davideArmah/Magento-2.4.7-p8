@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Google Rich Snippets for Magento 2
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+    <module name="Armah_SeoRichData">
+        <sequence>
+            <module name="Armah_Base" />
+            <module name="Armah_SeoToolkitLite" />
+        </sequence>
+    </module>
+</config>

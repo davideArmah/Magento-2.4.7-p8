@@ -1,0 +1,49 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.com)
+ * @package Seo Toolkit Core Hyva Compatibility
+ */
+/** @var Hyva\Theme\ViewModel\HyvaCsp|null $hyvaCsp */
+?>
+<script>
+    'use strict';
+
+    function initAmToolbar() {
+        return {
+            isOpen: false,
+            altTag: {
+                imagesLength: this.$el.dataset.imagesLength,
+                initialCount: 2,
+                showAll: false
+            },
+            canShowMoreButton: function () {
+                return !this.altTag.showAll && this.altTag.imagesLength > this.altTag.initialCount;
+            },
+            toolbarCssClasses: function () {
+                return { 'h-full': this.isOpen };
+            },
+            toggleOpen: function () {
+                this.isOpen = !this.isOpen;
+            },
+            buttonCssClasses: function () {
+                return { 'rounded-b-none': this.isOpen };
+            },
+            chevronCssClasses: function () {
+                return { 'rotate-180': this.isOpen };
+            },
+            ariaExpanded: function () {
+                return this.isOpen ? 'true' : 'false';
+            },
+            clickOther: function () {
+                this.altTag.showAll = true;
+            },
+            textOther: function () {
+                return this.altTag.imagesLength - this.altTag.initialCount;
+            }
+        }
+    }
+
+    window.addEventListener('alpine:init', () => Alpine.data('initAmToolbar', initAmToolbar), {once: true});
+</script>
+<?php isset($hyvaCsp) && $hyvaCsp->registerInlineScript() ?>

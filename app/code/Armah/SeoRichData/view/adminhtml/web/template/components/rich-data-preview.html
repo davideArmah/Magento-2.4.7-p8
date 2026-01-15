@@ -1,0 +1,31 @@
+<div class="arseorichdata-preview-component"
+     if="componentEnabled()"
+     data-bind="
+        hasFocus: focused,
+        visible: visible,
+        attr: {
+            name: inputName,
+            'aria-describedby': noticeId,
+            placeholder: placeholder,
+            id: uid,
+            disabled: disabled
+        }">
+    <div class="arseorichdata-item arseorichdata-link" data-bind="html: previewLink()"></div>
+    <div class="arseorichdata-item arseorichdata-title" data-bind="text: previewTitle()"></div>
+
+    <div class="arseorichdata-item arseorichdata-description"
+         if="$data[data.description_mode]()"
+         data-bind="text: getDescription()"></div>
+
+    <div class="arseorichdata-item arseorichdata-footer">
+        <!-- ko template: { name: $data.templates.rating } --><!-- /ko -->
+
+        <div class="arseorichdata-item arseorichdata-price">
+            <span if="isPriceUpdateLive()" data-bind="html: previewCurrency()"></span>
+            <span data-bind="html: getPreviewPrice()"></span>
+        </div>
+        <div class="arseorichdata-item arseorichdata-stock"
+             if="stockStatus()"
+             data-bind="i18n: getStockMessage()"></div>
+    </div>
+</div>

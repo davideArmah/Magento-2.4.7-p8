@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+/** @var Details $block */
+/** @var Escaper $escaper */
+
+use Magento\Catalog\Block\Product\View\Details;
+use Magento\Framework\Escaper;
+use Magento\Catalog\Model\Product;
+use Hyva\Theme\ViewModel\ProductPage;
+
+
+$titleRenderer = $block->getChildBlock('product.section.title.renderer');
+$defaultTitleTemplate = $titleRenderer->getTemplate();
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+
+/** @var Product $product */
+$product = $productViewModel->getProduct();
+?>
+<div class="grid gap-8 lg:grid-cols-1">
+    <?php
+    foreach ($block->getGroupSortedChildNames('detailed_info', '') as $sectionName) {
+        $sectionBlock  = $block->getLayout()->getBlock($sectionName);
+        $sectionHtml   = (string) $sectionBlock->toHtml();
+        $titleTemplate = $sectionBlock->getData('title_template') ?? $defaultTitleTemplate;
+
+        if (empty(trim($sectionHtml))) {
+            continue;
+        }
+    ?>
+        <section id="<?= $escaper->escapeHtmlAttr($sectionBlock->getNameInLayout()) ?>">
+            <?=
+            $titleRenderer->setTemplate($titleTemplate)
+                ->assign('sectionBlock', $sectionBlock)
+                ->toHtml()
+            ?>
+            <div class="flex flex-col w-full lg:flex-row gap-4">
+                <div id="description-product" class="w-full lg:w-3/5 card">
+                    <?=
+                    /** @noEscape  */
+                    $sectionHtml ?>
+                </div>
+
+                <div class="w-full lg:w-2/5">
+                <div class="feedaty_widget" data-ver="2021" data-id="65e0ace8007a8" data-type="product_tab" data-variant="Recensioni-Verticale-Mobile" data-lang="it-IT" data-gui="it-IT" data-sku="<?= $product->getId() ?>" data-snippets="0"></div>
+                </div>
+        </section>
+    <?php } ?>
+</div>

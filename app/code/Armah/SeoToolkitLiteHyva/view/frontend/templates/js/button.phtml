@@ -1,0 +1,45 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.com)
+ * @package Seo Toolkit Core Hyva Compatibility
+ */
+/** @var Hyva\Theme\ViewModel\HyvaCsp|null $hyvaCsp */
+?>
+<script>
+    'use strict';
+
+    function initAmToolbarAiButton() {
+        return {
+            adminUrl: this.$el.dataset.adminUrl,
+            selectors: {
+                button: '[data-amaifix-js="button"]',
+                errors: '[data-amtoolbar-js]'
+            },
+
+            init() {
+                this.addErrorsToUrl();
+            },
+
+            openAdmin() {
+                open(this.adminUrl);
+            },
+
+            addErrorsToUrl() {
+                let url = new URL(this.adminUrl),
+                    params = [];
+
+                document.querySelectorAll(this.selectors.errors).forEach(el => {
+                    const error = el.getAttribute('data-amtoolbar-js');
+                    error && params.push(error);
+                });
+
+                url.searchParams.set('errors', params.join(','));
+                this.adminUrl = url.href;
+            }
+        }
+    }
+
+    window.addEventListener('alpine:init', () => Alpine.data('initAmToolbarAiButton', initAmToolbarAiButton), {once: true})
+</script>
+<?php isset($hyvaCsp) && $hyvaCsp->registerInlineScript() ?>

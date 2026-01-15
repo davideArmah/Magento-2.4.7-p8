@@ -1,0 +1,23 @@
+{
+    "name": "armah/module-seo-toolkit-lite-hyva",
+    "description": "Seo Toolkit Lite Hyva by Armah",
+    "require": {
+        "php": ">=7.3",
+        "armah/base": ">=1.20.0",
+        "armah/module-seo-toolkit-lite": ">=1.1.7",
+        "hyva-themes/magento2-default-theme": ">=1.1.18",
+        "hyva-themes/magento2-compat-module-fallback": "*"
+    },
+    "homepage": "https://armah.dev/",
+    "type": "magento2-module",
+    "version": "1.0.2",
+    "license": "proprietary",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Armah\\SeoToolkitLiteHyva\\": ""
+        }
+    }
+}

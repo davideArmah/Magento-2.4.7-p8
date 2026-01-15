@@ -1,0 +1,30 @@
+{
+    "armah_cash_on_delivery_fee_quote": {
+        "column": {
+            "entity_id": true,
+            "quote_id": true,
+            "amount": true,
+            "base_amount": true,
+            "tax_amount": true,
+            "base_tax_amount": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "FK_3C82D248557A193CDA0CC26F0DC93442": true
+        }
+    },
+    "armah_cash_on_delivery_fee_order": {
+        "column": {
+            "entity_id": true,
+            "order_id": true,
+            "amount": true,
+            "base_amount": true,
+            "tax_amount": true,
+            "base_tax_amount": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "FK_B3C6136C95589B6CF6896D8785B5525D": true
+        }
+    }
+}

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah
+ * @package Composite Product Price Indexer
+ */-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+    <module name="Armah_CompositeProductPriceIndexer">
+        <sequence>
+            <module name="Armah_Base"/>
+        </sequence>
+    </module>
+</config>

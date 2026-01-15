@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package Custom Checkout Fields for Magento 2
+ */-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Indexer/etc/indexer.xsd">
+    <indexer id="armah_order_attribute_grid" view_id="armah_order_attribute_values" class="Armah\Orderattr\Model\Indexer\Action" primary="entity">
+        <title translate="true">Order Attributes Grid by Armah</title>
+        <description translate="true">Rebuild Sales grid index by Armah</description>
+
+        <fieldset name="entity" source="Armah\Orderattr\Model\ResourceModel\Entity\Grid"
+                  provider="Armah\Orderattr\Model\Indexer\AttributeProvider">
+            <field name="parent_id" xsi:type="filterable" dataType="int"/>
+        </fieldset>
+
+        <saveHandler class="Armah\Orderattr\Model\Indexer\SaveHandler\Grid"/>
+        <structure class="Armah\Orderattr\Model\Indexer\GridStructure"/>
+    </indexer>
+    <indexer id="armah_product_order_attribute" view_id="armah_product_order_attribute"
+             class="Armah\Orderattr\Model\Indexer\Conditions\ProductIndexer"
+             shared_index="armah_order_attribute_product_index">
+        <title translate="true">Armah: Order Attributes - Attribute Conditions</title>
+        <description translate="true">Indexed conditions/product association</description>
+    </indexer>
+    <indexer id="armah_order_attribute_product" view_id="armah_order_attribute_product"
+             class="Armah\Orderattr\Model\Indexer\Conditions\AttributeIndexer"
+             shared_index="armah_order_attribute_product_index">
+        <title translate="true">Armah: Order Attributes - Attribute Conditions</title>
+        <description translate="true">Indexed conditions/attribute association</description>
+    </indexer>
+</config>

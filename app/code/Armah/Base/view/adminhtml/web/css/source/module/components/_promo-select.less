@@ -1,0 +1,43 @@
+//
+//  Armah Promotion Select UiComponent
+//  ______________________________________________
+
+//
+//  Variables
+//  --------------------------------------------
+@arbase__promoselect__menu-item__color: #adadad;
+
+//
+//  Common
+//  ----------------------------------------------
+
+& when (@media-common = true) {
+    .arpromo-action-multiselect-menu-item {
+        ._is-ar-promo {
+            display: flex;
+
+            .admin__action-multiselect-label {
+                align-items: center;
+                color: @arbase__promoselect__menu-item__color;
+                display: flex;
+            }
+        }
+
+        .arpromo-icon-wrap {
+            align-items: center;
+            display: flex;
+            margin-right: 1rem;
+        }
+
+        .arpromo-badge {
+            margin-left: auto;
+        }
+    }
+
+    .arpromo-badge {
+        border: none;
+        border-radius: .4rem;
+        font-weight: 400;
+        padding: .5rem 1rem;
+    }
+}

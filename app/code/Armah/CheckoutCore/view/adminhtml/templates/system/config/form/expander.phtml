@@ -1,0 +1,13 @@
+<?php
+/**
+ * @author Armah Team
+ * @copyright Copyright (c) Armah (https://www.armah.it)
+ * @package One Step Checkout Core for Magento 2
+ */ /** @var \Armah\CheckoutCore\Block\Adminhtml\System\Config\Expander $block **/ ?>
+<script type="text/javascript">
+    //<![CDATA[
+    require(['Armah_CheckoutCore/js/fieldset-expander'], function (expander) {
+        expander.init('<?=$block->escapeHtml($block->getSection())?>','<?=$block->escapeHtml($block->getExpand())?>');
+    });
+    //]]>
+</script>

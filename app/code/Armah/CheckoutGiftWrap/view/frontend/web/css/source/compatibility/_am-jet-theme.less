@@ -1,0 +1,26 @@
+//
+//  Compatibility with Armah Jet Theme
+//  ______________________________________________
+
+//
+//  Common
+//  ----------------------------------------------
+
+& when (@media-common =true) {
+    .checkout-index-index .ar-gift-message {
+        .edit-link {
+            color: @artheme__link__color;
+        }
+    }
+
+    .checkout-onepage-success {
+        .order-details-items {
+            .order-gift-message,
+            .block-order-details-gift-message {
+                dt:after {
+                    content: none;
+                }
+            }
+        }
+    }
+}
